@@ -1,11 +1,11 @@
 package me.rubix327.fancynations.commands;
 
-import me.rubix327.fancynations.data.DataManager;
-import me.rubix327.fancynations.data.GatheringTask;
-import me.rubix327.fancynations.data.Task;
-import me.rubix327.fancynations.data.TaskType;
+import me.rubix327.fancynations.data.task.GatheringTask;
+import me.rubix327.fancynations.data.task.Task;
+import me.rubix327.fancynations.data.task.TaskManager;
+import me.rubix327.fancynations.data.task.TaskType;
+import me.rubix327.fancynations.data.town.TownManager;
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.mineacademy.fo.Common;
 import org.mineacademy.fo.command.SimpleCommandGroup;
@@ -50,7 +50,7 @@ public class TaskCommands extends SimpleSubCommand {
             String taskCreatorName;
 
             // townName definition;
-            if (!DataManager.isTownExist(townName)){
+            if (!TownManager.exists(townName)){
                 tell("&cThis town already exists.");
                 return;
             }
@@ -75,7 +75,7 @@ public class TaskCommands extends SimpleSubCommand {
             // Create new Task instance
             if (taskType == TaskType.Food || taskType == TaskType.Resource || taskType == TaskType.Crafting){
                 GatheringTask task = new GatheringTask(townName, taskType, taskCreatorName, taskName);
-                DataManager.addTask(task.getId(), task);
+                TaskManager.add(task.getId(), task);
             }
 //            else if (taskType == TaskType.Mobkill){
 //
@@ -90,7 +90,7 @@ public class TaskCommands extends SimpleSubCommand {
                 return;
             }
             int taskId = findNumber(1, "&cTask ID must be a number");
-            DataManager.removeTask(taskId);
+            TaskManager.remove(taskId);
 
         }
 
@@ -105,11 +105,11 @@ public class TaskCommands extends SimpleSubCommand {
             String variable = args[2];
             String value = args[3];
 
-            if (!DataManager.isTaskExist(taskId)){
+            if (!TaskManager.exists(taskId)){
                 tell("&cTask with this ID does not exist.\n&cType /fn tasks to see all tasks.");
                 return;
             }
-            Task task = DataManager.getTaskById(taskId);
+            Task task = TaskManager.getById(taskId);
 
             final List<String> shouldBeIntegers =
                     Arrays.asList("take_amount", "min_level", "max_level", "reputation_reward", "priority");
@@ -123,7 +123,7 @@ public class TaskCommands extends SimpleSubCommand {
                 findNumber(3, "&cValue must be a whole number (integer).");
             }
 
-            DataManager.setValue(task, variable, value);
+            TaskManager.setValue(task, variable, value);
         }
 
         else if (args[0].equalsIgnoreCase("info")){
@@ -134,11 +134,11 @@ public class TaskCommands extends SimpleSubCommand {
             }
             int taskId = findNumber(1, "&cTask ID must be a number");
 
-            if (!DataManager.isTaskExist(taskId)){
+            if (!TaskManager.exists(taskId)){
                 tell("&cTask with this ID does not exist.\n&cType /fn tasks to see all tasks.");
                 return;
             }
-            Task task = DataManager.getTaskById(taskId);
+            Task task = TaskManager.getById(taskId);
 
             List<String> info = Arrays.asList(
                     "&7Info for task #" + taskId,
@@ -169,7 +169,7 @@ public class TaskCommands extends SimpleSubCommand {
             return Arrays.asList("create", "remove", "set", "info");
         }
         else if (args.length == 2 && args[0].equalsIgnoreCase("create")){
-            return DataManager.getAvailableTownsFor(sender);
+            return TownManager.getAvailableTownsFor(sender);
         }
         else if (args.length == 3 && args[0].equalsIgnoreCase("create")){
             // TODO: Check
@@ -181,7 +181,7 @@ public class TaskCommands extends SimpleSubCommand {
             return Collections.singletonList("<id>");
         }
         else if (args.length == 2 && args[0].equalsIgnoreCase("set")){
-            return DataManager.taskVariablesList;
+            return TaskManager.CLASS_VARIABLES;
         }
         else if (args.length == 3 && args[0].equalsIgnoreCase("set")){
             return Collections.singletonList("<value>");

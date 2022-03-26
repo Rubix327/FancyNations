@@ -1,7 +1,9 @@
 package me.rubix327.fancynations.commands;
 
-import me.rubix327.fancynations.data.DataManager;
-import me.rubix327.fancynations.data.Mayor;
+import me.rubix327.fancynations.data.worker.TownWorker;
+import me.rubix327.fancynations.data.worker.TownWorkerManager;
+import me.rubix327.fancynations.data.town.TownManager;
+import me.rubix327.fancynations.data.worker.WorkerType;
 import org.bukkit.Bukkit;
 import org.mineacademy.fo.command.SimpleCommandGroup;
 import org.mineacademy.fo.command.SimpleSubCommand;
@@ -24,7 +26,7 @@ public class MayorCommands extends SimpleSubCommand {
                 return;
             }
 
-            if (!DataManager.isTownExists(args[1])) {
+            if (!TownManager.exists(args[1])) {
                 tell("&cThis town does not exist.");
                 return;
             }
@@ -37,8 +39,8 @@ public class MayorCommands extends SimpleSubCommand {
                 return;
             }
 
-            Mayor mayor = new Mayor(args[2]);
-            DataManager.addMayor(mayor.getId(), mayor);
+            TownWorker mayor = new TownWorker(args[2], WorkerType.Mayor);
+            TownWorkerManager.add(mayor.getId(), mayor);
         }
     }
 }

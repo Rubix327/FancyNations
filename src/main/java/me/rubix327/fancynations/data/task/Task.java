@@ -1,4 +1,4 @@
-package me.rubix327.fancynations.data;
+package me.rubix327.fancynations.data.task;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter @Setter(AccessLevel.PACKAGE)
 public abstract class Task {
 
-    private static int maxTaskId = 0;
+    private static int maxId = 0;
 
     private final int id;
     private final String townName;
@@ -58,8 +58,8 @@ public abstract class Task {
     }
 
     private int generateId(){
-        maxTaskId += 1;
-        return maxTaskId;
+        maxId += 1;
+        return maxId;
     }
 
     // "Town: SunRise, Type: Food, Name: 'Hello world!', Creator: Rubix327
