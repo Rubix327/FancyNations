@@ -88,7 +88,6 @@ public class DataManager {
     public static boolean isTownExist(String townName){
         return towns.containsKey(townName);
     }
-}
 
     public static boolean isMayor(String playerName) {
         for(Mayor mayor : mayors.values()) {
