@@ -4,18 +4,14 @@ import lombok.Getter;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class DataManager {
 
     @Getter
-    private static HashMap<String, Town> towns = new HashMap<>();
-
+    private static final HashMap<String, Town> towns = new HashMap<>();
     @Getter
-    private static HashMap<Integer, Task> tasks = new HashMap<>();
+    private static final HashMap<Integer, Task> tasks = new HashMap<>();
 
     // TODO: To DB
     public static void addTask(int id, Task task){
@@ -57,12 +53,20 @@ public class DataManager {
         // TODO: make individual for every player
         if (!(sender instanceof Player) || sender.hasPermission("fancynations.admin")){
             List<String> names = new ArrayList<>();
-            DataManager.getTowns().values().forEach(town -> names.add(town.getName()));
+            DataManager.towns.values().forEach(town -> names.add(town.getName()));
             return names;
         }
 //        else if (Mayor.is((Player)sender)){
 //
 //        }
         return Arrays.asList("SunRise", "Moscow", "Capatov");
+    }
+
+    public static boolean isTaskExist(int taskId){
+        return tasks.containsKey(taskId);
+    }
+
+    public static boolean isTownExist(String townName){
+        return towns.containsKey(townName);
     }
 }

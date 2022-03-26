@@ -5,6 +5,7 @@ import me.rubix327.fancynations.data.GatheringTask;
 import me.rubix327.fancynations.data.Task;
 import me.rubix327.fancynations.data.TaskType;
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.mineacademy.fo.Common;
 import org.mineacademy.fo.command.SimpleCommandGroup;
@@ -49,7 +50,7 @@ public class TaskCommands extends SimpleSubCommand {
             String taskCreatorName;
 
             // townName definition;
-            if (DataManager.getTowns().containsKey(townName)){
+            if (!DataManager.isTownExist(townName)){
                 tell("&cThis town already exists.");
                 return;
             }
@@ -104,7 +105,7 @@ public class TaskCommands extends SimpleSubCommand {
             String variable = args[2];
             String value = args[3];
 
-            if (!DataManager.getTasks().containsKey(taskId)){
+            if (!DataManager.isTaskExist(taskId)){
                 tell("&cTask with this ID does not exist.\n&cType /fn tasks to see all tasks.");
                 return;
             }
@@ -133,7 +134,7 @@ public class TaskCommands extends SimpleSubCommand {
             }
             int taskId = findNumber(1, "&cTask ID must be a number");
 
-            if (!DataManager.getTasks().containsKey(taskId)){
+            if (!DataManager.isTaskExist(taskId)){
                 tell("&cTask with this ID does not exist.\n&cType /fn tasks to see all tasks.");
                 return;
             }

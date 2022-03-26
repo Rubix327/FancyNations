@@ -7,15 +7,11 @@ import lombok.Setter;
 @Getter @Setter(AccessLevel.PACKAGE)
 public abstract class Task {
 
-    private static Integer maxTaskId = 0;
+    private static int maxTaskId = 0;
 
-    @Setter(AccessLevel.NONE)
     private final int id;
-    @Setter(AccessLevel.NONE)
     private final String townName;
-    @Setter(AccessLevel.NONE)
     private final TaskType taskType;
-    @Setter(AccessLevel.NONE)
     private final String creatorName;
     private String taskName;
     private String description;
