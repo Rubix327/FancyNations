@@ -2,7 +2,7 @@
 <project name="MyFirstPlugin" default="Build">
 
     <!-- Путь к тестовому серверу для Windows -->
-    <condition property="serverPath" value="C:\NewWorldServer">
+    <condition property="serverPath" value="J:\Server">
         <os family="windows" />
     </condition>
 

@@ -9,6 +9,7 @@ public class FNCommandGroup extends SimpleCommandGroup {
         registerSubcommand(new TownCommands(this, "town"));
         registerSubcommand(new TaskCommands(this, "task"));
         registerSubcommand(new TasksCommand(this, "tasks"));
+        registerSubcommand(new TasksCommand(this, "mayor|m"));
 
     }
 }
