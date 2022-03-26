@@ -6,7 +6,7 @@ public class FNCommandGroup extends SimpleCommandGroup {
     @Override
     protected void registerSubcommands() {
 
-        registerSubcommand(new TownCommands(this, "town|t"));
+        registerSubcommand(new TownCommands(this, "town"));
         registerSubcommand(new TaskCommands(this, "task"));
         registerSubcommand(new TasksCommand(this, "tasks"));
 

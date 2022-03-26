@@ -32,12 +32,16 @@ public class TaskCommands extends SimpleSubCommand {
         addTellPrefix(false);
 
         if (args.length == 0){
-            returnTell("Help_page");
+            tell("Help_page");
+            return;
         }
 
         // /fn task create <town_name> <taskType> <taskName>
         if (args[0].equalsIgnoreCase("create")){
-            if (args.length < 4) returnTell("&cSyntax: /fn task create <town_name> <type> <name>");
+            if (args.length < 4) {
+                tell("&cSyntax: /fn task create <town_name> <type> <name>");
+                return;
+            }
 
             String townName = args[1];
             TaskType taskType;
@@ -46,7 +50,8 @@ public class TaskCommands extends SimpleSubCommand {
 
             // townName definition;
             if (DataManager.getTowns().containsKey(townName)){
-                returnTell("&cThis town already exists.");
+                tell("&cThis town already exists.");
+                return;
             }
 
             // taskType definition
@@ -71,29 +76,39 @@ public class TaskCommands extends SimpleSubCommand {
                 GatheringTask task = new GatheringTask(townName, taskType, taskCreatorName, taskName);
                 DataManager.addTask(task.getId(), task);
             }
-            else if (taskType == TaskType.Mobkill){
-
-            }
+//            else if (taskType == TaskType.Mobkill){
+//
+//            }
 
         }
         // fn task remove <task_id>
         else if (args[0].equalsIgnoreCase("remove")){
 
-            if (args.length < 2) returnTell("&cSyntax: /fn task remove <task_id>");
+            if (args.length < 2) {
+                tell("&cSyntax: /fn task remove <task_id>");
+                return;
+            }
             int taskId = findNumber(1, "&cTask ID must be a number");
             DataManager.removeTask(taskId);
 
         }
 
-
-
         // fn task set <task_id> <variable> <value>
         else if (args[0].equalsIgnoreCase("set")){
 
-            if (args.length < 4) returnTell("&cSyntax: /fn task set <task_id> <variable> <value>");
+            if (args.length < 4) {
+                tell("&cSyntax: /fn task set <task_id> <variable> <value>");
+                return;
+            }
             int taskId = findNumber(1, "&cTask ID must be a number");
             String variable = args[2];
             String value = args[3];
+
+            if (!DataManager.getTasks().containsKey(taskId)){
+                tell("&cTask with this ID does not exist.\n&cType /fn tasks to see all tasks.");
+                return;
+            }
+            Task task = DataManager.getTaskById(taskId);
 
             final List<String> shouldBeIntegers =
                     Arrays.asList("take_amount", "min_level", "max_level", "reputation_reward", "priority");
@@ -107,14 +122,21 @@ public class TaskCommands extends SimpleSubCommand {
                 findNumber(3, "&cValue must be a whole number (integer).");
             }
 
-//            DataManager.setValue(taskId, variable, value);
+            DataManager.setValue(task, variable, value);
         }
 
         else if (args[0].equalsIgnoreCase("info")){
 
-            if (args.length < 2) returnTell("&cSyntax: /fn task info <task_id>");
+            if (args.length < 2) {
+                tell("&cSyntax: /fn task info <task_id>");
+                return;
+            }
             int taskId = findNumber(1, "&cTask ID must be a number");
 
+            if (!DataManager.getTasks().containsKey(taskId)){
+                tell("&cTask with this ID does not exist.\n&cType /fn tasks to see all tasks.");
+                return;
+            }
             Task task = DataManager.getTaskById(taskId);
 
             List<String> info = Arrays.asList(
@@ -143,13 +165,16 @@ public class TaskCommands extends SimpleSubCommand {
     @Override
     protected List<String> tabComplete() {
         if (args.length == 1){
-            return Arrays.asList("create", "remove", "set");
+            return Arrays.asList("create", "remove", "set", "info");
         }
         else if (args.length == 2 && args[0].equalsIgnoreCase("create")){
             return DataManager.getAvailableTownsFor(sender);
         }
         else if (args.length == 3 && args[0].equalsIgnoreCase("create")){
-            return Arrays.asList(Arrays.toString(TaskType.values()));
+            // TODO: Check
+            List<String> types = new ArrayList<>();
+            Arrays.stream(TaskType.values()).forEach(type -> types.add(type.toString()));
+            return types;
         }
         else if (args.length == 2 && args[0].equalsIgnoreCase("remove")){
             return Collections.singletonList("<id>");
