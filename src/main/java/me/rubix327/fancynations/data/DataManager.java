@@ -4,7 +4,10 @@ import lombok.Getter;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 public class DataManager {
 
@@ -12,6 +15,8 @@ public class DataManager {
     private static final HashMap<String, Town> towns = new HashMap<>();
     @Getter
     private static final HashMap<Integer, Task> tasks = new HashMap<>();
+    @Getter
+    private static final HashMap<Integer, Mayor> mayors = new HashMap<>();
 
     // TODO: To DB
     public static void addTask(int id, Task task){
@@ -19,13 +24,13 @@ public class DataManager {
     }
 
     // TODO: To DB
-    public static void removeTask(int id){
+    public static void removeTask(int id) {
         tasks.remove(id);
     }
 
     // TODO: To DB
-    public static Task getTaskById(int id) throws NullPointerException{
-        if (tasks.get(id) == null){
+    public static Task getTaskById(int id) throws NullPointerException {
+        if (tasks.get(id) == null) {
             throw new NullPointerException("This task does not exist in tasks hashmap.");
         }
         return tasks.get(id);
@@ -62,11 +67,33 @@ public class DataManager {
         return Arrays.asList("SunRise", "Moscow", "Capatov");
     }
 
+    public static void addMayor(int id, Mayor mayor) {
+        mayors.put(id, mayor);
+    }
+    public static void removeMayor(int id) {
+        mayors.remove(id);
+    }
+
+    public static Mayor getMayorById(int id) throws NullPointerException {
+        if (mayors.get(id) == null) {
+            throw new NullPointerException("This mayor does not exist in mayors hashmap.");
+        }
+        return mayors.get(id);
+    }
+
     public static boolean isTaskExist(int taskId){
         return tasks.containsKey(taskId);
     }
 
     public static boolean isTownExist(String townName){
         return towns.containsKey(townName);
+    }
+}
+
+    public static boolean isMayor(String playerName) {
+        for(Mayor mayor : mayors.values()) {
+            if (mayor.getPlayerName().equalsIgnoreCase(playerName)) return true;
+        }
+        return false;
     }
 }
