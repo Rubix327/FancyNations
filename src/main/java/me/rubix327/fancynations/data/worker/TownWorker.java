@@ -3,6 +3,7 @@ package me.rubix327.fancynations.data.worker;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import me.rubix327.fancynations.data.DataManager;
 
 @Getter @Setter(AccessLevel.PACKAGE)
 public class TownWorker {
@@ -15,14 +16,9 @@ public class TownWorker {
     private double salary;
 
     public TownWorker(String playerName, WorkerType type) {
-        this.id = generateId();
+        this.id = DataManager.generateId(TownWorkerManager.getTownWorkers().keySet());
         this.playerName = playerName;
         this.workerType = type;
         this.salary = 1;
-    }
-
-    private int generateId(){
-        maxTownWorkerId += 1;
-        return maxTownWorkerId;
     }
 }

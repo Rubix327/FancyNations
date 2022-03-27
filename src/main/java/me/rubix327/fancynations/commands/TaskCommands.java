@@ -105,6 +105,11 @@ public class TaskCommands extends SimpleSubCommand {
             String variable = args[2];
             String value = args[3];
 
+            if (!getPlayer().hasPermission("fancynations.task.setvalue." + variable)){
+                tell("&cYou don't have enough permissions.");
+                return;
+            }
+
             if (!TaskManager.exists(taskId)){
                 tell("&cTask with this ID does not exist.\n&cType /fn tasks to see all tasks.");
                 return;

@@ -3,6 +3,7 @@ package me.rubix327.fancynations.data.task;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import me.rubix327.fancynations.data.DataManager;
 
 @Getter @Setter(AccessLevel.PACKAGE)
 public abstract class Task {
@@ -24,7 +25,7 @@ public abstract class Task {
     private double expReward;
 
     protected Task(String townName, TaskType taskType, String creatorName, String taskName){
-        this.id = generateId();
+        this.id = DataManager.generateId(TaskManager.getTasks().keySet());
         this.townName = townName;
         this.taskType = taskType;
         this.creatorName = creatorName;
@@ -42,7 +43,7 @@ public abstract class Task {
     protected Task(String townName, TaskType taskType, String taskName, String creatorName, String description,
                    int takeAmount, int minLevel, int maxLevel, double moneyReward, double expReward,
                    int reputationReward, int priority) {
-        this.id = generateId();
+        this.id = DataManager.generateId(TaskManager.getTasks().keySet());
         this.townName = townName;
         this.taskType = taskType;
         this.taskName = taskName;
@@ -55,11 +56,6 @@ public abstract class Task {
         this.expReward = expReward;
         this.reputationReward = reputationReward;
         this.priority = priority;
-    }
-
-    private int generateId(){
-        maxId += 1;
-        return maxId;
     }
 
     // "Town: SunRise, Type: Food, Name: 'Hello world!', Creator: Rubix327
