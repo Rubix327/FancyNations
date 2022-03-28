@@ -1,9 +1,7 @@
 package me.rubix327.fancynations.commands;
 
-import me.rubix327.fancynations.data.task.GatheringTask;
-import me.rubix327.fancynations.data.task.Task;
-import me.rubix327.fancynations.data.task.TaskManager;
-import me.rubix327.fancynations.data.task.TaskType;
+import me.rubix327.fancynations.data.DataManager;
+import me.rubix327.fancynations.data.task.*;
 import me.rubix327.fancynations.data.town.TownManager;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.entity.Player;
@@ -75,7 +73,7 @@ public class TaskCommands extends SimpleSubCommand {
             // Create new Task instance
             if (taskType == TaskType.Food || taskType == TaskType.Resource || taskType == TaskType.Crafting){
                 GatheringTask task = new GatheringTask(townName, taskType, taskCreatorName, taskName);
-                TaskManager.add(task.getId(), task);
+                DataManager.getTaskManager().add(task.getId(), task);
             }
 //            else if (taskType == TaskType.Mobkill){
 //
@@ -90,7 +88,8 @@ public class TaskCommands extends SimpleSubCommand {
                 return;
             }
             int taskId = findNumber(1, "&cTask ID must be a number");
-            TaskManager.remove(taskId);
+
+            DataManager.getTaskManager().remove(taskId);
 
         }
 
@@ -110,11 +109,11 @@ public class TaskCommands extends SimpleSubCommand {
                 return;
             }
 
-            if (!TaskManager.exists(taskId)){
+            if (!DataManager.getTaskManager().exists(taskId)){
                 tell("&cTask with this ID does not exist.\n&cType /fn tasks to see all tasks.");
                 return;
             }
-            Task task = TaskManager.getById(taskId);
+            Task task = DataManager.getTaskManager().get(taskId);
 
             final List<String> shouldBeIntegers =
                     Arrays.asList("take_amount", "min_level", "max_level", "reputation_reward", "priority");
@@ -128,7 +127,7 @@ public class TaskCommands extends SimpleSubCommand {
                 findNumber(3, "&cValue must be a whole number (integer).");
             }
 
-            TaskManager.setValue(task, variable, value);
+            DataManager.getTaskManager().setValue(task, variable, value);
         }
 
         else if (args[0].equalsIgnoreCase("info")){
@@ -139,11 +138,11 @@ public class TaskCommands extends SimpleSubCommand {
             }
             int taskId = findNumber(1, "&cTask ID must be a number");
 
-            if (!TaskManager.exists(taskId)){
+            if (!DataManager.getTaskManager().exists(taskId)){
                 tell("&cTask with this ID does not exist.\n&cType /fn tasks to see all tasks.");
                 return;
             }
-            Task task = TaskManager.getById(taskId);
+            Task task = DataManager.getTaskManager().get(taskId);
 
             List<String> info = Arrays.asList(
                     "&7Info for task #" + taskId,
@@ -155,17 +154,15 @@ public class TaskCommands extends SimpleSubCommand {
                     "&7Max completions: " + task.getTakeAmount(),
                     "&7Money reward: " + task.getMoneyReward(),
                     "&7Experience reward: " + task.getExpReward(),
-                    "&7Reputation reward: " + task.getReputationReward(),
+                    "&7Reputation reward: " + task.getRepReward(),
                     "&7Priority: " + task.getPriority(),
                     "&7Levels: " + task.getMinLevel() + " - " + task.getMaxLevel(),
                     "&7Description: " + task.getDescription()
                     );
 
-            List<SimpleComponent> firstMessage = Common.convert(info, SimpleComponent::of);
-            tell(firstMessage);
-
+            List<SimpleComponent> infoMessage = Common.convert(info, SimpleComponent::of);
+            tell(infoMessage);
         }
-
     }
 
     @Override
@@ -177,10 +174,7 @@ public class TaskCommands extends SimpleSubCommand {
             return TownManager.getAvailableTownsFor(sender);
         }
         else if (args.length == 3 && args[0].equalsIgnoreCase("create")){
-            // TODO: Check
-            List<String> types = new ArrayList<>();
-            Arrays.stream(TaskType.values()).forEach(type -> types.add(type.toString()));
-            return types;
+            return Arrays.stream(TaskType.values()).map(Enum::toString).collect(Collectors.toList());
         }
         else if (args.length == 2 && args[0].equalsIgnoreCase("remove")){
             return Collections.singletonList("<id>");

@@ -1,52 +1,32 @@
 package me.rubix327.fancynations.data.task;
 
 import lombok.Getter;
+import me.rubix327.fancynations.FancyNations;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class TaskManager {
+public abstract class TaskManager {
 
-    public final static List<String> CLASS_VARIABLES = Arrays.asList("task_name", "description", "take_amount",
-            "min_level", "max_level", "reputation_reward", "priority", "money_reward", "exp_reward");
+    protected static final FancyNations plugin = FancyNations.getInstance();
+
+    private static final Field[] fields = Task.class.getFields();
+    public static final List<String> CLASS_VARIABLES = Arrays.asList(Arrays.copyOf(fields, fields.length, String[].class));
 
     @Getter
     private static final HashMap<Integer, Task> tasks = new HashMap<>();
 
-    public static boolean exists(int taskId){
-        return tasks.containsKey(taskId);
-    }
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public abstract boolean exists(int taskId);
 
-    public static void add(int id, Task task){
-        tasks.put(id, task);
-    }
+    public abstract void add(int id, Task task);
 
-    public static void remove(int id) {
-        if (!exists(id)){
-            throw new NullPointerException("This town does not exist in towns hashmap.");
-        }
-        tasks.remove(id);
-    }
+    public abstract void remove(int id);
 
-    public static Task getById(int id) throws NullPointerException {
-        if (!exists(id)) {
-            throw new NullPointerException("This task does not exist in tasks hashmap.");
-        }
-        return tasks.get(id);
-    }
+    public abstract Task get(int taskId);
 
-    public static void setValue(Task task, String variable, Object value){
-        switch (variable){
-            case ("task_name"): task.setTaskName(String.valueOf(value));
-            case ("description"): task.setDescription(String.valueOf(value));
-            case ("take_amount"): task.setTakeAmount((int) value);
-            case ("min_level"): task.setMinLevel((int) value);
-            case ("max_level"): task.setMaxLevel((int) value);
-            case ("reputation_reward"): task.setReputationReward((int) value);
-            case ("priority"): task.setReputationReward((int) value);
-            case ("money_reward"): task.setMoneyReward((double) value);
-            case ("exp_reward"): task.setExpReward((double) value);
-        }
-    }
+    public abstract void setValue(Task task, String variable, Object value);
+
 }

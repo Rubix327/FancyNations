@@ -1,20 +1,18 @@
 package me.rubix327.fancynations.data.town;
 
 import lombok.Getter;
-import me.rubix327.fancynations.data.worker.TownWorkerManager;
+import me.rubix327.fancynations.data.DataManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class TownManager {
 
     @Getter
     private static final HashMap<String, Town> towns = new HashMap<>();
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean exists(String townName){
         return towns.containsKey(townName);
     }
@@ -43,8 +41,8 @@ public class TownManager {
             towns.values().forEach(town -> names.add(town.getName()));
             return names;
         }
-        else if (TownWorkerManager.isMayor(((Player)sender).getName())){
-
+        else if (DataManager.getTownWorkerManager().isMayor(sender.getName())){
+            return Collections.singletonList(DataManager.getTownWorkerManager().getByName(sender.getName()).getTownName());
         }
         return Arrays.asList("SunRise", "Moscow", "Capatov");
     }

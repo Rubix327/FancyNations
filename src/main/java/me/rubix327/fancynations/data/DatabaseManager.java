@@ -10,19 +10,13 @@ public class DatabaseManager {
 
     Connection connection;
 
-    private final String host = "localhost";
-    private final int port = 3306;
-    private final String database = "fancynations";
-    private final String username = "root";
-    private final String password = "";
-
     public void connect() throws ClassNotFoundException, SQLException {
         MysqlDataSource dataSource = new MysqlConnectionPoolDataSource();
-        dataSource.setServerName(host);
-        dataSource.setPortNumber(port);
-        dataSource.setDatabaseName(database);
-        dataSource.setUser(username);
-        dataSource.setPassword(password);
+        dataSource.setServerName(Settings.Database.HOST);
+        dataSource.setPortNumber(Settings.Database.PORT);
+        dataSource.setDatabaseName(Settings.Database.DATABASE);
+        dataSource.setUser(Settings.Database.USERNAME);
+        dataSource.setPassword(Settings.Database.PASSWORD);
 
         connection = dataSource.getConnection();
     }

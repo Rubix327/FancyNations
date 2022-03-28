@@ -4,9 +4,16 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import me.rubix327.fancynations.data.DataManager;
+import me.rubix327.fancynations.data.Settings;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Getter @Setter(AccessLevel.PACKAGE)
 public abstract class Task {
+
+    @Getter
+    private final HashMap<String, Integer> objectives = new HashMap<>();
 
     private static int maxId = 0;
 
@@ -19,7 +26,7 @@ public abstract class Task {
     private int takeAmount;
     private int minLevel;
     private int maxLevel;
-    private int reputationReward;
+    private int repReward;
     private int priority;
     private double moneyReward;
     private double expReward;
@@ -30,41 +37,33 @@ public abstract class Task {
         this.taskType = taskType;
         this.creatorName = creatorName;
         this.taskName = taskName;
-        this.description = "";
-        this.takeAmount = 1;
-        this.minLevel = 0;
-        this.maxLevel = 100;
-        this.moneyReward = 0;
-        this.expReward = 0;
-        this.reputationReward = 0;
-        this.priority = 0;
+        this.description = Settings.Tasks.DEFAULT_DESCRIPTION;
+        this.takeAmount = Settings.Tasks.DEFAULT_TAKE_AMOUNT;
+        this.minLevel = Settings.Tasks.DEFAULT_MIN_LEVEL;
+        this.maxLevel = Settings.Tasks.DEFAULT_MAX_LEVEL;
+        this.moneyReward = Settings.Tasks.DEFAULT_MONEY_REWARD;
+        this.expReward = Settings.Tasks.DEFAULT_EXP_REWARD;
+        this.repReward = Settings.Tasks.DEFAULT_REP_REWARD;
+        this.priority = Settings.Tasks.DEFAULT_PRIORITY;
     }
 
-    protected Task(String townName, TaskType taskType, String taskName, String creatorName, String description,
-                   int takeAmount, int minLevel, int maxLevel, double moneyReward, double expReward,
-                   int reputationReward, int priority) {
-        this.id = DataManager.generateId(TaskManager.getTasks().keySet());
-        this.townName = townName;
-        this.taskType = taskType;
-        this.taskName = taskName;
-        this.creatorName = creatorName;
-        this.description = description;
-        this.takeAmount = takeAmount;
-        this.minLevel = minLevel;
-        this.maxLevel = maxLevel;
-        this.moneyReward = moneyReward;
-        this.expReward = expReward;
-        this.reputationReward = reputationReward;
-        this.priority = priority;
+
+    public void addObjective(String objective, int amount){
+        objectives.put(objective, amount);
     }
 
-    // "Town: SunRise, Type: Food, Name: 'Hello world!', Creator: Rubix327
-    public String deserialize(){
-        return "ID: " + this.id +
-                ", Town: " + this.townName +
-                ", Type: " + this.taskType.toString() +
-                ", Name: " + this.taskName +
-                ", Creator: " + this.creatorName;
+    public void removeObjective(String objId){
+        objectives.remove(objId);
+    }
+
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public abstract boolean isObjectiveCompleted(String reqItemId, int reqAmount, String playerName);
+
+    public boolean isAllObjectivesCompleted(String playerName){
+        for (Map.Entry<String, Integer> entry : objectives.entrySet()){
+            if (!isObjectiveCompleted(entry.getKey(), entry.getValue(), playerName)) return false;
+        }
+        return true;
     }
 
     @Override

@@ -1,5 +1,7 @@
 package me.rubix327.fancynations.commands;
 
+import lombok.SneakyThrows;
+import me.rubix327.fancynations.data.DataManager;
 import me.rubix327.fancynations.data.task.GatheringTask;
 import me.rubix327.fancynations.data.task.Task;
 import me.rubix327.fancynations.data.task.TaskManager;
@@ -22,35 +24,37 @@ public class TestCommands extends SimpleCommand {
     // test add <task_id> <item> <amount>
     // test remove <task_id> <item> <amount>
     // test list
+    @SneakyThrows
     @Override
     protected void onCommand() {
 
         if (args[0].equalsIgnoreCase("new")){
             GatheringTask gt = new GatheringTask("SunRise", TaskType.Food, "Rubix327", "123");
-            TaskManager.add(gt.getId(), gt);
+            DataManager.getTaskManager().add(gt.getId(), gt);
         }
         if (args[0].equalsIgnoreCase("add")){
             int taskId = findNumber(1, "&cNo");
 
-            if (!(TaskManager.getById(taskId).getTaskType() == TaskType.Food)) returnTell("&cNot required type");
+            if (!(DataManager.getTaskManager().get(taskId).getTaskType() == TaskType.Food)) returnTell("&cNot required type");
 
-            GatheringTask gt = (GatheringTask) TaskManager.getById(taskId);
-            gt.addItem(args[2], findNumber(3, "&cNot number"));
+            GatheringTask gt = (GatheringTask) DataManager.getTaskManager().get(taskId);
+            gt.addObjective(args[2], findNumber(3, "&cNot number"));
         }
         else if (args[0].equalsIgnoreCase("remove")){
             int taskId = findNumber(1, "&cNo");
             String itemId = args[1];
             int amount = findNumber(2, "&cNot a number");
 
-            if (!TaskManager.exists(taskId)) returnTell("&cDoes not exist");
-            if (!(TaskManager.getById(taskId).getTaskType() == TaskType.Food)) returnTell("&cNot required type");
-            ((GatheringTask) TaskManager.getById(taskId)).removeItem(itemId);
+            if (!DataManager.getTaskManager().exists(taskId)) returnTell("&cDoes not exist");
+            if (!(DataManager.getTaskManager().get(taskId).getTaskType() == TaskType.Food)) returnTell("&cNot required type");
+
+            DataManager.getTaskManager().get(taskId).removeObjective(itemId);
         }
         else if (args[0].equalsIgnoreCase("items")){
             int taskId = findNumber(1, "&cNo");
-            if (!(TaskManager.getById(taskId).getTaskType() == TaskType.Food)) returnTell("&cNot required type");
-            GatheringTask gt1 = (GatheringTask)TaskManager.getById(taskId);
-            for (Map.Entry<String, Integer> entry : gt1.getObjectiveItems().entrySet() ){
+            if (!(DataManager.getTaskManager().get(taskId).getTaskType() == TaskType.Food)) returnTell("&cNot required type");
+            Task gt1 = DataManager.getTaskManager().get(taskId);
+            for (Map.Entry<String, Integer> entry : gt1.getObjectives().entrySet() ){
                 tell(entry.getKey() + " - " + entry.getValue());
             }
         }

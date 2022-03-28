@@ -13,12 +13,14 @@ public class TownWorker {
     private final int id;
     private final String playerName;
     private final WorkerType workerType;
+    private final String townName;
     private double salary;
 
-    public TownWorker(String playerName, WorkerType type) {
+    public TownWorker(String playerName, WorkerType type, String townName) {
         this.id = DataManager.generateId(TownWorkerManager.getTownWorkers().keySet());
         this.playerName = playerName;
         this.workerType = type;
+        this.townName = townName;
         this.salary = 1;
     }
 }
