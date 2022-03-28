@@ -73,7 +73,7 @@ public class TaskCommands extends SimpleSubCommand {
             // Create new Task instance
             if (taskType == TaskType.Food || taskType == TaskType.Resource || taskType == TaskType.Crafting){
                 GatheringTask task = new GatheringTask(townName, taskType, taskCreatorName, taskName);
-                DataManager.getTaskManager().add(task.getId(), task);
+                DataManager.getTaskManager().add(task);
             }
 //            else if (taskType == TaskType.Mobkill){
 //
@@ -113,7 +113,6 @@ public class TaskCommands extends SimpleSubCommand {
                 tell("&cTask with this ID does not exist.\n&cType /fn tasks to see all tasks.");
                 return;
             }
-            Task task = DataManager.getTaskManager().get(taskId);
 
             final List<String> shouldBeIntegers =
                     Arrays.asList("take_amount", "min_level", "max_level", "reputation_reward", "priority");
@@ -127,7 +126,7 @@ public class TaskCommands extends SimpleSubCommand {
                 findNumber(3, "&cValue must be a whole number (integer).");
             }
 
-            DataManager.getTaskManager().setValue(task, variable, value);
+            DataManager.getTaskManager().update(taskId, variable, value);
         }
 
         else if (args[0].equalsIgnoreCase("info")){
@@ -180,7 +179,7 @@ public class TaskCommands extends SimpleSubCommand {
             return Collections.singletonList("<id>");
         }
         else if (args.length == 2 && args[0].equalsIgnoreCase("set")){
-            return TaskManager.CLASS_VARIABLES;
+            return DataManager.getTaskManager().CLASS_VARIABLES;
         }
         else if (args.length == 3 && args[0].equalsIgnoreCase("set")){
             return Collections.singletonList("<value>");

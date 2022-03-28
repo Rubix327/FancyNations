@@ -1,15 +1,21 @@
 package me.rubix327.fancynations.data.task;
 
-public class TaskProcess extends TaskManager{
+import me.rubix327.fancynations.data.DataManager;
+
+import java.util.HashMap;
+
+public class TaskProcess implements ITaskManager{
+
+    private static final HashMap<Integer, Task> tasks = new HashMap<>();
 
     @Override
-    public boolean exists(int taskId){
-        return TaskManager.getTasks().containsKey(taskId);
+    public boolean exists(int id){
+        return DataManager.getTaskManager().getTasks().containsKey(id);
     }
 
     @Override
-    public void add(int id, Task task){
-        TaskManager.getTasks().put(id, task);
+    public void add(Task task){
+        DataManager.getTaskManager().getTasks().put(task.getId(), task);
     }
 
     @Override
@@ -17,7 +23,7 @@ public class TaskProcess extends TaskManager{
         if (!exists(id)){
             throw new NullPointerException("This town does not exist in towns hashmap.");
         }
-        TaskManager.getTasks().remove(id);
+        DataManager.getTaskManager().getTasks().remove(id);
     }
 
     @Override
@@ -25,11 +31,12 @@ public class TaskProcess extends TaskManager{
         if (!exists(id)) {
             throw new NullPointerException("This task does not exist in tasks hashmap.");
         }
-        return TaskManager.getTasks().get(id);
+        return DataManager.getTaskManager().getTasks().get(id);
     }
 
     @Override
-    public void setValue(Task task, String variable, Object value){
+    public void update(int id, String variable, Object value){
+        Task task = get(id);
         switch (variable){
             case ("task_name"): task.setTaskName(String.valueOf(value));
             case ("description"): task.setDescription(String.valueOf(value));
@@ -43,4 +50,8 @@ public class TaskProcess extends TaskManager{
         }
     }
 
+    @Override
+    public HashMap<Integer, Task> getTasks() {
+        return tasks;
+    }
 }

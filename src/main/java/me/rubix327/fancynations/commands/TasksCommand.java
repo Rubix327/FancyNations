@@ -1,7 +1,7 @@
 package me.rubix327.fancynations.commands;
 
+import me.rubix327.fancynations.data.DataManager;
 import me.rubix327.fancynations.data.task.Task;
-import me.rubix327.fancynations.data.task.TaskManager;
 import org.mineacademy.fo.command.SimpleCommandGroup;
 import org.mineacademy.fo.command.SimpleSubCommand;
 
@@ -17,7 +17,7 @@ public class TasksCommand extends SimpleSubCommand {
 
         addTellPrefix(false);
 
-        Collection<Task> tasks = TaskManager.getTasks().values();
+        Collection<Task> tasks = DataManager.getTaskManager().getTasks().values();
         if (tasks.size() == 0) {
             tell("&cThere's no created tasks yet.");
             return;

@@ -1,8 +1,8 @@
 package me.rubix327.fancynations.data;
 
 import me.rubix327.fancynations.FancyNations;
+import me.rubix327.fancynations.data.task.ITaskManager;
 import me.rubix327.fancynations.data.task.TaskDao;
-import me.rubix327.fancynations.data.task.TaskManager;
 import me.rubix327.fancynations.data.task.TaskProcess;
 import me.rubix327.fancynations.data.worker.TownWorkerDao;
 import me.rubix327.fancynations.data.worker.TownWorkerManager;
@@ -35,7 +35,7 @@ public class DataManager {
         return false;
     }
 
-    public static TaskManager getTaskManager(){
+    public static ITaskManager getTaskManager(){
         return (isDatabaseChosen() ? new TaskDao() : new TaskProcess());
     }
 

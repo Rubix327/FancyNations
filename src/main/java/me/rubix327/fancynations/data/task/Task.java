@@ -32,7 +32,7 @@ public abstract class Task {
     private double expReward;
 
     protected Task(String townName, TaskType taskType, String creatorName, String taskName){
-        this.id = DataManager.generateId(TaskManager.getTasks().keySet());
+        this.id = DataManager.generateId(DataManager.getTaskManager().getTasks().keySet());
         this.townName = townName;
         this.taskType = taskType;
         this.creatorName = creatorName;

@@ -1,11 +1,14 @@
 package me.rubix327.fancynations.data.task;
 
+import me.rubix327.fancynations.data.DataManager;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Optional;
 
-public class TaskDao extends TaskManager{
+public class TaskDao implements ITaskManager{
 
     protected static GatheringTask loadGatheringTask(ResultSet resultSet) throws SQLException{
         // Mandatory variables
@@ -35,24 +38,25 @@ public class TaskDao extends TaskManager{
 
     @Override
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public boolean exists(int taskId) {
+    public boolean exists(int id) {
         return false;
     }
 
     @Override
-    public void add(int taskId, Task task) {
+    public void add(Task task) {
 
     }
 
     @Override
-    public void remove(int taskId) {
+    public void remove(int id) {
 
     }
 
     @Override
     public Task get(int id) throws NullPointerException{
         try{
-            PreparedStatement ps = TaskManager.plugin.database.getConnection().prepareStatement("SELECT TaskType FROM Task WHERE ID = ?");
+            PreparedStatement ps = DataManager.getTaskManager().plugin.database.getConnection().
+                    prepareStatement("SELECT TaskType FROM Task WHERE ID = ?");
             ps.setInt(1, id);
             ResultSet resultSet = ps.executeQuery();
             if (resultSet.next()){
@@ -73,8 +77,13 @@ public class TaskDao extends TaskManager{
     }
 
     @Override
-    public void setValue(Task task, String variable, Object value) {
+    public void update(int id, String variable, Object newValue) {
 
+    }
+
+    @Override
+    public HashMap<Integer, Task> getTasks() {
+        return null;
     }
 
 }

@@ -4,7 +4,6 @@ import lombok.SneakyThrows;
 import me.rubix327.fancynations.data.DataManager;
 import me.rubix327.fancynations.data.task.GatheringTask;
 import me.rubix327.fancynations.data.task.Task;
-import me.rubix327.fancynations.data.task.TaskManager;
 import me.rubix327.fancynations.data.task.TaskType;
 import org.bukkit.inventory.ItemStack;
 import org.mineacademy.fo.command.SimpleCommand;
@@ -30,7 +29,7 @@ public class TestCommands extends SimpleCommand {
 
         if (args[0].equalsIgnoreCase("new")){
             GatheringTask gt = new GatheringTask("SunRise", TaskType.Food, "Rubix327", "123");
-            DataManager.getTaskManager().add(gt.getId(), gt);
+            DataManager.getTaskManager().add(gt);
         }
         if (args[0].equalsIgnoreCase("add")){
             int taskId = findNumber(1, "&cNo");
@@ -59,7 +58,7 @@ public class TestCommands extends SimpleCommand {
             }
         }
         else if (args[0].equalsIgnoreCase("list")){
-            for (Task task : TaskManager.getTasks().values()){
+            for (Task task : DataManager.getTaskManager().getTasks().values()){
                 tell(task.toString());
             }
         }
