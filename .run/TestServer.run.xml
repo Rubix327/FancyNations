@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="TestServer" type="JarApplication">
+    <option name="JAR_PATH" value="$PROJECT_DIR$/your_server_path/cache/your_server_patched.jar" />
+    <option name="PROGRAM_PARAMETERS" value="-nogui" />
+    <option name="WORKING_DIRECTORY" value="your_server_path" />
+    <option name="ALTERNATIVE_JRE_PATH" />
+    <method v="2">
+      <option name="AntTarget" enabled="true" antfile="file://$PROJECT_DIR$/bulid.xml" target="Build" />
+    </method>
+  </configuration>
+</component>
