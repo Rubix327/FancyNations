@@ -1,18 +1,18 @@
 <?xml version="1.0" ?>
-<project name="MyFirstPlugin" default="Build">
+<project name="FancyNations" default="Build">
 
     <!-- Путь к тестовому серверу для Windows -->
-    <condition property="serverPath" value="C:\NewWorldServer">
+    <condition property="serverPath" value="your_path">
         <os family="windows" />
     </condition>
 
     <!-- Путь к тестовому серверу для Linux -->
-    <condition property="serverPath" value="\Users\Rubix327\Desktop\Server">
+    <condition property="serverPath" value="your_path">
         <os family="unix" />
     </condition>
 
     <!-- Путь к тестовому серверу для macOS -->
-    <condition property="serverPath" value="\Users\Rubix327\Desktop\Server">
+    <condition property="serverPath" value="your_path">
         <os family="mac" />
     </condition>
 
@@ -23,7 +23,6 @@
         <jar jarfile="${serverPath}\plugins\${ant.project.name}.jar" basedir="./target/classes/" includes="**/*">
 
             <zipgroupfileset dir="${user.home}/.m2/repository/com/github/kangarko/Foundation/${foundation.version}/" includes="**/*${foundation.version}.jar" />
-            <!-- <fileset dir="../Foundation/target/classes" /> -->
 
         </jar>
     </target>

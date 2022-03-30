@@ -6,7 +6,7 @@
 
     <groupId>me.rubix327</groupId>
     <artifactId>fancynations</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.2</version>
 
     <name>FancyNations</name>
 
@@ -109,6 +109,12 @@
             <artifactId>Foundation</artifactId>
             <version>${foundation.version}</version>
             <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.28</version>
         </dependency>
 
     </dependencies>

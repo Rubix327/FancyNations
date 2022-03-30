@@ -1,9 +1,8 @@
 package me.rubix327.fancynations.commands;
 
 import me.rubix327.fancynations.data.DataManager;
-import me.rubix327.fancynations.data.GatheringTask;
-import me.rubix327.fancynations.data.Task;
-import me.rubix327.fancynations.data.TaskType;
+import me.rubix327.fancynations.data.task.*;
+import me.rubix327.fancynations.data.town.TownManager;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.entity.Player;
 import org.mineacademy.fo.Common;
@@ -32,12 +31,16 @@ public class TaskCommands extends SimpleSubCommand {
         addTellPrefix(false);
 
         if (args.length == 0){
-            returnTell("Help_page");
+            tell("Help_page");
+            return;
         }
 
         // /fn task create <town_name> <taskType> <taskName>
         if (args[0].equalsIgnoreCase("create")){
-            if (args.length < 4) returnTell("&cSyntax: /fn task create <town_name> <type> <name>");
+            if (args.length < 4) {
+                tell("&cSyntax: /fn task create <town_name> <type> <name>");
+                return;
+            }
 
             String townName = args[1];
             TaskType taskType;
@@ -45,8 +48,9 @@ public class TaskCommands extends SimpleSubCommand {
             String taskCreatorName;
 
             // townName definition;
-            if (DataManager.getTowns().containsKey(townName)){
-                returnTell("&cThis town already exists.");
+            if (!TownManager.exists(townName)){
+                tell("&cThis town already exists.");
+                return;
             }
 
             // taskType definition
@@ -69,31 +73,46 @@ public class TaskCommands extends SimpleSubCommand {
             // Create new Task instance
             if (taskType == TaskType.Food || taskType == TaskType.Resource || taskType == TaskType.Crafting){
                 GatheringTask task = new GatheringTask(townName, taskType, taskCreatorName, taskName);
-                DataManager.addTask(task.getId(), task);
+                DataManager.getTaskManager().add(task);
             }
-            else if (taskType == TaskType.Mobkill){
-
-            }
+//            else if (taskType == TaskType.Mobkill){
+//
+//            }
 
         }
         // fn task remove <task_id>
         else if (args[0].equalsIgnoreCase("remove")){
 
-            if (args.length < 2) returnTell("&cSyntax: /fn task remove <task_id>");
+            if (args.length < 2) {
+                tell("&cSyntax: /fn task remove <task_id>");
+                return;
+            }
             int taskId = findNumber(1, "&cTask ID must be a number");
-            DataManager.removeTask(taskId);
+
+            DataManager.getTaskManager().remove(taskId);
 
         }
-
-
 
         // fn task set <task_id> <variable> <value>
         else if (args[0].equalsIgnoreCase("set")){
 
-            if (args.length < 4) returnTell("&cSyntax: /fn task set <task_id> <variable> <value>");
+            if (args.length < 4) {
+                tell("&cSyntax: /fn task set <task_id> <variable> <value>");
+                return;
+            }
             int taskId = findNumber(1, "&cTask ID must be a number");
             String variable = args[2];
             String value = args[3];
+
+            if (!getPlayer().hasPermission("fancynations.task.setvalue." + variable)){
+                tell("&cYou don't have enough permissions.");
+                return;
+            }
+
+            if (!DataManager.getTaskManager().exists(taskId)){
+                tell("&cTask with this ID does not exist.\n&cType /fn tasks to see all tasks.");
+                return;
+            }
 
             final List<String> shouldBeIntegers =
                     Arrays.asList("take_amount", "min_level", "max_level", "reputation_reward", "priority");
@@ -107,15 +126,22 @@ public class TaskCommands extends SimpleSubCommand {
                 findNumber(3, "&cValue must be a whole number (integer).");
             }
 
-//            DataManager.setValue(taskId, variable, value);
+            DataManager.getTaskManager().update(taskId, variable, value);
         }
 
         else if (args[0].equalsIgnoreCase("info")){
 
-            if (args.length < 2) returnTell("&cSyntax: /fn task info <task_id>");
+            if (args.length < 2) {
+                tell("&cSyntax: /fn task info <task_id>");
+                return;
+            }
             int taskId = findNumber(1, "&cTask ID must be a number");
 
-            Task task = DataManager.getTaskById(taskId);
+            if (!DataManager.getTaskManager().exists(taskId)){
+                tell("&cTask with this ID does not exist.\n&cType /fn tasks to see all tasks.");
+                return;
+            }
+            Task task = DataManager.getTaskManager().get(taskId);
 
             List<String> info = Arrays.asList(
                     "&7Info for task #" + taskId,
@@ -127,35 +153,33 @@ public class TaskCommands extends SimpleSubCommand {
                     "&7Max completions: " + task.getTakeAmount(),
                     "&7Money reward: " + task.getMoneyReward(),
                     "&7Experience reward: " + task.getExpReward(),
-                    "&7Reputation reward: " + task.getReputationReward(),
+                    "&7Reputation reward: " + task.getRepReward(),
                     "&7Priority: " + task.getPriority(),
                     "&7Levels: " + task.getMinLevel() + " - " + task.getMaxLevel(),
                     "&7Description: " + task.getDescription()
                     );
 
-            List<SimpleComponent> firstMessage = Common.convert(info, SimpleComponent::of);
-            tell(firstMessage);
-
+            List<SimpleComponent> infoMessage = Common.convert(info, SimpleComponent::of);
+            tell(infoMessage);
         }
-
     }
 
     @Override
     protected List<String> tabComplete() {
         if (args.length == 1){
-            return Arrays.asList("create", "remove", "set");
+            return Arrays.asList("create", "remove", "set", "info");
         }
         else if (args.length == 2 && args[0].equalsIgnoreCase("create")){
-            return DataManager.getAvailableTownsFor(sender);
+            return TownManager.getAvailableTownsFor(sender);
         }
         else if (args.length == 3 && args[0].equalsIgnoreCase("create")){
-            return Arrays.asList(Arrays.toString(TaskType.values()));
+            return Arrays.stream(TaskType.values()).map(Enum::toString).collect(Collectors.toList());
         }
         else if (args.length == 2 && args[0].equalsIgnoreCase("remove")){
             return Collections.singletonList("<id>");
         }
         else if (args.length == 2 && args[0].equalsIgnoreCase("set")){
-            return DataManager.taskVariablesList;
+            return DataManager.getTaskManager().CLASS_VARIABLES;
         }
         else if (args.length == 3 && args[0].equalsIgnoreCase("set")){
             return Collections.singletonList("<value>");

@@ -1,22 +1,18 @@
 package me.rubix327.fancynations.commands;
 
-import org.apache.commons.lang.StringUtils;
-import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
+import lombok.SneakyThrows;
+import me.rubix327.fancynations.data.DataManager;
+import me.rubix327.fancynations.data.task.GatheringTask;
+import me.rubix327.fancynations.data.task.Task;
+import me.rubix327.fancynations.data.task.TaskType;
 import org.bukkit.inventory.ItemStack;
-import org.mineacademy.fo.Common;
-import org.mineacademy.fo.ItemUtil;
-import org.mineacademy.fo.PlayerUtil;
 import org.mineacademy.fo.command.SimpleCommand;
 import org.mineacademy.fo.remain.nbt.NBTContainer;
 import org.mineacademy.fo.remain.nbt.NBTItem;
 
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class TestCommands extends SimpleCommand {
     public TestCommands() {
@@ -24,29 +20,46 @@ public class TestCommands extends SimpleCommand {
     }
 
     public static ItemStack item;
-    // /fn task create <town_id> <type> <name>
+    // test add <task_id> <item> <amount>
+    // test remove <task_id> <item> <amount>
+    // test list
+    @SneakyThrows
     @Override
     protected void onCommand() {
 
-        // Получаем из базы
-        HashMap<String, Integer> items = new HashMap<>();
-        items.put("STEEL_SWORD", 1);
-
-        if (args[0].equalsIgnoreCase("1")){
-            item = getPlayer().getInventory().getItemInMainHand();
+        if (args[0].equalsIgnoreCase("new")){
+            GatheringTask gt = new GatheringTask("SunRise", TaskType.Food, "Rubix327", "123");
+            DataManager.getTaskManager().add(gt);
         }
+        if (args[0].equalsIgnoreCase("add")){
+            int taskId = findNumber(1, "&cNo");
 
-        if (args[0].equalsIgnoreCase("2")){
+            if (!(DataManager.getTaskManager().get(taskId).getTaskType() == TaskType.Food)) returnTell("&cNot required type");
 
-            for(String str : items.keySet()){
-                for(int i = 0 ; i < getPlayer().getInventory().getSize() ; i++) {
-                    ItemStack item = getPlayer().getInventory().getItem(i);
-                    tell(extractItemId(item));
-                    if (extractItemId(item).equalsIgnoreCase(str)){
-                        tell("yes");
-                        return;
-                    }
-                }
+            GatheringTask gt = (GatheringTask) DataManager.getTaskManager().get(taskId);
+            gt.addObjective(args[2], findNumber(3, "&cNot number"));
+        }
+        else if (args[0].equalsIgnoreCase("remove")){
+            int taskId = findNumber(1, "&cNo");
+            String itemId = args[1];
+            int amount = findNumber(2, "&cNot a number");
+
+            if (!DataManager.getTaskManager().exists(taskId)) returnTell("&cDoes not exist");
+            if (!(DataManager.getTaskManager().get(taskId).getTaskType() == TaskType.Food)) returnTell("&cNot required type");
+
+            DataManager.getTaskManager().get(taskId).removeObjective(itemId);
+        }
+        else if (args[0].equalsIgnoreCase("items")){
+            int taskId = findNumber(1, "&cNo");
+            if (!(DataManager.getTaskManager().get(taskId).getTaskType() == TaskType.Food)) returnTell("&cNot required type");
+            Task gt1 = DataManager.getTaskManager().get(taskId);
+            for (Map.Entry<String, Integer> entry : gt1.getObjectives().entrySet() ){
+                tell(entry.getKey() + " - " + entry.getValue());
+            }
+        }
+        else if (args[0].equalsIgnoreCase("list")){
+            for (Task task : DataManager.getTaskManager().getTasks().values()){
+                tell(task.toString());
             }
         }
 
