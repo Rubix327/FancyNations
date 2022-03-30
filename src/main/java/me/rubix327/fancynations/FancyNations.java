@@ -1,13 +1,12 @@
 package me.rubix327.fancynations;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.rubix327.fancynations.commands.FNCommandGroup;
 import me.rubix327.fancynations.commands.TestCommands;
 import me.rubix327.fancynations.data.DatabaseManager;
 import me.rubix327.fancynations.data.Settings;
-import org.mineacademy.fo.Common;
+import org.bukkit.Bukkit;
 import org.mineacademy.fo.plugin.SimplePlugin;
 import org.mineacademy.fo.settings.YamlStaticConfig;
 
@@ -15,7 +14,7 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
 public final class FancyNations extends SimplePlugin {
 
     @Getter
@@ -27,16 +26,22 @@ public final class FancyNations extends SimplePlugin {
     protected void onPluginStart() {
         instance = this;
 
-        this.database = new DatabaseManager();
-        try {
-            database.connect();
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-            Common.warning("[FancyNations] Database is not connected: Maybe login info is incorrect?");
-        }
+        if (Settings.General.DATA_MANAGEMENT_TYPE.equalsIgnoreCase("database")){
+            this.database = new DatabaseManager();
+            try {
+                database.connect();
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+                Bukkit.getLogger().warning("[FancyNations] Database is not connected: Maybe login info is incorrect?");
+                Bukkit.getLogger().warning("[FancyNations] Using file system instead of database.");
+            }
 
-        if (database.isConnected()){
-            Common.log("[FancyNations] Database is connected.");
+            if (database.isConnected()){
+                Bukkit.getLogger().info("[FancyNations] Database is connected");
+            }
+        }
+        else{
+            Bukkit.getLogger().warning("[FancyNations] Using file system instead of database.");
         }
 
         registerCommand(new TestCommands());
@@ -45,7 +50,9 @@ public final class FancyNations extends SimplePlugin {
 
     @Override
     protected void onPluginStop() {
-        database.disconnect();
+        if (database.isConnected()){
+            database.disconnect();
+        }
     }
 
     @Override

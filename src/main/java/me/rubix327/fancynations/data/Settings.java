@@ -4,14 +4,9 @@ import org.mineacademy.fo.settings.SimpleSettings;
 
 public class Settings extends SimpleSettings {
 
-    @Override
-    protected String[] getHeader() {
-        return null;
-    }
-
     public static class Database{
         public static String HOST;
-        public static int PORT;
+        public static Integer PORT;
         public static String DATABASE;
         public static String USERNAME;
         public static String PASSWORD;
@@ -23,16 +18,16 @@ public class Settings extends SimpleSettings {
 
     public static class Tasks{
         public static String DEFAULT_DESCRIPTION;
-        public static int DEFAULT_TAKE_AMOUNT;
-        public static int DEFAULT_MIN_LEVEL;
-        public static int DEFAULT_MAX_LEVEL;
-        public static double DEFAULT_MONEY_REWARD;
-        public static double DEFAULT_EXP_REWARD;
-        public static int DEFAULT_REP_REWARD;
-        public static int DEFAULT_PRIORITY;
+        public static Integer DEFAULT_TAKE_AMOUNT;
+        public static Integer DEFAULT_MIN_LEVEL;
+        public static Integer DEFAULT_MAX_LEVEL;
+        public static Double DEFAULT_MONEY_REWARD;
+        public static Double DEFAULT_EXP_REWARD;
+        public static Integer DEFAULT_REP_REWARD;
+        public static Integer DEFAULT_PRIORITY;
     }
 
-    public static void init(){
+    private static void init(){
         pathPrefix("Database");
         Database.HOST = getString("Host");
         Database.PORT = getInteger("Port");
@@ -54,13 +49,18 @@ public class Settings extends SimpleSettings {
         Tasks.DEFAULT_PRIORITY = getInteger("Default_Priority");
     }
 
+    public static String getPluginVersion() {
+        return "1.0.1";
+    }
+
     @Override
     protected int getConfigVersion() {
         return 1;
     }
 
-    public static String getPluginVersion() {
-        return "1.0.1";
+    @Override
+    protected String[] getHeader() {
+        return null;
     }
 
 }

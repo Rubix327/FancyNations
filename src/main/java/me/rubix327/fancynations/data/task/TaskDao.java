@@ -11,6 +11,7 @@ import java.util.Optional;
 public class TaskDao implements ITaskManager{
 
     protected static GatheringTask loadGatheringTask(ResultSet resultSet) throws SQLException{
+
         // Mandatory variables
         String townName = resultSet.getString("TownName");
         TaskType taskType = TaskType.valueOf(resultSet.getString("TaskType"));
@@ -66,7 +67,7 @@ public class TaskDao implements ITaskManager{
                         taskType.equalsIgnoreCase(TaskType.Crafting.toString())){
                     return loadGatheringTask(resultSet);
                 }
-                else{
+                else if (taskType.equalsIgnoreCase(TaskType.Mobkill.toString())){
                     return loadMobKillTask(resultSet);
                 }
             }
@@ -85,5 +86,4 @@ public class TaskDao implements ITaskManager{
     public HashMap<Integer, Task> getTasks() {
         return null;
     }
-
 }

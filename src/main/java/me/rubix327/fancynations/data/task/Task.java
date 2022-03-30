@@ -12,11 +12,10 @@ import java.util.Map;
 @Getter @Setter(AccessLevel.PACKAGE)
 public abstract class Task {
 
-    @Getter
-    private final HashMap<String, Integer> objectives = new HashMap<>();
-
     private static int maxId = 0;
 
+    @Getter
+    private final HashMap<String, Integer> objectives = new HashMap<>();
     private final int id;
     private final String townName;
     private final TaskType taskType;
@@ -46,7 +45,6 @@ public abstract class Task {
         this.repReward = Settings.Tasks.DEFAULT_REP_REWARD;
         this.priority = Settings.Tasks.DEFAULT_PRIORITY;
     }
-
 
     public void addObjective(String objective, int amount){
         objectives.put(objective, amount);
