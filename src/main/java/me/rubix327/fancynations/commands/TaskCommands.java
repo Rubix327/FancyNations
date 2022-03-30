@@ -21,10 +21,13 @@ public class TaskCommands extends SimpleSubCommand {
         super(parent, sublabel);
     }
 
-    //     label   a0       a1       a2        a3
-    // /fn task create <town_name> <taskType> <taskName>
-    // /fn task remove <task_id>
-    // /fn tasks
+    /*
+       label  a0       a1          a2         a3
+    fn task create <town_name> <taskType> <taskName>
+    fn task set    <task_id>   <variable> <value>
+    fn task remove <task_id>
+    fn tasks
+     */
     @Override
     protected void onCommand() {
 
@@ -109,14 +112,17 @@ public class TaskCommands extends SimpleSubCommand {
                 return;
             }
 
-            if (!DataManager.getTaskManager().exists(taskId)){
-                tell("&cTask with this ID does not exist.\n&cType /fn tasks to see all tasks.");
-                return;
-            }
+//            if (!DataManager.getTaskManager().exists(taskId)){
+//                tell("&cTask with this ID does not exist.\n&cType /fn tasks to see all tasks.");
+//                return;
+//            }
 
-            final List<String> shouldBeIntegers =
-                    Arrays.asList("take_amount", "min_level", "max_level", "reputation_reward", "priority");
-            final List<String> shouldBeDoubles = Arrays.asList("money_reward", "exp_reward");
+//            final List<String> shouldBeIntegers =
+//                    Arrays.asList("takeAmount", "minLevel", "maxLevel", "repReward", "priority");
+//            final List<String> shouldBeDoubles = Arrays.asList("moneyReward", "expReward");
+
+            final List<String> shouldBeIntegers = DataManager.getClassFieldsByType(Task.class, int.class);
+            final List<String> shouldBeDoubles = DataManager.getClassFieldsByType(Task.class, double.class);
 
             // Validations
             if (shouldBeDoubles.contains(variable.toLowerCase())){
@@ -178,10 +184,10 @@ public class TaskCommands extends SimpleSubCommand {
         else if (args.length == 2 && args[0].equalsIgnoreCase("remove")){
             return Collections.singletonList("<id>");
         }
-        else if (args.length == 2 && args[0].equalsIgnoreCase("set")){
-            return DataManager.getTaskManager().CLASS_VARIABLES;
-        }
         else if (args.length == 3 && args[0].equalsIgnoreCase("set")){
+            return DataManager.getClassFields(Task.class);
+        }
+        else if (args.length == 4 && args[0].equalsIgnoreCase("set")){
             return Collections.singletonList("<value>");
         }
         return new ArrayList<>();
