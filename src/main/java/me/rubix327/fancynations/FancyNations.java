@@ -10,7 +10,6 @@ import org.bukkit.Bukkit;
 import org.mineacademy.fo.plugin.SimplePlugin;
 import org.mineacademy.fo.settings.YamlStaticConfig;
 
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
@@ -26,24 +25,16 @@ public final class FancyNations extends SimplePlugin {
     protected void onPluginStart() {
         instance = this;
 
-        if (Settings.General.DATA_MANAGEMENT_TYPE.equalsIgnoreCase("database")){
+        if (Settings.General.DATA_MANAGEMENT_TYPE.equalsIgnoreCase("database")) {
             this.database = new DatabaseManager();
-            try {
-                database.connect();
-            } catch (ClassNotFoundException | SQLException e) {
-                e.printStackTrace();
-                Bukkit.getLogger().warning("[FancyNations] Database is not connected: Maybe login info is incorrect?");
-                Bukkit.getLogger().warning("[FancyNations] Using file system instead of database.");
-            }
-
-            if (database.isConnected()){
+            database.connect();
+            if (database.isConnected()) {
                 Bukkit.getLogger().info("[FancyNations] Database is connected");
             }
         }
-        else{
+        else {
             Bukkit.getLogger().warning("[FancyNations] Using file system instead of database.");
         }
-
         registerCommand(new TestCommands());
         registerCommands("fancynations|fn", new FNCommandGroup());
     }
