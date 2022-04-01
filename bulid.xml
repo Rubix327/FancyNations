@@ -1,6 +1,13 @@
 <?xml version="1.0" ?>
 <project name="FancyNations" default="Build">
 
+    <property name="foundation.version" value="5.12.7"/>
+    <property name="plugin.version" value="1.0.2"/>
+
+    <target name="init">
+        <buildnumber/>
+    </target>
+
     <!-- Путь к тестовому серверу для Windows -->
     <condition property="serverPath" value="your_path">
         <os family="windows" />
@@ -16,11 +23,13 @@
         <os family="mac" />
     </condition>
 
-    <property name="foundation.version" value="5.12.7"/>
-
     <!-- Компилируем плагин -->
     <target name="Build">
-        <jar jarfile="${serverPath}\plugins\${ant.project.name}.jar" basedir="./target/classes/" includes="**/*">
+        <delete>
+            <fileset dir="${serverPath}\plugins\" includes="${ant.project.name}*"/>
+        </delete>
+        <buildnumber/>
+        <jar jarfile="${serverPath}\plugins\${ant.project.name}-${plugin.version}-b${build.number}.jar" basedir="./target/classes/" includes="**/*">
 
             <zipgroupfileset dir="${user.home}/.m2/repository/com/github/kangarko/Foundation/${foundation.version}/" includes="**/*${foundation.version}.jar" />
 
