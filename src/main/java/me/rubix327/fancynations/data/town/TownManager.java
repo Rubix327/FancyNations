@@ -44,7 +44,7 @@ public class TownManager {
         else if (DataManager.getTownWorkerManager().isMayor(sender.getName())){
             return Collections.singletonList(DataManager.getTownWorkerManager().getByName(sender.getName()).getTownName());
         }
-        return Arrays.asList("SunRise", "Moscow", "Capatov");
+        return new ArrayList<>();
     }
 
 }

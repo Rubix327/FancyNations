@@ -17,12 +17,11 @@ public class TasksCommand extends SimpleSubCommand {
 
         addTellPrefix(false);
 
-        Collection<Task> tasks = DataManager.getTaskManager().getTasks().values();
-        if (tasks.size() == 0) {
-            tell("&cThere's no created tasks yet.");
+        if (DataManager.getTaskManager().getTasks().isEmpty()){
+            tell("There's no created tasks yet.");
             return;
         }
-
+        Collection<Task> tasks = DataManager.getTaskManager().getTasks().values();
         tell("&7ID | Type, Town, Creator, Name");
         for (Task task : tasks){
             tell(task.toString());

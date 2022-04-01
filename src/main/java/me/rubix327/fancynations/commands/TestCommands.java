@@ -7,6 +7,8 @@ import me.rubix327.fancynations.data.task.Task;
 import me.rubix327.fancynations.data.task.TaskType;
 import org.bukkit.inventory.ItemStack;
 import org.mineacademy.fo.command.SimpleCommand;
+import org.mineacademy.fo.menu.model.ItemCreator;
+import org.mineacademy.fo.remain.CompMaterial;
 import org.mineacademy.fo.remain.nbt.NBTContainer;
 import org.mineacademy.fo.remain.nbt.NBTItem;
 
@@ -61,6 +63,14 @@ public class TestCommands extends SimpleCommand {
             for (Task task : DataManager.getTaskManager().getTasks().values()){
                 tell(task.toString());
             }
+        }
+        else if (args[0].equalsIgnoreCase("item")){
+            getPlayer().getInventory().addItem(ItemCreator.of(CompMaterial.PAPER, "&fЗадание №1 &7(крафтинг)",
+                    "&8Городское (Rubix327)", "", "&8Требования:", "&a✔ Большое зелье здоровья x2",
+                    "&a✔ Большое зелье маны х3", "&c✖ Магическая эссенция х2", "",
+                    "&8Условия:", "&a✔ Уровень: 1-15", "&a✔ Время на выполнение: 12ч", "",
+                    "&8Награды:", "&a- Монеты х300", "&a- Опыт х150", "&a- Репутация х5", "",
+                    "&eНажмите, чтобы взять задание").build().make());
         }
 
     }

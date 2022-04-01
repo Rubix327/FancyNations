@@ -54,4 +54,16 @@ public class TaskProcess implements ITaskManager{
     public HashMap<Integer, Task> getTasks() {
         return tasks;
     }
+
+    @Override
+    public int getMaxId() {
+        if (tasks.size() == 0) return 0;
+        Integer maxKey = null;
+        for (Integer id : tasks.keySet()) {
+            if (maxKey == null || id > maxKey) {
+                maxKey = id;
+            }
+        }
+        return maxKey;
+    }
 }

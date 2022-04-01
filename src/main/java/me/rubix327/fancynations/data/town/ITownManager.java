@@ -16,5 +16,6 @@ public interface ITownManager {
     Task get(String townName);
     void update(String townName, String variable, Object newValue);
     HashMap<String, Town> getTowns();
+    int getMaxId();
 
 }
