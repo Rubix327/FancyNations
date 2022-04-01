@@ -14,6 +14,7 @@ public class Settings extends SimpleSettings {
 
     public static class General{
         public static String DATA_MANAGEMENT_TYPE;
+        public static String SERVER_VAR;
     }
 
     public static class Tasks{
@@ -25,6 +26,7 @@ public class Settings extends SimpleSettings {
         public static Double DEFAULT_EXP_REWARD;
         public static Integer DEFAULT_REP_REWARD;
         public static Integer DEFAULT_PRIORITY;
+        public static Integer DEFAULT_TIME_TO_COMPLETE;
     }
 
     private static void init(){
@@ -37,6 +39,7 @@ public class Settings extends SimpleSettings {
 
         pathPrefix("General");
         General.DATA_MANAGEMENT_TYPE = getString("Data_Management_Type");
+        General.SERVER_VAR = "%server%";
 
         pathPrefix("Tasks");
         Tasks.DEFAULT_DESCRIPTION = getString("Default_Description");
@@ -47,10 +50,11 @@ public class Settings extends SimpleSettings {
         Tasks.DEFAULT_EXP_REWARD = getDouble("Default_Exp_Reward");
         Tasks.DEFAULT_REP_REWARD = getInteger("Default_Rep_Reward");
         Tasks.DEFAULT_PRIORITY = getInteger("Default_Priority");
+        Tasks.DEFAULT_TIME_TO_COMPLETE = getInteger("Default_Time_To_Complete");
     }
 
     public static String getPluginVersion() {
-        return "1.0.1";
+        return "1.0.2";
     }
 
     @Override

@@ -13,26 +13,9 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Stream;
 
 public class DataManager {
-
-    public static int generateId(Set<Integer> set){
-        if (set.isEmpty()) return 1;
-        return getMaxKey(set) + 1;
-    }
-
-    public static Integer getMaxKey(Set<Integer> set) {
-        Integer maxKey = null;
-
-        for (Integer id : set) {
-            if (maxKey == null || id > maxKey) {
-                maxKey = id;
-            }
-        }
-        return maxKey;
-    }
 
     public static boolean isDatabaseChosen(){
         if (Settings.General.DATA_MANAGEMENT_TYPE.equalsIgnoreCase("database")){

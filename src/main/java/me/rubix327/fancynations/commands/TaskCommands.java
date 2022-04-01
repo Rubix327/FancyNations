@@ -1,8 +1,12 @@
 package me.rubix327.fancynations.commands;
 
 import me.rubix327.fancynations.data.DataManager;
-import me.rubix327.fancynations.data.task.*;
+import me.rubix327.fancynations.data.Settings;
+import me.rubix327.fancynations.data.task.GatheringTask;
+import me.rubix327.fancynations.data.task.Task;
+import me.rubix327.fancynations.data.task.TaskType;
 import me.rubix327.fancynations.data.town.TownManager;
+import net.Indyuce.mmocore.api.player.PlayerData;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.entity.Player;
 import org.mineacademy.fo.Common;
@@ -26,11 +30,16 @@ public class TaskCommands extends SimpleSubCommand {
     fn task create <town_name> <taskType> <taskName>
     fn task set    <task_id>   <variable> <value>
     fn task remove <task_id>
+    fn task info <task_id>
+    fn task start <task_id>
+    fn task finish <task_id>
+    fn task cancel <task_id>
     fn tasks
      */
     @Override
     protected void onCommand() {
 
+        setPermission("fancynations.task");
         addTellPrefix(false);
 
         if (args.length == 0){
@@ -48,11 +57,11 @@ public class TaskCommands extends SimpleSubCommand {
             String townName = args[1];
             TaskType taskType;
             String taskName = String.join(" ", Arrays.asList(args).subList(3, args.length));
-            String taskCreatorName;
+            String taskCreatorName = (sender instanceof Player ? getPlayer().getName() : Settings.General.SERVER_VAR);
 
             // townName definition;
             if (!TownManager.exists(townName)){
-                tell("&cThis town already exists.");
+                tell("&cThis town does not exist.");
                 return;
             }
 
@@ -65,14 +74,6 @@ public class TaskCommands extends SimpleSubCommand {
                 return;
             }
 
-            // taskCreatorName definition
-            if (sender instanceof Player){
-                taskCreatorName = getPlayer().getName();
-            }
-            else{
-                taskCreatorName = "Server";
-            }
-
             // Create new Task instance
             if (taskType == TaskType.Food || taskType == TaskType.Resource || taskType == TaskType.Crafting){
                 GatheringTask task = new GatheringTask(townName, taskType, taskCreatorName, taskName);
@@ -83,6 +84,7 @@ public class TaskCommands extends SimpleSubCommand {
 //            }
 
         }
+
         // fn task remove <task_id>
         else if (args[0].equalsIgnoreCase("remove")){
 
@@ -106,23 +108,20 @@ public class TaskCommands extends SimpleSubCommand {
             int taskId = findNumber(1, "&cTask ID must be a number");
             String variable = args[2];
             String value = args[3];
-
-            if (!getPlayer().hasPermission("fancynations.task.setvalue." + variable)){
-                tell("&cYou don't have enough permissions.");
-                return;
-            }
-
-//            if (!DataManager.getTaskManager().exists(taskId)){
-//                tell("&cTask with this ID does not exist.\n&cType /fn tasks to see all tasks.");
-//                return;
-//            }
-
-//            final List<String> shouldBeIntegers =
-//                    Arrays.asList("takeAmount", "minLevel", "maxLevel", "repReward", "priority");
-//            final List<String> shouldBeDoubles = Arrays.asList("moneyReward", "expReward");
-
             final List<String> shouldBeIntegers = DataManager.getClassFieldsByType(Task.class, int.class);
             final List<String> shouldBeDoubles = DataManager.getClassFieldsByType(Task.class, double.class);
+
+            if (sender instanceof Player){
+                if (!getPlayer().hasPermission("fancynations.task.setvalue." + variable)){
+                    tell("&cYou don't have enough permissions.");
+                    return;
+                }
+            }
+
+            if (!DataManager.getTaskManager().exists(taskId)){
+                tell("&cTask with this ID does not exist.\n&cType /fn tasks to see all tasks.");
+                return;
+            }
 
             // Validations
             if (shouldBeDoubles.contains(variable.toLowerCase())){
@@ -135,6 +134,7 @@ public class TaskCommands extends SimpleSubCommand {
             DataManager.getTaskManager().update(taskId, variable, value);
         }
 
+        // fn task info <task_id>
         else if (args[0].equalsIgnoreCase("info")){
 
             if (args.length < 2) {
@@ -150,12 +150,12 @@ public class TaskCommands extends SimpleSubCommand {
             Task task = DataManager.getTaskManager().get(taskId);
 
             List<String> info = Arrays.asList(
-                    "&7Info for task #" + taskId,
+                    "&7Info about task #" + taskId,
                     "",
                     "&7Name: " + task.getTaskName(),
                     "&7Type: " + task.getTaskType().toString(),
                     "&7Town: " + task.getTownName(),
-                    "&7Created by: " + task.getCreatorName(),
+                    "&7Created by: " + (task.getCreatorName().equals("%server%") ? "Nation" : task.getCreatorName()),
                     "&7Max completions: " + task.getTakeAmount(),
                     "&7Money reward: " + task.getMoneyReward(),
                     "&7Experience reward: " + task.getExpReward(),
@@ -167,6 +167,40 @@ public class TaskCommands extends SimpleSubCommand {
 
             List<SimpleComponent> infoMessage = Common.convert(info, SimpleComponent::of);
             tell(infoMessage);
+        }
+
+        // fn task start <task_id>
+        else if (args[0].equalsIgnoreCase("start")){
+
+            if (args.length < 2) {
+                tell("&cSyntax: /fn task info <task_id>");
+                return;
+            }
+            int taskId = findNumber(2, "&cTask ID must be a number");
+
+            if (!DataManager.getTaskManager().exists(taskId)){
+                tell("&cTask with this ID does not exist.\n&cType /fn tasks to see all tasks.");
+                return;
+            }
+            Task task = DataManager.getTaskManager().get(taskId);
+
+            PlayerData playerData = PlayerData.get(getPlayer().getUniqueId());
+            if (task.getTakeAmount() <= 0){
+                tell("&cThis task is not available anymore.");
+            }
+
+            if (playerData.getLevel() < task.getMinLevel() || playerData.getLevel() > task.getMaxLevel()){
+                tell("&cYour level is not suitable for this task.\n" +
+                        "Your level: " + playerData.getLevel() + ". Required: " +
+                        task.getMinLevel() + " - " + task.getMaxLevel());
+                return;
+            }
+
+        }
+
+        else{
+            tell("&cSyntax: /fn task <create/remove/set/info>");
+            return;
         }
     }
 

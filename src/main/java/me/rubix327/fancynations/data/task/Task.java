@@ -5,14 +5,15 @@ import lombok.Getter;
 import lombok.Setter;
 import me.rubix327.fancynations.data.DataManager;
 import me.rubix327.fancynations.data.Settings;
+import org.bukkit.entity.Player;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
 @Getter @Setter(AccessLevel.PACKAGE)
 public abstract class Task {
-
-    private static int maxId = 0;
 
     @Getter
     private final HashMap<String, Integer> objectives = new HashMap<>();
@@ -29,9 +30,11 @@ public abstract class Task {
     private int priority;
     private double moneyReward;
     private double expReward;
+    private Timestamp placementDateTime;
+    private int timeToComplete;
 
     protected Task(String townName, TaskType taskType, String creatorName, String taskName){
-        this.id = DataManager.generateId(DataManager.getTaskManager().getTasks().keySet());
+        this.id = DataManager.getTaskManager().getMaxId() + 1;
         this.townName = townName;
         this.taskType = taskType;
         this.creatorName = creatorName;
@@ -44,6 +47,28 @@ public abstract class Task {
         this.expReward = Settings.Tasks.DEFAULT_EXP_REWARD;
         this.repReward = Settings.Tasks.DEFAULT_REP_REWARD;
         this.priority = Settings.Tasks.DEFAULT_PRIORITY;
+        this.placementDateTime = Timestamp.valueOf(LocalDateTime.now());
+        this.timeToComplete = Settings.Tasks.DEFAULT_TIME_TO_COMPLETE;
+    }
+
+    public Task(int id, String townName, TaskType taskType, String creatorName, String taskName, String description,
+                int takeAmount, int minLevel, int maxLevel, double moneyReward, double expReward, int repReward,
+                int priority, Timestamp placementDateTime, int timeToComplete) {
+        this.id = id;
+        this.townName = townName;
+        this.taskType = taskType;
+        this.creatorName = creatorName;
+        this.taskName = taskName;
+        this.description = description;
+        this.takeAmount = takeAmount;
+        this.minLevel = minLevel;
+        this.maxLevel = maxLevel;
+        this.moneyReward = moneyReward;
+        this.expReward = expReward;
+        this.repReward = repReward;
+        this.priority = priority;
+        this.placementDateTime = placementDateTime;
+        this.timeToComplete = timeToComplete;
     }
 
     public void addObjective(String objective, int amount){
@@ -55,11 +80,11 @@ public abstract class Task {
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public abstract boolean isObjectiveCompleted(String reqItemId, int reqAmount, String playerName);
+    public abstract boolean isObjectiveCompleted(String reqItemId, int reqAmount, Player player);
 
-    public boolean isAllObjectivesCompleted(String playerName){
+    public boolean isAllObjectivesCompleted(Player player){
         for (Map.Entry<String, Integer> entry : objectives.entrySet()){
-            if (!isObjectiveCompleted(entry.getKey(), entry.getValue(), playerName)) return false;
+            if (!isObjectiveCompleted(entry.getKey(), entry.getValue(), player)) return false;
         }
         return true;
     }
@@ -68,7 +93,6 @@ public abstract class Task {
     public String toString(){
         return "&7#" + this.getId() + " | "
                 + this.getTaskType() + ", "
-                + this.getTownName() + ", "
                 + this.getCreatorName() + ", "
                 + this.getTaskName();
     }
