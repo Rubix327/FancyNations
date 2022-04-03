@@ -25,15 +25,18 @@ public final class FancyNations extends SimplePlugin {
     protected void onPluginStart() {
         instance = this;
 
-        if (Settings.General.DATA_MANAGEMENT_TYPE.equalsIgnoreCase("database")) {
+        if (Settings.General.DATA_MANAGEMENT_TYPE.equalsIgnoreCase("database")){
             this.database = new DatabaseManager();
             database.connect();
             if (database.isConnected()) {
                 Bukkit.getLogger().info("[FancyNations] Database is connected");
             }
+            else{
+                Bukkit.getLogger().warning("[FancyNations] Using file system instead of database.");
+            }
         }
         else {
-            Bukkit.getLogger().warning("[FancyNations] Using file system instead of database.");
+            Bukkit.getLogger().info("[FancyNations] Using file system instead of database.");
         }
         registerCommand(new TestCommands());
         registerCommands("fancynations|fn", new FNCommandGroup());

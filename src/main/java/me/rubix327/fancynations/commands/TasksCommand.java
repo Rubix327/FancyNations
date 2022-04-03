@@ -1,7 +1,7 @@
 package me.rubix327.fancynations.commands;
 
 import me.rubix327.fancynations.data.DataManager;
-import me.rubix327.fancynations.data.task.Task;
+import me.rubix327.fancynations.data.tasks.Task;
 import org.mineacademy.fo.command.SimpleCommandGroup;
 import org.mineacademy.fo.command.SimpleSubCommand;
 
@@ -17,11 +17,11 @@ public class TasksCommand extends SimpleSubCommand {
 
         addTellPrefix(false);
 
-        if (DataManager.getTaskManager().getTasks().isEmpty()){
+        if (DataManager.getTaskManager().getAll().isEmpty()){
             tell("There's no created tasks yet.");
             return;
         }
-        Collection<Task> tasks = DataManager.getTaskManager().getTasks().values();
+        Collection<Task> tasks = DataManager.getTaskManager().getAll().values();
         tell("&7ID | Type, Town, Creator, Name");
         for (Task task : tasks){
             tell(task.toString());

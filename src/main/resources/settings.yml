@@ -10,9 +10,17 @@ Database:
 
 General:
   Data_Management_Type: database
+  Server_Var: '%server%'
+  SQL_Debug: false
+
+Towns:
+  Default_Balance: 0
+  Default_Stations_Tax: 1.0
+  Default_Auction_Tax: 1.0
+  Default_Tasks_Tax: 1.0
 
 Tasks:
-  Default_Description: "''"
+  Default_Description: ''
   Default_Take_Amount: 10
   Default_Min_Level: 1
   Default_Max_Level: -1
@@ -21,3 +29,17 @@ Tasks:
   Default_Rep_Reward: 0
   Default_Priority: 0
   Default_Time_To_Complete: 43200
+
+TownWorkers:
+  Mayor_Default_Displayname: 'Mayor'
+  Helper_Default_Displayname: 'Helper'
+  Judge_Default_Displayname: 'Judge'
+  Other_Default_Displayname: 'Worker'
+  Default_Salary: 0
+
+TownBuildings:
+  Default_Farm_Level: 0
+  Default_Defend_Tower_Level: 0
+  Default_Workshop_Level: 0
+  Default_Barracks_Level: 0
+  Default_Church_Level: 0

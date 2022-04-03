@@ -15,6 +15,14 @@ public class Settings extends SimpleSettings {
     public static class General{
         public static String DATA_MANAGEMENT_TYPE;
         public static String SERVER_VAR;
+        public static Boolean SQL_DEBUG;
+    }
+
+    public static class Towns{
+        public static Double DEFAULT_BALANCE;
+        public static Double DEFAULT_STATIONS_TAX;
+        public static Double DEFAULT_AUCTION_TAX;
+        public static Double DEFAULT_TASKS_TAX;
     }
 
     public static class Tasks{
@@ -29,6 +37,22 @@ public class Settings extends SimpleSettings {
         public static Integer DEFAULT_TIME_TO_COMPLETE;
     }
 
+    public static class TownWorkers{
+        public static String MAYOR_DEFAULT_DISPLAYNAME;
+        public static String HELPER_DEFAULT_DISPLAYNAME;
+        public static String JUDGE_DEFAULT_DISPLAYNAME;
+        public static String OTHER_DEFAULT_DISPLAYNAME;
+        public static Integer DEFAULT_SALARY;
+    }
+
+    public static class TownBuildings{
+        public static Integer DEFAULT_FARM_LEVEL;
+        public static Integer DEFAULT_DEFEND_TOWER_LEVEL;
+        public static Integer DEFAULT_WORKSHOP_LEVEL;
+        public static Integer DEFAULT_BARRACKS_LEVEL;
+        public static Integer DEFAULT_CHURCH_LEVEL;
+    }
+
     private static void init(){
         pathPrefix("Database");
         Database.HOST = getString("Host");
@@ -40,6 +64,13 @@ public class Settings extends SimpleSettings {
         pathPrefix("General");
         General.DATA_MANAGEMENT_TYPE = getString("Data_Management_Type");
         General.SERVER_VAR = "%server%";
+        General.SQL_DEBUG = getBoolean("SQL_Debug");
+
+        pathPrefix("Towns");
+        Towns.DEFAULT_BALANCE = getDouble("Default_Balance");
+        Towns.DEFAULT_STATIONS_TAX = getDouble("Default_Stations_Tax");
+        Towns.DEFAULT_AUCTION_TAX = getDouble("Default_Auction_Tax");
+        Towns.DEFAULT_TASKS_TAX = getDouble("Default_Tasks_Tax");
 
         pathPrefix("Tasks");
         Tasks.DEFAULT_DESCRIPTION = getString("Default_Description");
@@ -51,10 +82,20 @@ public class Settings extends SimpleSettings {
         Tasks.DEFAULT_REP_REWARD = getInteger("Default_Rep_Reward");
         Tasks.DEFAULT_PRIORITY = getInteger("Default_Priority");
         Tasks.DEFAULT_TIME_TO_COMPLETE = getInteger("Default_Time_To_Complete");
-    }
 
-    public static String getPluginVersion() {
-        return "1.0.2";
+        pathPrefix("TownWorkers");
+        TownWorkers.MAYOR_DEFAULT_DISPLAYNAME = getString("Mayor_Default_Displayname");
+        TownWorkers.HELPER_DEFAULT_DISPLAYNAME = getString("Helper_Default_Displayname");
+        TownWorkers.JUDGE_DEFAULT_DISPLAYNAME = getString("Judge_Default_Displayname");
+        TownWorkers.OTHER_DEFAULT_DISPLAYNAME = getString("Other_Default_Displayname");
+        TownWorkers.DEFAULT_SALARY = getInteger("Default_Salary");
+
+        pathPrefix("TownBuildings");
+        TownBuildings.DEFAULT_FARM_LEVEL = getInteger("Default_Farm_Level");
+        TownBuildings.DEFAULT_DEFEND_TOWER_LEVEL = getInteger("Default_Defend_Tower_Level");
+        TownBuildings.DEFAULT_WORKSHOP_LEVEL = getInteger("Default_Workshop_Level");
+        TownBuildings.DEFAULT_BARRACKS_LEVEL = getInteger("Default_Barracks_Level");
+        TownBuildings.DEFAULT_CHURCH_LEVEL = getInteger("Default_Church_Level");
     }
 
     @Override
