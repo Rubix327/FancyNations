@@ -2,8 +2,8 @@ package me.rubix327.fancynations.data;
 
 import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 import com.mysql.cj.jdbc.MysqlDataSource;
-import me.rubix327.fancynations.FancyNations;
 import org.bukkit.Bukkit;
+import me.rubix327.fancynations.FancyNations;
 import org.mineacademy.fo.Common;
 
 import java.io.IOException;
@@ -62,9 +62,9 @@ public class DatabaseManager {
 
     public void disconnect(){
         if (isConnected()){
-            try {
+            try{
                 connection.close();
-            } catch (SQLException e){
+            }catch (SQLException e){
                 e.printStackTrace();
             }
         }

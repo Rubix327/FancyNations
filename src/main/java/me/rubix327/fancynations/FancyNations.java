@@ -25,7 +25,7 @@ public final class FancyNations extends SimplePlugin {
     protected void onPluginStart() {
         instance = this;
 
-        if (Settings.General.DATA_MANAGEMENT_TYPE.equalsIgnoreCase("database")) {
+        if (Settings.General.DATA_MANAGEMENT_TYPE.equalsIgnoreCase("database")){
             this.database = new DatabaseManager();
             database.connect();
             if (database.isConnected()) {
