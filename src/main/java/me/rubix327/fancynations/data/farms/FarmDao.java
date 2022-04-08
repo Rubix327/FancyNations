@@ -38,7 +38,7 @@ public class FarmDao extends AbstractDao<Farm> implements IFarmManager {
                 .replace("@Table", tableName)
                 .replace("@TownId", String.valueOf(farm.getTownId()))
                 .replace("@Name", String.valueOf(farm.getName()))
-                .replace("@Location", String.valueOf(farm.getLocation()))
+                .replace("@Location", DataManager.serializeLocation(farm.getLocation()))
                 .replace("@Level", String.valueOf(farm.getLevel()))
                 .replace("@LoadedResource", String.valueOf(farm.getLoadedResource()))
                 .replace("@Amount", String.valueOf(farm.getAmount()));

@@ -182,21 +182,34 @@ public class DataManager {
     }
 
     /**
-     Converts location from string to Location class.
-     @param loc string that contains location
-     @return Location class
+     Converts location from Location instance to String.
+     @param loc Location instance
+     @return Location String
+     */
+    public static String serializeLocation(Location loc){
+        String world = loc.getWorld().getName();
+        String x = String.valueOf(loc.getX());
+        String y = String.valueOf(loc.getY());
+        String z = String.valueOf(loc.getZ());
+        String pitch = String.valueOf(loc.getPitch());
+        String yaw = String.valueOf(loc.getYaw());
+
+        return String.join(",", world, x, y, z, pitch, yaw);
+    }
+
+    /**
+     Converts location from String to Location instance.
+     @param loc String that contains location
+     @return Location instance
      */
     public static Location deserializeLocation(String loc){
-        int start = loc.indexOf("{");
-        int end = loc.indexOf("}");
-        String loc1 = loc.substring(start + 1, end);
-        List<String> loc2 = Arrays.asList(loc1.split(","));
-        World world = Bukkit.getWorld(loc2.get(0).substring(loc2.get(0).indexOf("=") + 1));
-        double x = Double.parseDouble(loc2.get(1).substring(loc2.get(1).indexOf("=") + 1));
-        double y = Double.parseDouble(loc2.get(2).substring(loc2.get(2).indexOf("=") + 1));
-        double z = Double.parseDouble(loc2.get(3).substring(loc2.get(3).indexOf("=") + 1));
-        float pitch = Float.parseFloat(loc2.get(4).substring(loc2.get(4).indexOf("=") + 1));
-        float yaw = Float.parseFloat(loc2.get(5).substring(loc2.get(5).indexOf("=") + 1));
+        List<String> locStr = Arrays.asList(loc.split(","));
+        World world = Bukkit.getWorld(locStr.get(0));
+        double x = Double.parseDouble(locStr.get(1));
+        double y = Double.parseDouble(locStr.get(2));
+        double z = Double.parseDouble(locStr.get(3));
+        float pitch = Float.parseFloat(locStr.get(4));
+        float yaw = Float.parseFloat(locStr.get(5));
 
         return new Location(world, x, y, z, pitch, yaw);
     }

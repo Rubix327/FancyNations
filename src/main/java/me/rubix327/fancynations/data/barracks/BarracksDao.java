@@ -36,7 +36,7 @@ public class BarracksDao extends AbstractDao<Barracks> implements IBarracksManag
                 .replace("@Table", tableName)
                 .replace("@TownId", String.valueOf(barracks.getTownId()))
                 .replace("@Name", String.valueOf(barracks.getName()))
-                .replace("@Location", String.valueOf(barracks.getLocation()))
+                .replace("@Location", DataManager.serializeLocation(barracks.getLocation()))
                 .replace("@Level", String.valueOf(barracks.getLevel()));
 
         super.executeVoid(query);

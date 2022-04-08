@@ -36,7 +36,7 @@ public class ChurchDao extends AbstractDao<Church> implements IChurchManager {
                 .replace("@Table", tableName)
                 .replace("@TownId", String.valueOf(church.getTownId()))
                 .replace("@Name", String.valueOf(church.getName()))
-                .replace("@Location", String.valueOf(church.getLocation()))
+                .replace("@Location", DataManager.serializeLocation(church.getLocation()))
                 .replace("@Level", String.valueOf(church.getLevel()));
 
         super.executeVoid(query);
