@@ -249,10 +249,9 @@ public class TaskCommands extends SimpleSubCommand {
             }
 
             // TODO give money
+            // TODO give reputation
 
             playerData.giveExperience(task.getExpReward(), EXPSource.QUEST, getPlayer().getLocation(), false);
-            DataManager.getFNPlayerManager().update(
-                    fnPlayer.getId(), "reputation", fnPlayer.getReputation() + task.getRepReward());
 
             // TODO if type==gathering then send 50% of resources to town
             // TODO if type==mobkill then ???

@@ -19,9 +19,8 @@ public class FNPlayerDao extends AbstractDao<FNPlayer> implements IFNPlayerManag
 
         int id = resultSet.getInt("Id");
         String name = resultSet.getString("Name");
-        int reputation = resultSet.getInt("Reputation");
 
-        return new FNPlayer(id, name, reputation);
+        return new FNPlayer(id, name);
     }
 
     @Override
@@ -30,8 +29,7 @@ public class FNPlayerDao extends AbstractDao<FNPlayer> implements IFNPlayerManag
 
         query = query
                 .replace("@Table", tableName)
-                .replace("@Name", player.getName())
-                .replace("@Reputation", String.valueOf(player.getReputation()));
+                .replace("@Name", player.getName());
 
         super.executeVoid(query);
     }
