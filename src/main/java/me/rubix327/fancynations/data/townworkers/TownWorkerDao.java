@@ -1,6 +1,7 @@
 package me.rubix327.fancynations.data.townworkers;
 
 import me.rubix327.fancynations.FancyNations;
+import me.rubix327.fancynations.Settings;
 import me.rubix327.fancynations.data.*;
 import me.rubix327.fancynations.data.workertypes.WorkerType;
 

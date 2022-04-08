@@ -1,4 +1,4 @@
-package me.rubix327.fancynations.data;
+package me.rubix327.fancynations;
 
 import org.mineacademy.fo.settings.SimpleSettings;
 

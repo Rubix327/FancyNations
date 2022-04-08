@@ -2,6 +2,7 @@ package me.rubix327.fancynations.data;
 
 import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 import com.mysql.cj.jdbc.MysqlDataSource;
+import me.rubix327.fancynations.Settings;
 import org.bukkit.Bukkit;
 import org.mineacademy.fo.Common;
 

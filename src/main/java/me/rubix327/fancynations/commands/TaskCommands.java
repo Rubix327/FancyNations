@@ -1,7 +1,8 @@
 package me.rubix327.fancynations.commands;
 
+import me.rubix327.fancynations.Localization;
+import me.rubix327.fancynations.Settings;
 import me.rubix327.fancynations.data.DataManager;
-import me.rubix327.fancynations.data.Settings;
 import me.rubix327.fancynations.data.fnplayers.FNPlayer;
 import me.rubix327.fancynations.data.takentasks.TakenTask;
 import me.rubix327.fancynations.data.tasks.GatheringTask;
@@ -44,6 +45,7 @@ public class TaskCommands extends SimpleSubCommand {
     @Override
     protected void onCommand() {
 
+        Localization msgs = Localization.getInstance();
         setPermission("fancynations.task");
         addTellPrefix(false);
 
@@ -55,14 +57,14 @@ public class TaskCommands extends SimpleSubCommand {
         // /fn task create <town_name> <taskType> <taskName>
         if (args[0].equalsIgnoreCase("create")){
             if (args.length < 4) {
-                tell("&cSyntax: /fn task create <town_name> <type> <name>");
+                tell(msgs.get("task_create_syntax", sender));
                 return;
             }
 
             int townId;
             TaskType taskType;
             if (!((TownDao)DataManager.getTownManager()).exists(args[1])){
-                tell("&cThis town does not exist.");
+                tell(msgs.get("town_not_exist", sender));
                 return;
             }
             townId = (((TownDao)DataManager.getTownManager()).get(args[1])).getId();

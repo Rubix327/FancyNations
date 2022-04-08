@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import me.rubix327.fancynations.data.DataManager;
 import me.rubix327.fancynations.data.AbstractDto;
-import me.rubix327.fancynations.data.Settings;
+import me.rubix327.fancynations.Settings;
 import me.rubix327.fancynations.data.IUniqueNamable;
 
 @Getter @Setter(AccessLevel.PACKAGE)

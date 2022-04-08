@@ -15,7 +15,7 @@ public class TaskTypeDao extends AbstractDao<TaskType> implements ITaskTypeManag
     protected TaskType loadObject(ResultSet resultSet) throws SQLException {
 
         int id = resultSet.getInt("Id");
-        String group = resultSet.getString("Group");
+        String group = resultSet.getString("TypeGroup");
         String name = resultSet.getString("Name");
 
         return new TaskType(id, group, name);

@@ -2,6 +2,7 @@ package me.rubix327.fancynations.data;
 
 import lombok.Getter;
 import me.rubix327.fancynations.FancyNations;
+import me.rubix327.fancynations.Settings;
 import me.rubix327.fancynations.data.barracks.BarracksDao;
 import me.rubix327.fancynations.data.barracks.BarracksProcess;
 import me.rubix327.fancynations.data.barracks.IBarracksManager;
