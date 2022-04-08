@@ -36,7 +36,7 @@ public class TownHouseDao extends AbstractDao<TownHouse> implements ITownHouseMa
                 .replace("@Table", tableName)
                 .replace("@Town", String.valueOf(house.getTownId()))
                 .replace("@Owner", String.valueOf(house.getOwnerId()))
-                .replace("@Location", house.getLocation().toString());
+                .replace("@Location", DataManager.serializeLocation(house.getLocation()));
 
         super.executeVoid(query);
     }

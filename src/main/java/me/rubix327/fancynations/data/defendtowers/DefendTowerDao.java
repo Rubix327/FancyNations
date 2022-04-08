@@ -39,7 +39,7 @@ public class DefendTowerDao extends AbstractDao<DefendTower> implements IDefendT
                 .replace("@Table", tableName)
                 .replace("@TownId", String.valueOf(tower.getTownId()))
                 .replace("@Name", String.valueOf(tower.getName()))
-                .replace("@Location", String.valueOf(tower.getLocation()))
+                .replace("@Location", DataManager.serializeLocation(tower.getLocation()))
                 .replace("@Level", String.valueOf(tower.getLevel()))
                 .replace("@LoadedResource", String.valueOf(tower.getLoadedResource()))
                 .replace("@Amount", String.valueOf(tower.getAmount()));
