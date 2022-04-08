@@ -53,6 +53,9 @@ import me.rubix327.fancynations.data.workertypes.WorkerTypeProcess;
 import me.rubix327.fancynations.data.workshops.IWorkshopManager;
 import me.rubix327.fancynations.data.workshops.WorkshopDao;
 import me.rubix327.fancynations.data.workshops.WorkshopProcess;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -76,71 +79,71 @@ public class DataManager {
     }
 
     public static IBarracksManager getBarracksManager(){
-        return (isDatabaseChosen() ? new BarracksDao() : new BarracksProcess());
+        return (isDatabaseChosen() ? new BarracksDao(Settings.DbTables.BARRACKS) : new BarracksProcess());
     }
 
     public static IChurchManager getChurchManager(){
-        return (isDatabaseChosen() ? new ChurchDao() : new ChurchProcess());
+        return (isDatabaseChosen() ? new ChurchDao(Settings.DbTables.CHURCHES) : new ChurchProcess());
     }
 
     public static IDefendTowerManager getDefendTowerManager(){
-        return (isDatabaseChosen() ? new DefendTowerDao() : new DefendTowerProcess());
+        return (isDatabaseChosen() ? new DefendTowerDao(Settings.DbTables.DEFEND_TOWERS) : new DefendTowerProcess());
     }
 
     public static IFarmManager getFarmManager(){
-        return (isDatabaseChosen() ? new FarmDao() : new FarmProcess());
+        return (isDatabaseChosen() ? new FarmDao(Settings.DbTables.FARMS) : new FarmProcess());
     }
 
     public static IFNPlayerManager getFNPlayerManager(){
-        return (isDatabaseChosen() ? new FNPlayerDao() : new FNPlayerProcess());
+        return (isDatabaseChosen() ? new FNPlayerDao(Settings.DbTables.FN_PLAYERS) : new FNPlayerProcess());
     }
 
     public static INationManager getNationManager(){
-        return (isDatabaseChosen() ? new NationDao() : new NationProcess());
+        return (isDatabaseChosen() ? new NationDao(Settings.DbTables.NATIONS) : new NationProcess());
     }
 
     public static IObjectivesManager getObjectivesManager(){
-        return (isDatabaseChosen() ? new ObjectivesDao() : new ObjectivesProcess());
+        return (isDatabaseChosen() ? new ObjectivesDao(Settings.DbTables.OBJECTIVES) : new ObjectivesProcess());
     }
 
     public static ITakenTaskManager getTakenTaskManager(){
-        return (isDatabaseChosen() ? new TakenTaskDao() : new TakenTaskProcess());
+        return (isDatabaseChosen() ? new TakenTaskDao(Settings.DbTables.TAKEN_TASKS) : new TakenTaskProcess());
     }
 
     public static ITaskProgressManager getTaskProgressManager(){
-        return (isDatabaseChosen() ? new TaskProgressDao() : new TaskProgressProcess());
+        return (isDatabaseChosen() ? new TaskProgressDao(Settings.DbTables.TASK_PROGRESSES) : new TaskProgressProcess());
     }
 
     public static ITaskManager getTaskManager(){
-        return (isDatabaseChosen() ? new TaskDao() : new TaskProcess());
+        return (isDatabaseChosen() ? new TaskDao(Settings.DbTables.TASKS) : new TaskProcess());
     }
 
     public static ITaskTypeManager getTaskTypeManager(){
-        return (isDatabaseChosen() ? new TaskTypeDao() : new TaskTypeProcess());
+        return (isDatabaseChosen() ? new TaskTypeDao(Settings.DbTables.TASK_TYPES) : new TaskTypeProcess());
     }
 
     public static ITownHouseManager getTownHouseManager(){
-        return (isDatabaseChosen() ? new TownHouseDao() : new TownHouseProcess());
+        return (isDatabaseChosen() ? new TownHouseDao(Settings.DbTables.TOWN_HOUSES) : new TownHouseProcess());
     }
 
     public static ITownResourceManager getTownResourceManager(){
-        return (isDatabaseChosen() ? new TownResourceDao() : new TownResourceProcess());
+        return (isDatabaseChosen() ? new TownResourceDao(Settings.DbTables.TOWN_RESOURCES) : new TownResourceProcess());
     }
 
     public static ITownManager getTownManager(){
-        return (isDatabaseChosen() ? new TownDao() : new TownProcess());
+        return (isDatabaseChosen() ? new TownDao(Settings.DbTables.TOWNS) : new TownProcess());
     }
 
     public static ITownWorkerManager getTownWorkerManager(){
-        return (isDatabaseChosen() ? new TownWorkerDao() : new TownWorkerProcess());
+        return (isDatabaseChosen() ? new TownWorkerDao(Settings.DbTables.TOWN_WORKERS) : new TownWorkerProcess());
     }
 
     public static IWorkerTypeManager getWorkerTypeManager(){
-        return (isDatabaseChosen() ? new WorkerTypeDao() : new WorkerTypeProcess());
+        return (isDatabaseChosen() ? new WorkerTypeDao(Settings.DbTables.WORKER_TYPES) : new WorkerTypeProcess());
     }
 
     public static IWorkshopManager getWorkshopManager(){
-        return (isDatabaseChosen() ? new WorkshopDao() : new WorkshopProcess());
+        return (isDatabaseChosen() ? new WorkshopDao(Settings.DbTables.WORKSHOPS) : new WorkshopProcess());
     }
 
     /**
@@ -176,5 +179,25 @@ public class DataManager {
                 .filter(field -> field.getType() == requiredType)
                 .forEach(field -> CLASS_FIELDS.add(field.getName().toLowerCase()));
         return CLASS_FIELDS;
+    }
+
+    /**
+     Converts location from string to Location class.
+     @param loc string that contains location
+     @return Location class
+     */
+    public static Location deserializeLocation(String loc){
+        int start = loc.indexOf("{");
+        int end = loc.indexOf("}");
+        String loc1 = loc.substring(start + 1, end);
+        List<String> loc2 = Arrays.asList(loc1.split(","));
+        World world = Bukkit.getWorld(loc2.get(0).substring(loc2.get(0).indexOf("=") + 1));
+        double x = Double.parseDouble(loc2.get(1).substring(loc2.get(1).indexOf("=") + 1));
+        double y = Double.parseDouble(loc2.get(2).substring(loc2.get(2).indexOf("=") + 1));
+        double z = Double.parseDouble(loc2.get(3).substring(loc2.get(3).indexOf("=") + 1));
+        float pitch = Float.parseFloat(loc2.get(4).substring(loc2.get(4).indexOf("=") + 1));
+        float yaw = Float.parseFloat(loc2.get(5).substring(loc2.get(5).indexOf("=") + 1));
+
+        return new Location(world, x, y, z, pitch, yaw);
     }
 }

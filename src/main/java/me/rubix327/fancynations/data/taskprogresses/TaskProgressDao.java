@@ -1,40 +1,39 @@
 package me.rubix327.fancynations.data.taskprogresses;
 
-import java.util.HashMap;
+import me.rubix327.fancynations.data.AbstractDao;
 
-public class TaskProgressDao implements ITaskProgressManager{
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class TaskProgressDao extends AbstractDao<TaskProgress> implements ITaskProgressManager {
+
+    private final String tableName;
+
+    public TaskProgressDao(String tableName) {
+        super(tableName);
+        this.tableName = tableName;
+    }
+
     @Override
-    public boolean exists(int taskProgressId) {
-        return false;
+    protected TaskProgress loadObject(ResultSet resultSet) throws SQLException {
+
+        int id = resultSet.getInt("Id");
+        int objectiveId = resultSet.getInt("Objective");
+        int progress = resultSet.getInt("Progress");
+
+        return new TaskProgress(id, objectiveId, progress);
     }
 
     @Override
     public void add(TaskProgress progress) {
+        String query = "INSERT INTO @Table (Objective, Progress) VALUES (@Objective, @Progress)";
 
+        query = query
+                .replace("@Table", tableName)
+                .replace("@Objective", String.valueOf(progress.getObjectiveId()))
+                .replace("@Progress", String.valueOf(progress.getProgress()));
+
+        super.executeVoid(query);
     }
 
-    @Override
-    public TaskProgress get(int taskProgressId) {
-        return null;
-    }
-
-    @Override
-    public void update(int taskProgressId, String variable, Object newValue) {
-
-    }
-
-    @Override
-    public void remove(int taskProgressId) {
-
-    }
-
-    @Override
-    public HashMap<Integer, TaskProgress> getAll() {
-        return null;
-    }
-
-    @Override
-    public int getMaxId() {
-        return 0;
-    }
 }

@@ -12,6 +12,26 @@ public class Settings extends SimpleSettings {
         public static String PASSWORD;
     }
 
+    public static class DbTables{
+        public static String BARRACKS;
+        public static String CHURCHES;
+        public static String DEFEND_TOWERS;
+        public static String FARMS;
+        public static String FN_PLAYERS;
+        public static String NATIONS;
+        public static String OBJECTIVES;
+        public static String TAKEN_TASKS;
+        public static String TASK_PROGRESSES;
+        public static String TASKS;
+        public static String TASK_TYPES;
+        public static String TOWN_HOUSES;
+        public static String TOWN_RESOURCES;
+        public static String TOWNS;
+        public static String TOWN_WORKERS;
+        public static String WORKER_TYPES;
+        public static String WORKSHOPS;
+    }
+
     public static class General{
         public static String DATA_MANAGEMENT_TYPE;
         public static String SERVER_VAR;
@@ -60,6 +80,25 @@ public class Settings extends SimpleSettings {
         Database.DATABASE = getString("Database");
         Database.USERNAME = getString("Username");
         Database.PASSWORD = getString("Password");
+
+        pathPrefix("DB_Tables");
+        DbTables.BARRACKS = "Barracks";
+        DbTables.CHURCHES = "Churches";
+        DbTables.DEFEND_TOWERS = "DefendTowers";
+        DbTables.FARMS = "Farms";
+        DbTables.FN_PLAYERS = "Players";
+        DbTables.NATIONS = "Nations";
+        DbTables.OBJECTIVES = "Objectives";
+        DbTables.TAKEN_TASKS = "TakenTasks";
+        DbTables.TASK_PROGRESSES = "TaskProgresses";
+        DbTables.TASKS = "Tasks";
+        DbTables.TASK_TYPES = "TaskTypes";
+        DbTables.TOWN_HOUSES = "TownHouses";
+        DbTables.TOWN_RESOURCES = "TownResources";
+        DbTables.TOWNS = "Towns";
+        DbTables.TOWN_WORKERS = "TownWorkers";
+        DbTables.WORKER_TYPES = "WorkerTypes";
+        DbTables.WORKSHOPS = "Workshops";
 
         pathPrefix("General");
         General.DATA_MANAGEMENT_TYPE = getString("Data_Management_Type");

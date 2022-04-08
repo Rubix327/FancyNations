@@ -12,7 +12,8 @@ CREATE TABLE IF NOT EXISTS WorkerTypes (
     Id INT NOT NULL AUTO_INCREMENT,
     Name VARCHAR(50) NOT NULL,
     DisplayName VARCHAR(50) NOT NULL,
-    PRIMARY KEY (Id)
+    PRIMARY KEY (Id),
+    UNIQUE(Name)
 );
 
 CREATE TABLE IF NOT EXISTS Players (
@@ -34,10 +35,10 @@ CREATE TABLE IF NOT EXISTS Towns (
     Id INT NOT NULL AUTO_INCREMENT,
     Nation INT NOT NULL,
     Name VARCHAR(50),
-    Balance INT NOT NULL,
-    StationsTax INT NOT NULL,
-    AuctionTax INT NOT NULL,
-    TasksTax INT NOT NULL,
+    Balance DECIMAL NOT NULL,
+    StationsTax DECIMAL NOT NULL,
+    AuctionTax DECIMAL NOT NULL,
+    TasksTax DECIMAL NOT NULL,
     PRIMARY KEY (Id),
     FOREIGN KEY (Nation) REFERENCES Nations (Id),
     UNIQUE(Name)
@@ -177,5 +178,6 @@ CREATE TABLE IF NOT EXISTS Churches (
     FOREIGN KEY (Town) REFERENCES Towns (Id)
 );
 
-INSERT INTO TaskTypes(TypeGroup, Name) VALUES ('Gathering', 'Food'), ('Gathering', 'Resource'), ('Gathering', 'Crafting'), ('Mobs', 'Mobkill');
-INSERT INTO WorkerTypes(Name, DisplayName) VALUES ('Mayor', '@Mayor'), ('Helper', '@Helper'), ('Judge', '@Judge'), ('Other', '@Other');
+INSERT IGNORE INTO TaskTypes(ID, TypeGroup, Name) VALUES (1, 'Gathering', 'Food'), (2, 'Gathering', 'Resource'), (3, 'Gathering', 'Crafting'), (4, 'Mobs', 'Mobkill');
+INSERT IGNORE INTO WorkerTypes(ID, Name, DisplayName) VALUES (1, 'Mayor', '@Mayor'), (2, 'Helper', '@Helper'), (3, 'Judge', '@Judge'), (4, 'Other', '@Other');
+INSERT IGNORE INTO Players(ID, Name, Reputation) VALUES (1, '%server%', 0);

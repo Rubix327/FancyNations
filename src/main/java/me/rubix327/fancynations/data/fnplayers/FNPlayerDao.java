@@ -1,50 +1,39 @@
 package me.rubix327.fancynations.data.fnplayers;
 
-import java.util.HashMap;
+import me.rubix327.fancynations.data.AbstractDao;
 
-public class FNPlayerDao implements IFNPlayerManager{
-    @Override
-    public boolean exists(int playerId) {
-        return false;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class FNPlayerDao extends AbstractDao<FNPlayer> implements IFNPlayerManager {
+
+    private final String tableName;
+
+    public FNPlayerDao(String tableName) {
+        super(tableName);
+        this.tableName = tableName;
     }
 
     @Override
-    public boolean exists(String name) {
-        return false;
+    protected FNPlayer loadObject(ResultSet resultSet) throws SQLException {
+
+        int id = resultSet.getInt("Id");
+        String name = resultSet.getString("Name");
+        int reputation = resultSet.getInt("Reputation");
+
+        return new FNPlayer(id, name, reputation);
     }
 
     @Override
-    public void add(FNPlayer fnPlayer) {
+    public void add(FNPlayer player) {
+        String query = "INSERT INTO @Table (Name, Reputation) VALUES ('@Name', @Reputation)";
 
+        query = query
+                .replace("@Table", tableName)
+                .replace("@Name", player.getName())
+                .replace("@Reputation", String.valueOf(player.getReputation()));
+
+        super.executeVoid(query);
     }
 
-    @Override
-    public FNPlayer get(int playerId) {
-        return null;
-    }
-
-    @Override
-    public FNPlayer get(String name) {
-        return null;
-    }
-
-    @Override
-    public void update(int playerId, String variable, Object newValue) {
-
-    }
-
-    @Override
-    public void remove(int playerId) {
-
-    }
-
-    @Override
-    public HashMap<Integer, FNPlayer> getAll() {
-        return null;
-    }
-
-    @Override
-    public int getMaxId() {
-        return 0;
-    }
 }

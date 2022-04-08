@@ -4,8 +4,8 @@ import java.util.HashMap;
 
 public interface ITaskTypeManager {
 
-    boolean exists(String name);
-    void add(TaskType taskType);
+    boolean exists(int typeId);
+    boolean exists(String typeName);
     TaskType get(int taskTypeId);
     TaskType get(String taskTypeName);
     HashMap<Integer, TaskType> getAll();

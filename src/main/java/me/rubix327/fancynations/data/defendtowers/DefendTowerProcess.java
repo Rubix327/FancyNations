@@ -1,40 +1,15 @@
 package me.rubix327.fancynations.data.defendtowers;
 
+import me.rubix327.fancynations.data.AbstractProcess;
+
 import java.util.HashMap;
 
-public class DefendTowerProcess implements IDefendTowerManager{
-    @Override
-    public boolean exists(int towerId) {
-        return false;
+public class DefendTowerProcess extends AbstractProcess<DefendTower> implements IDefendTowerManager {
+
+    private static final HashMap<Integer, DefendTower> dtos = new HashMap<>();
+
+    public DefendTowerProcess() {
+        super(dtos, DefendTower.class);
     }
 
-    @Override
-    public void add(DefendTower tower) {
-
-    }
-
-    @Override
-    public DefendTower get(int towerId) {
-        return null;
-    }
-
-    @Override
-    public void update(int towerId, String variable, Object newValue) {
-
-    }
-
-    @Override
-    public void remove(int towerId) {
-
-    }
-
-    @Override
-    public HashMap<Integer, DefendTower> getAll() {
-        return null;
-    }
-
-    @Override
-    public int getMaxId() {
-        return 0;
-    }
 }

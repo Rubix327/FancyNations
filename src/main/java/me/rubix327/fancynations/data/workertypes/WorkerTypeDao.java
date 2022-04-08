@@ -1,50 +1,28 @@
 package me.rubix327.fancynations.data.workertypes;
 
-import java.util.HashMap;
+import me.rubix327.fancynations.data.AbstractDao;
 
-public class WorkerTypeDao implements IWorkerTypeManager{
-    @Override
-    public boolean exists(int workerTypeId) {
-        return false;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class WorkerTypeDao extends AbstractDao<WorkerType> implements IWorkerTypeManager {
+
+    public WorkerTypeDao(String tableName) {
+        super(tableName);
     }
 
     @Override
-    public boolean exists(String name) {
-        return false;
+    protected WorkerType loadObject(ResultSet resultSet) throws SQLException {
+
+        int id = resultSet.getInt("Id");
+        String name = resultSet.getString("Name");
+
+        return new WorkerType(id, name);
     }
 
     @Override
-    public void add(WorkerType workerType) {
-
-    }
-
-    @Override
-    public WorkerType get(int workerTypeId) {
-        return null;
-    }
-
-    @Override
-    public WorkerType get(String name) {
-        return null;
-    }
-
-    @Override
-    public void update(int workerTypeId, String variable, Object newValue) {
-
-    }
-
-    @Override
-    public void remove(int workerTypeId) {
-
-    }
-
-    @Override
-    public HashMap<Integer, WorkerType> getAll() {
-        return null;
-    }
-
-    @Override
-    public int getMaxId() {
-        return 0;
+    public void add(WorkerType dto) {
+        // This class does not assume adding new instances,
+        // but this method must be here to override the method from superclass.
     }
 }

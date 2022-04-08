@@ -1,50 +1,37 @@
 package me.rubix327.fancynations.data.nations;
 
-import java.util.HashMap;
+import me.rubix327.fancynations.data.AbstractDao;
 
-public class NationDao implements INationManager{
-    @Override
-    public boolean exists(int nationId) {
-        return false;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class NationDao extends AbstractDao<Nation> implements INationManager {
+
+    private final String tableName;
+
+    public NationDao(String tableName) {
+        super(tableName);
+        this.tableName = tableName;
     }
 
     @Override
-    public boolean exists(String name) {
-        return false;
+    protected Nation loadObject(ResultSet resultSet) throws SQLException {
+
+        int id = resultSet.getInt("Id");
+        String name = resultSet.getString("Name");
+
+        return new Nation(id, name);
     }
 
     @Override
     public void add(Nation nation) {
+        String query = "INSERT INTO @Table (Name) VALUES ('@Name')";
 
+        query = query
+                .replace("@Table", tableName)
+                .replace("@Name", nation.getName());
+
+        super.executeVoid(query);
     }
 
-    @Override
-    public Nation get(int nationId) {
-        return null;
-    }
-
-    @Override
-    public Nation get(String name) {
-        return null;
-    }
-
-    @Override
-    public void update(int nationId, String variable, Object newValue) {
-
-    }
-
-    @Override
-    public void remove(int nationId) {
-
-    }
-
-    @Override
-    public HashMap<Integer, Nation> getAll() {
-        return null;
-    }
-
-    @Override
-    public int getMaxId() {
-        return 0;
-    }
 }

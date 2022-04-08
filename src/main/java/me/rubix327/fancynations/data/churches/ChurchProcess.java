@@ -1,40 +1,15 @@
 package me.rubix327.fancynations.data.churches;
 
+import me.rubix327.fancynations.data.AbstractProcess;
+
 import java.util.HashMap;
 
-public class ChurchProcess implements IChurchManager{
-    @Override
-    public boolean exists(int churchId) {
-        return false;
+public class ChurchProcess extends AbstractProcess<Church> implements IChurchManager {
+
+    private static final HashMap<Integer, Church> dtos = new HashMap<>();
+
+    public ChurchProcess() {
+        super(dtos, Church.class);
     }
 
-    @Override
-    public void add(Church church) {
-
-    }
-
-    @Override
-    public Church get(int churchId) {
-        return null;
-    }
-
-    @Override
-    public void update(int churchId, String variable, Object newValue) {
-
-    }
-
-    @Override
-    public void remove(int churchId) {
-
-    }
-
-    @Override
-    public HashMap<Integer, Church> getAll() {
-        return null;
-    }
-
-    @Override
-    public int getMaxId() {
-        return 0;
-    }
 }

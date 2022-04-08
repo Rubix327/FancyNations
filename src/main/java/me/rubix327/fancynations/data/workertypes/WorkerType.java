@@ -1,10 +1,12 @@
 package me.rubix327.fancynations.data.workertypes;
 
 import lombok.Getter;
+import me.rubix327.fancynations.data.AbstractDto;
 import me.rubix327.fancynations.data.Settings;
+import me.rubix327.fancynations.data.IUniqueNamable;
 
 @Getter
-public class WorkerType {
+public class WorkerType extends AbstractDto implements IUniqueNamable {
 
     private final int id;
     private final String name;

@@ -4,8 +4,11 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import me.rubix327.fancynations.data.AbstractDto;
 import me.rubix327.fancynations.data.DataManager;
 import me.rubix327.fancynations.data.Settings;
+import me.rubix327.fancynations.data.objectives.Objective;
+import me.rubix327.fancynations.data.objectives.ObjectivesDao;
 import org.bukkit.entity.Player;
 
 import java.sql.Timestamp;
@@ -14,13 +17,13 @@ import java.util.Map;
 
 @Getter @Setter(AccessLevel.PACKAGE)
 @AllArgsConstructor
-public abstract class Task {
+public abstract class Task extends AbstractDto {
 
     @Getter
     private final int id;
     private final int townId;
     private final int taskTypeId;
-    private final String creatorName;
+    private final int creatorId;
     private String taskName;
     private String description;
     private int takeAmount;
@@ -33,11 +36,11 @@ public abstract class Task {
     private Timestamp placementDateTime;
     private int timeToComplete;
 
-    protected Task(int townId, int taskTypeId, String creatorName, String taskName){
+    protected Task(int townId, int taskTypeId, int creatorId, String taskName){
         this.id = DataManager.getTaskManager().getMaxId() + 1;
         this.townId = townId;
         this.taskTypeId = taskTypeId;
-        this.creatorName = creatorName;
+        this.creatorId = creatorId;
         this.taskName = taskName;
         this.description = Settings.Tasks.DEFAULT_DESCRIPTION;
         this.takeAmount = Settings.Tasks.DEFAULT_TAKE_AMOUNT;
@@ -52,21 +55,24 @@ public abstract class Task {
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public abstract boolean isObjectiveCompleted(String reqItemId, int reqAmount, Player player);
+    public abstract boolean isObjectiveCompleted(Objective objective, Player player);
 
     public boolean isAllObjectivesCompleted(Player player, int taskId){
-        for (Map.Entry<String, Integer> entry : DataManager.getObjectivesManager()
-                .getAllFor(player.getName(), taskId).entrySet()){
-            if (!isObjectiveCompleted(entry.getKey(), entry.getValue(), player)) return false;
+
+        ObjectivesDao objDao = (ObjectivesDao) DataManager.getObjectivesManager();
+        for (Map.Entry<Integer, Objective> entry : objDao.getAllFor(player.getName(), taskId).entrySet()){
+            Objective objective = entry.getValue();
+            if (!isObjectiveCompleted(objective, player)) return false;
         }
         return true;
     }
 
     @Override
     public String toString(){
+
         return "&7#" + this.getId() + " | "
                 + DataManager.getTaskTypeManager().get(this.getTaskTypeId()).getName() + ", "
-                + this.getCreatorName() + ", "
+                + DataManager.getFNPlayerManager().get(this.getCreatorId()).getName() + ", "
                 + this.getTaskName();
     }
 }
