@@ -19,7 +19,6 @@ CREATE TABLE IF NOT EXISTS WorkerTypes (
 CREATE TABLE IF NOT EXISTS Players (
     Id INT NOT NULL AUTO_INCREMENT,
     Name VARCHAR(50) NOT NULL,
-    Reputation INT NOT NULL,
     PRIMARY KEY (Id),
     UNIQUE(Name)
 );
@@ -180,4 +179,4 @@ CREATE TABLE IF NOT EXISTS Churches (
 
 INSERT IGNORE INTO TaskTypes(ID, TypeGroup, Name) VALUES (1, 'Gathering', 'Food'), (2, 'Gathering', 'Resource'), (3, 'Gathering', 'Crafting'), (4, 'Mobs', 'Mobkill');
 INSERT IGNORE INTO WorkerTypes(ID, Name, DisplayName) VALUES (1, 'Mayor', '@Mayor'), (2, 'Helper', '@Helper'), (3, 'Judge', '@Judge'), (4, 'Other', '@Other');
-INSERT IGNORE INTO Players(ID, Name, Reputation) VALUES (1, '%server%', 0);
+INSERT IGNORE INTO Players(ID, Name) VALUES (1, '%server%');
