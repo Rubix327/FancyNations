@@ -13,7 +13,7 @@ public interface ITownManager {
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     boolean exists(int townId);
     boolean exists(String name);
-    void add(Town town);
+    void add(Town dto);
     Town get(int townId);
     Town get(String name);
     void update(int townId, String variable, Object newValue);

@@ -1,40 +1,15 @@
 package me.rubix327.fancynations.data.townhouses;
 
+import me.rubix327.fancynations.data.AbstractProcess;
+
 import java.util.HashMap;
 
-public class TownHouseProcess implements ITownHouseManager{
-    @Override
-    public boolean exists(int houseId) {
-        return false;
+public class TownHouseProcess extends AbstractProcess<TownHouse> implements ITownHouseManager {
+
+    private static final HashMap<Integer, TownHouse> dtos = new HashMap<>();
+
+    public TownHouseProcess() {
+        super(dtos, TownHouse.class);
     }
 
-    @Override
-    public void add(TownHouse house) {
-
-    }
-
-    @Override
-    public TownHouse get(int houseId) {
-        return null;
-    }
-
-    @Override
-    public void update(int houseId, String variable, Object newValue) {
-
-    }
-
-    @Override
-    public void remove(int houseId) {
-
-    }
-
-    @Override
-    public HashMap<Integer, TownHouse> getAll() {
-        return null;
-    }
-
-    @Override
-    public int getMaxId() {
-        return 0;
-    }
 }

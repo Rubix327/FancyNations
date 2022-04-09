@@ -5,11 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import me.rubix327.fancynations.data.DataManager;
-import me.rubix327.fancynations.data.Settings;
+import me.rubix327.fancynations.data.AbstractDto;
+import me.rubix327.fancynations.Settings;
 
 @Getter @Setter(AccessLevel.PACKAGE)
 @AllArgsConstructor
-public class TownWorker {
+public class TownWorker extends AbstractDto {
 
     private static int maxTownWorkerId = 0;
 

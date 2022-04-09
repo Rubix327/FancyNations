@@ -1,40 +1,45 @@
 package me.rubix327.fancynations.data.churches;
 
-import java.util.HashMap;
+import me.rubix327.fancynations.data.AbstractDao;
+import me.rubix327.fancynations.data.DataManager;
 
-public class ChurchDao implements IChurchManager{
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class ChurchDao extends AbstractDao<Church> implements IChurchManager {
+
+    private final String tableName;
+
+    public ChurchDao(String tableName) {
+        super(tableName);
+        this.tableName = tableName;
+    }
+
     @Override
-    public boolean exists(int churchId) {
-        return false;
+    protected Church loadObject(ResultSet resultSet) throws SQLException {
+
+        int id = resultSet.getInt("Id");
+        int townId = resultSet.getInt("Town");
+        String name = resultSet.getString("Name");
+        String location = resultSet.getString("Location");
+        int level = resultSet.getInt("Level");
+
+        return new Church(id, townId, name, DataManager.deserializeLocation(location), level);
     }
 
     @Override
     public void add(Church church) {
+        String query = "INSERT INTO @Table (Town, Name, Location, Level)" +
+                "VALUES(@TownId, '@Name', '@Location', @Level)";
 
+        query = query
+                .replace("@Table", tableName)
+                .replace("@TownId", String.valueOf(church.getTownId()))
+                .replace("@Name", String.valueOf(church.getName()))
+                .replace("@Location", DataManager.serializeLocation(church.getLocation()))
+                .replace("@Level", String.valueOf(church.getLevel()));
+
+        super.executeVoid(query);
     }
 
-    @Override
-    public Church get(int churchId) {
-        return null;
-    }
-
-    @Override
-    public void update(int churchId, String variable, Object newValue) {
-
-    }
-
-    @Override
-    public void remove(int churchId) {
-
-    }
-
-    @Override
-    public HashMap<Integer, Church> getAll() {
-        return null;
-    }
-
-    @Override
-    public int getMaxId() {
-        return 0;
-    }
 }

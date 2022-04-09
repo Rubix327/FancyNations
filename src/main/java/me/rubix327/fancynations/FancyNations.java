@@ -5,11 +5,11 @@ import lombok.NoArgsConstructor;
 import me.rubix327.fancynations.commands.FNCommandGroup;
 import me.rubix327.fancynations.commands.TestCommands;
 import me.rubix327.fancynations.data.DatabaseManager;
-import me.rubix327.fancynations.data.Settings;
 import org.bukkit.Bukkit;
 import org.mineacademy.fo.plugin.SimplePlugin;
 import org.mineacademy.fo.settings.YamlStaticConfig;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,12 +18,14 @@ public final class FancyNations extends SimplePlugin {
 
     @Getter
     private static FancyNations instance;
-
     public DatabaseManager database;
 
     @Override
     protected void onPluginStart() {
         instance = this;
+
+        Localization localization = new Localization();
+        localization.init(Arrays.asList("en", "ru"));
 
         if (Settings.General.DATA_MANAGEMENT_TYPE.equalsIgnoreCase("database")){
             this.database = new DatabaseManager();
@@ -44,6 +46,8 @@ public final class FancyNations extends SimplePlugin {
 
     @Override
     protected void onPluginStop() {
+        instance = null;
+
         if (database.isConnected()){
             database.disconnect();
         }

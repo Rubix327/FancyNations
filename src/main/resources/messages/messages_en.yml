@@ -1,0 +1,5 @@
+# Syntax
+syntax_task_create: '&7Syntax: /fn task create <town_name> <type> <name>'
+
+# Errors
+error_town_not_exist: '&cThis town does not exist.'

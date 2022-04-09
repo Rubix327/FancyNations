@@ -1,8 +1,19 @@
-package me.rubix327.fancynations.data;
+package me.rubix327.fancynations;
 
 import org.mineacademy.fo.settings.SimpleSettings;
 
 public class Settings extends SimpleSettings {
+
+    public static class Messages{
+        public static Boolean USE_PLUGIN_PREFIX;
+        public static Boolean USE_MESSAGE_BASED_PREFIXES;
+        public static String PREFIX_PLUGIN;
+        public static String PREFIX_ERROR;
+        public static String PREFIX_WARNING;
+        public static String PREFIX_INFO;
+        public static String PREFIX_SUCCESS;
+        public static Boolean USE_PLAYER_BASED_LOCALES;
+    }
 
     public static class Database{
         public static String HOST;
@@ -10,6 +21,26 @@ public class Settings extends SimpleSettings {
         public static String DATABASE;
         public static String USERNAME;
         public static String PASSWORD;
+    }
+
+    public static class DbTables{
+        public static String BARRACKS;
+        public static String CHURCHES;
+        public static String DEFEND_TOWERS;
+        public static String FARMS;
+        public static String FN_PLAYERS;
+        public static String NATIONS;
+        public static String OBJECTIVES;
+        public static String TAKEN_TASKS;
+        public static String TASK_PROGRESSES;
+        public static String TASKS;
+        public static String TASK_TYPES;
+        public static String TOWN_HOUSES;
+        public static String TOWN_RESOURCES;
+        public static String TOWNS;
+        public static String TOWN_WORKERS;
+        public static String WORKER_TYPES;
+        public static String WORKSHOPS;
     }
 
     public static class General{
@@ -54,12 +85,41 @@ public class Settings extends SimpleSettings {
     }
 
     private static void init(){
+        pathPrefix("Messages");
+        Messages.USE_PLUGIN_PREFIX = getBoolean("Use_Plugin_Prefix");
+        Messages.USE_MESSAGE_BASED_PREFIXES = getBoolean("Use_Message_Based_Prefixes");
+        Messages.PREFIX_PLUGIN = getString("Prefix_Plugin");
+        Messages.PREFIX_ERROR = getString("Prefix_Error");
+        Messages.PREFIX_WARNING = getString("Prefix_Warning");
+        Messages.PREFIX_INFO = getString("Prefix_Info");
+        Messages.PREFIX_SUCCESS = getString("Prefix_Success");
+        Messages.USE_PLAYER_BASED_LOCALES = getBoolean("Use_Player_Based_Locales");
+
         pathPrefix("Database");
         Database.HOST = getString("Host");
         Database.PORT = getInteger("Port");
         Database.DATABASE = getString("Database");
         Database.USERNAME = getString("Username");
         Database.PASSWORD = getString("Password");
+
+        pathPrefix("DB_Tables");
+        DbTables.BARRACKS = "Barracks";
+        DbTables.CHURCHES = "Churches";
+        DbTables.DEFEND_TOWERS = "DefendTowers";
+        DbTables.FARMS = "Farms";
+        DbTables.FN_PLAYERS = "Players";
+        DbTables.NATIONS = "Nations";
+        DbTables.OBJECTIVES = "Objectives";
+        DbTables.TAKEN_TASKS = "TakenTasks";
+        DbTables.TASK_PROGRESSES = "TaskProgresses";
+        DbTables.TASKS = "Tasks";
+        DbTables.TASK_TYPES = "TaskTypes";
+        DbTables.TOWN_HOUSES = "TownHouses";
+        DbTables.TOWN_RESOURCES = "TownResources";
+        DbTables.TOWNS = "Towns";
+        DbTables.TOWN_WORKERS = "TownWorkers";
+        DbTables.WORKER_TYPES = "WorkerTypes";
+        DbTables.WORKSHOPS = "Workshops";
 
         pathPrefix("General");
         General.DATA_MANAGEMENT_TYPE = getString("Data_Management_Type");

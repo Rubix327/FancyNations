@@ -1,40 +1,15 @@
 package me.rubix327.fancynations.data.barracks;
 
+import me.rubix327.fancynations.data.AbstractProcess;
+
 import java.util.HashMap;
 
-public class BarracksProcess implements IBarracksManager{
-    @Override
-    public boolean exists(int barracksId) {
-        return false;
+public class BarracksProcess extends AbstractProcess<Barracks> implements IBarracksManager {
+
+    private static final HashMap<Integer, Barracks> dtos = new HashMap<>();
+
+    public BarracksProcess() {
+        super(dtos, Barracks.class);
     }
 
-    @Override
-    public void add(Barracks barracks) {
-
-    }
-
-    @Override
-    public Barracks get(int barracksId) {
-        return null;
-    }
-
-    @Override
-    public void update(int barracksId, String variable, Object newValue) {
-
-    }
-
-    @Override
-    public void remove(int barracksId) {
-
-    }
-
-    @Override
-    public HashMap<Integer, Barracks> getAll() {
-        return null;
-    }
-
-    @Override
-    public int getMaxId() {
-        return 0;
-    }
 }

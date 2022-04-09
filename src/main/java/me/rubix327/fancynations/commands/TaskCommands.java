@@ -1,12 +1,16 @@
 package me.rubix327.fancynations.commands;
 
+import me.rubix327.fancynations.Localization;
+import me.rubix327.fancynations.Settings;
 import me.rubix327.fancynations.data.DataManager;
-import me.rubix327.fancynations.data.Settings;
 import me.rubix327.fancynations.data.fnplayers.FNPlayer;
 import me.rubix327.fancynations.data.takentasks.TakenTask;
 import me.rubix327.fancynations.data.tasks.GatheringTask;
+import me.rubix327.fancynations.data.tasks.MobKillTask;
 import me.rubix327.fancynations.data.tasks.Task;
 import me.rubix327.fancynations.data.tasktypes.TaskType;
+import me.rubix327.fancynations.data.tasktypes.TaskTypeDao;
+import me.rubix327.fancynations.data.towns.TownDao;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.experience.EXPSource;
 import org.bukkit.entity.Player;
@@ -41,6 +45,7 @@ public class TaskCommands extends SimpleSubCommand {
     @Override
     protected void onCommand() {
 
+        Localization msgs = Localization.getInstance();
         setPermission("fancynations.task");
         addTellPrefix(false);
 
@@ -52,19 +57,18 @@ public class TaskCommands extends SimpleSubCommand {
         // /fn task create <town_name> <taskType> <taskName>
         if (args[0].equalsIgnoreCase("create")){
             if (args.length < 4) {
-                tell("&cSyntax: /fn task create <town_name> <type> <name>");
+                tell(msgs.get("syntax_task_create", sender));
                 return;
             }
-
             int townId;
             TaskType taskType;
-            if (!DataManager.getTownManager().exists(args[1])){
-                tell("&cThis town does not exist.");
+            if (!((TownDao)DataManager.getTownManager()).exists(args[1])){
+                tell(msgs.get("error_town_not_exist", sender));
                 return;
             }
-            townId = DataManager.getTownManager().get(args[1]).getId();
+            townId = (((TownDao)DataManager.getTownManager()).get(args[1])).getId();
 
-            if (!DataManager.getTaskTypeManager().exists(args[2])){
+            if (!((TaskTypeDao)DataManager.getTaskTypeManager()).exists(args[2])){
                 tell("&cThis task type does not exist." +
                         "\n&cAvailable types: " + DataManager.getTaskTypeManager().getAll().values()
                         .stream().map(Object::toString).collect(Collectors.joining(", ")));
@@ -73,16 +77,19 @@ public class TaskCommands extends SimpleSubCommand {
             taskType = DataManager.getTaskTypeManager().get(args[2]);
 
             String taskName = String.join(" ", Arrays.asList(args).subList(3, args.length));
-            String taskCreatorName = (sender instanceof Player ? getPlayer().getName() : Settings.General.SERVER_VAR);
+            int fnPlayerId = DataManager.getFNPlayerManager().get(getPlayer().getName()).getId();
+            int serverId = DataManager.getFNPlayerManager().get(Settings.General.SERVER_VAR).getId();
+            int taskCreatorId = (sender instanceof Player ? fnPlayerId : serverId);
 
             // Create new Task instance
             if (taskType.getGroup().equalsIgnoreCase("Gathering")){
-                GatheringTask task = new GatheringTask(townId, taskType.getId(), taskCreatorName, taskName);
+                GatheringTask task = new GatheringTask(townId, taskType.getId(), taskCreatorId, taskName);
                 DataManager.getTaskManager().add(task);
             }
-//            else if (taskType.getGroup().equalsIgnoreCase("Mobs")){
-//
-//            }
+            else if (taskType.getGroup().equalsIgnoreCase("Mobs")){
+                MobKillTask task = new MobKillTask(townId, taskType.getId(), taskCreatorId, taskName);
+                DataManager.getTaskManager().add(task);
+            }
 
         }
 
@@ -149,6 +156,7 @@ public class TaskCommands extends SimpleSubCommand {
                 return;
             }
             Task task = DataManager.getTaskManager().get(taskId);
+            FNPlayer fnPlayer = DataManager.getFNPlayerManager().get(task.getCreatorId());
 
             List<String> info = Arrays.asList(
                     "&7Info about task #" + taskId,
@@ -156,7 +164,7 @@ public class TaskCommands extends SimpleSubCommand {
                     "&7Name: " + task.getTaskName(),
                     "&7Type: " + DataManager.getTaskTypeManager().get(task.getTaskTypeId()).getName(),
                     "&7Town: " + DataManager.getTownManager().get(task.getTownId()).getName(),
-                    "&7Created by: " + (task.getCreatorName().equals("%server%") ? "Nation" : task.getCreatorName()),
+                    "&7Created by: " + (fnPlayer.getName().equals("%server%") ? "Nation" : fnPlayer.getName()),
                     "&7Max completions: " + task.getTakeAmount(),
                     "&7Money reward: " + task.getMoneyReward(),
                     "&7Experience reward: " + task.getExpReward(),
@@ -242,10 +250,9 @@ public class TaskCommands extends SimpleSubCommand {
             }
 
             // TODO give money
+            // TODO give reputation
 
             playerData.giveExperience(task.getExpReward(), EXPSource.QUEST, getPlayer().getLocation(), false);
-            DataManager.getFNPlayerManager().update(
-                    fnPlayer.getId(), "reputation", fnPlayer.getReputation() + task.getRepReward());
 
             // TODO if type==gathering then send 50% of resources to town
             // TODO if type==mobkill then ???

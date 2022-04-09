@@ -1,40 +1,45 @@
 package me.rubix327.fancynations.data.workshops;
 
-import java.util.HashMap;
+import me.rubix327.fancynations.data.AbstractDao;
+import me.rubix327.fancynations.data.DataManager;
 
-public class WorkshopDao implements IWorkshopManager{
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class WorkshopDao extends AbstractDao<Workshop> implements IWorkshopManager {
+
+    private final String tableName;
+
+    public WorkshopDao(String tableName) {
+        super(tableName);
+        this.tableName = tableName;
+    }
+
     @Override
-    public boolean exists(int workshopId) {
-        return false;
+    protected Workshop loadObject(ResultSet resultSet) throws SQLException {
+
+        int id = resultSet.getInt("Id");
+        int townId = resultSet.getInt("Town");
+        String name = resultSet.getString("Name");
+        String location = resultSet.getString("Location");
+        int level = resultSet.getInt("Level");
+
+        return new Workshop(id, townId, name, DataManager.deserializeLocation(location), level);
     }
 
     @Override
     public void add(Workshop workshop) {
+        String query = "INSERT INTO @Table (Town, Name, Location, Level, LoadedResource, Amount)" +
+                "VALUES(@TownId, '@Name', '@Location', @Level, '@LoadedResource', @Amount)";
 
+        query = query
+                .replace("@Table", tableName)
+                .replace("@TownId", String.valueOf(workshop.getTownId()))
+                .replace("@Name", String.valueOf(workshop.getName()))
+                .replace("@Location", DataManager.serializeLocation(workshop.getLocation()))
+                .replace("@Level", String.valueOf(workshop.getLevel()));
+
+        super.executeVoid(query);
     }
 
-    @Override
-    public Workshop get(int workshopId) {
-        return null;
-    }
-
-    @Override
-    public void update(int workshopId, String variable, Object newValue) {
-
-    }
-
-    @Override
-    public void remove(int workshopId) {
-
-    }
-
-    @Override
-    public HashMap<Integer, Workshop> getAll() {
-        return null;
-    }
-
-    @Override
-    public int getMaxId() {
-        return 0;
-    }
 }

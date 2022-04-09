@@ -1,62 +1,92 @@
 package me.rubix327.fancynations.data.townworkers;
 
-import org.apache.commons.lang.NotImplementedException;
+import me.rubix327.fancynations.FancyNations;
+import me.rubix327.fancynations.Settings;
+import me.rubix327.fancynations.data.*;
+import me.rubix327.fancynations.data.workertypes.WorkerType;
 
-import java.util.HashMap;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
-public class TownWorkerDao implements ITownWorkerManager{
+public class TownWorkerDao extends AbstractDao<TownWorker> implements ITownWorkerManager {
+
+    private final String tableName;
+
+    public TownWorkerDao(String tableName) {
+        super(tableName);
+        this.tableName = tableName;
+    }
+
     @Override
-    public boolean exists(int townWorkerId) {
-        throw new NotImplementedException();
+    protected TownWorker loadObject(ResultSet resultSet) throws SQLException {
+
+        int id = resultSet.getInt("Id");
+        int playerId = resultSet.getInt("Player");
+        int townId = resultSet.getInt("Town");
+        int workerTypeId = resultSet.getInt("WorkerType");
+        String displayName = resultSet.getString("DisplayName");
+        int salary = resultSet.getInt("Salary");
+
+        return new TownWorker(
+                id, playerId, townId, workerTypeId, displayName, salary);
     }
 
     @Override
     public void add(TownWorker worker) {
-        throw new NotImplementedException();
+        String query = "INSERT INTO @Table (Player, Town, WorkerType, DisplayName, Salary)" +
+                "VALUES(@PlayerID, @TownID, @WorkerTypeID, '@DisplayName', @Salary)";
+
+        query = query
+                .replace("@Table", tableName)
+                .replace("@PlayerID", String.valueOf(worker.getPlayerId()))
+                .replace("@TownID", String.valueOf(worker.getTownId()))
+                .replace("@WorkerTypeID", String.valueOf(worker.getWorkerTypeId()))
+                .replace("@DisplayName", String.valueOf(worker.getDisplayName()))
+                .replace("@Salary", String.valueOf(worker.getSalary()));
+
+        super.executeVoid(query);
     }
 
-    @Override
-    public void remove(int id) {
-        throw new NotImplementedException();
+    public TownWorker getByPlayer(String playerName) throws NullPointerException {
+        int playerId = DataManager.getFNPlayerManager().get(playerName).getId();
+        for (TownWorker worker : getAll().values()){
+            if (worker.getPlayerId() == playerId) return worker;
+        }
+        throw new NullPointerException("Town worker with this player name does not exist.");
     }
 
-    @Override
-    public TownWorker get(int id) throws NullPointerException {
-        throw new NotImplementedException();
+    public boolean isMayor(int playerId) {
+        if (!isWorker(playerId)) return false;
+        return getWorkerType(playerId).getName().equalsIgnoreCase("Mayor");
     }
 
-    @Override
-    public TownWorker get(String playerName) throws IllegalArgumentException {
-        throw new NotImplementedException();
+    public boolean isWorker(int playerId) {
+        String query = "SELECT Id FROM @Table WHERE Player = @PlayerID";
+        query = query
+                .replace("@Table", tableName)
+                .replace("@PlayerID", String.valueOf(playerId));
+        return super.executeBool(query);
     }
 
-    @Override
-    public void update(int townWorkerId, String variable, Object newValue) {
-        throw new NotImplementedException();
-    }
-
-    @Override
-    public boolean isMayor(String playerName) {
-        throw new NotImplementedException();
-    }
-
-    @Override
-    public boolean isWorker(String playerName) {
-        throw new NotImplementedException();
-    }
-
-    @Override
-    public WorkerType getWorkerType(String playerName) throws IllegalArgumentException {
-        throw new NotImplementedException();
-    }
-
-    @Override
-    public HashMap<Integer, TownWorker> getAll() {
-        throw new NotImplementedException();
-    }
-
-    @Override
-    public int getMaxId() {
-        return 0;
+    public WorkerType getWorkerType(int playerId) throws IllegalArgumentException {
+        try{
+            String query = "SELECT @WorkerTypesTable.Id FROM @Table JOIN (@WorkerTypesTable) " +
+                    "ON (@Table.WorkerType = @WorkerTypesTable.Id) WHERE @Table.Player = @PlayerID";
+            query = query
+                    .replace("@Table", tableName)
+                    .replace("@WorkerTypesTable", Settings.DbTables.WORKER_TYPES)
+                    .replace("@PlayerID", String.valueOf(playerId));
+            PreparedStatement ps = FancyNations.getInstance().database.getConnection().
+                    prepareStatement(query);
+            DatabaseManager.logSqlQuery(query);
+            ResultSet resultSet = ps.executeQuery();
+            if (resultSet.next()){
+                DataManager.getWorkerTypeManager().get(resultSet.getInt("Id"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        throw new NullPointerException("Object with this id does not exist. Use Dao.exists() before this method.");
     }
 }
