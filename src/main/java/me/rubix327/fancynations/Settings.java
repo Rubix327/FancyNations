@@ -4,6 +4,17 @@ import org.mineacademy.fo.settings.SimpleSettings;
 
 public class Settings extends SimpleSettings {
 
+    public static class Messages{
+        public static Boolean USE_PLUGIN_PREFIX;
+        public static Boolean USE_MESSAGE_BASED_PREFIXES;
+        public static String PREFIX_PLUGIN;
+        public static String PREFIX_ERROR;
+        public static String PREFIX_WARNING;
+        public static String PREFIX_INFO;
+        public static String PREFIX_SUCCESS;
+        public static Boolean USE_PLAYER_BASED_LOCALES;
+    }
+
     public static class Database{
         public static String HOST;
         public static Integer PORT;
@@ -74,6 +85,16 @@ public class Settings extends SimpleSettings {
     }
 
     private static void init(){
+        pathPrefix("Messages");
+        Messages.USE_PLUGIN_PREFIX = getBoolean("Use_Plugin_Prefix");
+        Messages.USE_MESSAGE_BASED_PREFIXES = getBoolean("Use_Message_Based_Prefixes");
+        Messages.PREFIX_PLUGIN = getString("Prefix_Plugin");
+        Messages.PREFIX_ERROR = getString("Prefix_Error");
+        Messages.PREFIX_WARNING = getString("Prefix_Warning");
+        Messages.PREFIX_INFO = getString("Prefix_Info");
+        Messages.PREFIX_SUCCESS = getString("Prefix_Success");
+        Messages.USE_PLAYER_BASED_LOCALES = getBoolean("Use_Player_Based_Locales");
+
         pathPrefix("Database");
         Database.HOST = getString("Host");
         Database.PORT = getInteger("Port");

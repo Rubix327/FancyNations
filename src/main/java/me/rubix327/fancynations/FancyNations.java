@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.mineacademy.fo.plugin.SimplePlugin;
 import org.mineacademy.fo.settings.YamlStaticConfig;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public final class FancyNations extends SimplePlugin {
         instance = this;
 
         Localization localization = new Localization();
-        localization.loadAllMessages();
+        localization.init(Arrays.asList("en", "ru"));
 
         if (Settings.General.DATA_MANAGEMENT_TYPE.equalsIgnoreCase("database")){
             this.database = new DatabaseManager();

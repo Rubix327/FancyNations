@@ -1,5 +1,5 @@
 # Syntax
-task_create_syntax: '&cСинтаксис: /fn task create <город> <тип_задания> <название>'
+syntax_task_create: '&7Синтаксис: /fn task create <город> <тип_задания> <название>'
 
 # Errors
-town_not_exist: '&cТакого города не существует.'
+error_town_not_exist: '&cТакого города не существует.'

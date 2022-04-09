@@ -1,6 +1,37 @@
+# Do not touch
 Version: 1
+# What locale should server use by default.
+# If specified locale file does not exist in FancyNations/messages then english will be used.
+# Some of locales are available from the box, but for others you should create them yourself.
+# For example, if you set this to 'uk' but messages_uk.yml does not exist in messages/ folder
+# then english will be used until you create this file with your custom messages.
 Locale: en
 
+Messages:
+  # Should we prepend all messages with plugin prefix set on prefix_plugin?
+  Use_Plugin_Prefix: false
+  # Should we prepend every message with its own prefix
+  # depending on type of a message (error, warning, info or success)?
+  Use_Message_Based_Prefixes: true
+
+  # Plugin prefix. Works only if Use_Plugin_Prefix is true
+  Prefix_Plugin: '&8&l[&a&lFancyNations&8&l] '
+  # Prefix for messages starting with 'error_'
+  Prefix_Error: '&8&l[&c✖&8&l] '
+  # Prefix for messages starting with 'warn_'
+  Prefix_Warning: '&8&l[&6&l!&8&l] '
+  # Prefix for messages starting with 'success_'
+  Prefix_Success: '&8&l[&a✔&8&l] '
+  # Prefix for other messages
+  Prefix_Info: '&8&l[&9&li&8&l] '
+
+  # Should we adjust plugin's language to every user.
+  # If false, default server language (Settings.Locale) will be used for all messages.
+  # If true, every message for every player will be in he's in-game set locale.
+  # Of course, it works only if player's localization messages are available in FancyNations/messages folder.
+  Use_Player_Based_Locales: true
+
+# Database connection values
 Database:
   Host: localhost
   Port: 3306
@@ -9,16 +40,22 @@ Database:
   Password: ''
 
 General:
+  # Set 'database' to use DB or 'filesystem' to use files to save data.
   Data_Management_Type: database
+  # How the server's name should look in database.
+  # Please use special characters to not let players join with that name.
   Server_Var: '%server%'
+  # If true, every database request will be printed to console.
   SQL_Debug: false
 
+# Default values when town is created
 Towns:
   Default_Balance: 0
   Default_Stations_Tax: 1.0
   Default_Auction_Tax: 1.0
   Default_Tasks_Tax: 1.0
 
+# Default values when task is created
 Tasks:
   Default_Description: ''
   Default_Take_Amount: 10
@@ -30,6 +67,7 @@ Tasks:
   Default_Priority: 0
   Default_Time_To_Complete: 43200
 
+# Default values when town worker is created
 TownWorkers:
   Mayor_Default_Displayname: 'Mayor'
   Helper_Default_Displayname: 'Helper'
@@ -37,6 +75,7 @@ TownWorkers:
   Other_Default_Displayname: 'Worker'
   Default_Salary: 0
 
+# Default values when town building is created
 TownBuildings:
   Default_Farm_Level: 0
   Default_Defend_Tower_Level: 0

@@ -10,19 +10,15 @@ import org.bukkit.plugin.Plugin;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class Localization {
 
     @Getter
     private static Localization instance;
     private final Plugin plugin;
-
-    /**
-     * A map of the configurable messages
-     */
-    private final Map<String, String> MESSAGES_EN = new HashMap<>();
-    private final Map<String, String> MESSAGES_RU = new HashMap<>();
 
     /**
      * Creates a new message handler instance for this plugin
@@ -32,31 +28,60 @@ public class Localization {
         this.plugin = FancyNations.getInstance();
     }
 
-    protected void loadAllMessages(){
-        loadMessages("messages_en.yml", MESSAGES_EN);
-        loadMessages("messages_ru.yml", MESSAGES_RU);
+    Map<String, Map<String, String>> messagesMap = new HashMap<>();
+
+    public void init(List<String> locales){
+        File messagesFolder = new File(this.plugin.getDataFolder() + "/messages");
+
+        saveFiles(locales);
+        loadFiles(messagesFolder);
     }
 
     /**
-     * Loads the messages from the config file
+     * Save all messages files from .jar to plugin's messages/ folder
+     * @param files What locales should we save
      */
-    private void loadMessages(String file, Map<String, String> messages) {
-        File configFile = new File(this.plugin.getDataFolder() + "/messages", file);
+    private void saveFiles(List<String> files){
+        for (String fileName : files){
+            fileName = "messages_" + fileName + ".yml";
+            File serverFile = new File(this.plugin.getDataFolder() + "/messages", fileName);
+            if (!serverFile.exists())
+                plugin.getLogger().info("Localization " + fileName + " does not exist. " +
+                        "Copying one from plugin's jar...");
+                this.plugin.saveResource("messages/" + fileName, false);
+        }
+    }
+
+    /**
+     * Loads messages from all files from the specified folder
+     * @param folder What plugin's folder should we use
+     */
+    private void loadFiles(final File folder) {
         YamlConfiguration config = new YamlConfiguration();
 
-        if (!configFile.exists())
-            this.plugin.saveResource("messages/" + file, false);
+        for (final File file : Objects.requireNonNull(folder.listFiles())){
+            String langTag;
+            Map<String, String> messages = new HashMap<>();
 
-        try {
-            config.load(configFile);
-        } catch (InvalidConfigurationException | IOException e) {
-            e.printStackTrace();
-            this.plugin.getLogger().severe("Unable to load " + file);
-        }
+            try {
+                config.load(file);
+            } catch (InvalidConfigurationException | IOException e) {
+                e.printStackTrace();
+                this.plugin.getLogger().severe("Unable to load " + file);
+            }
 
-        for (String key : config.getKeys(false)) {
-            messages.put(key, config.getString(key));
+            if (file.isDirectory()) continue;
+            if (!file.getName().startsWith("messages_")) continue;
+            if (!file.getName().endsWith(".yml")) continue;
+            langTag = file.getName().replace("messages_", "").replace(".yml", "");
+            plugin.getLogger().info("Found '" + langTag + "' localization. Loading all keys from the file...");
+
+            for (String key : config.getKeys(false)) {
+                messages.put(key, config.getString(key));
+                messagesMap.put(langTag, messages);
+            }
         }
+        plugin.getLogger().info("All localization files are successfully loaded.");
     }
 
     /**
@@ -70,53 +95,88 @@ public class Localization {
     }
 
     /**
-     * Get a message in sender's language (locale chosen in the game).
+     * <p>Get a message in sender's language (locale chosen in the game).
      * If sender is a player then he's locale will be used.
-     * If sender is anyone else then server's default locale will be used.
-     * Suitable for using when command sender is unknown.
+     * If sender is anyone else then server's default locale will be used.</p>
+     * <b>Suitable when command sender is unknown.</b>
      * @param key The name of the configuration message.
      * @param sender Command sender
      * @return The message.
      */
     public String get(String key, CommandSender sender){
-        String locale = (sender instanceof Player ? ((Player) sender).locale().getLanguage() : Settings.LOCALE_PREFIX);
-        return get(key, locale);
+        if (sender instanceof Player && Settings.Messages.USE_PLAYER_BASED_LOCALES){
+            String playerLang = ((Player) sender).locale().getLanguage();
+            // If player's locale exists then turn it on
+            if (messagesMap.containsKey(playerLang)){
+                return get(key, playerLang);
+            }
+        }
+        // If server's locale exists then turn it on
+        if (messagesMap.containsKey(Settings.LOCALE_PREFIX)){
+            return get(key, Settings.LOCALE_PREFIX);
+        }
+        // If neither player's nor server's locale exists then turn on english
+        return get(key, "en");
     }
 
     /**
-     * Get a message in the specified language.
-     * If this locale does not exist then server default will be used.
-     * Suitable when you want to use specific language.
+     * <p>Get a message in the specified language formatted with prefix.
+     * If this key in this locale does not exist then server's default will be used.
+     * If server's default key does not exist then english will be used.
+     * If the key has not been found in english localization then it will drop an error message.</p>
+     * <b>Suitable when you want to use specific language.</b>
      * @param key The name of the configuration message.
      * @return The message.
      */
     public String get(String key, String locale){
-        Map<String, String> messages = getMessages(locale, false);
+        String msg = messagesMap.get(locale).get(key);
+        int attempts = 1;
 
-        String msg = messages.get(key);
-        if (msg == null){
-            this.plugin.getLogger().severe(
-                    "Unable to find message with key " + key + ". Please make sure all keys are defined!");
-            return "";
+        while (msg == null) {
+            if (attempts == 1) {
+                this.plugin.getLogger().warning(
+                        "Unable to find message with key " + key + " in messages_" + locale + ".yml. " +
+                                "Please make sure all keys are defined!");
+                msg = messagesMap.get(Settings.LOCALE_PREFIX).get(key);
+                attempts += 1;
+            }
+            else if (attempts == 2) {
+                this.plugin.getLogger().warning(
+                        "Unable to find message with key " + key + " in server default messages_" +
+                                Settings.LOCALE_PREFIX + ".yml. Please make sure all keys are defined!");
+                msg = messagesMap.get("en").get(key);
+                attempts += 1;
+            }
+            else if (attempts >= 3) {
+                this.plugin.getLogger().warning(
+                        "Unable to find message with key " + key + " in english messages_en.yml. " +
+                                "Please make sure all keys are defined!");
+                msg = "&cMessage not found in any of messages files (key: " + key + ")." +
+                        " Please contact an administrator.";
+                key = "warn_not_found";
+            }
+        }
+
+        if (Settings.Messages.USE_MESSAGE_BASED_PREFIXES){
+            if (key.startsWith("error")){
+                msg = Settings.Messages.PREFIX_ERROR + msg;
+            }
+            else if (key.startsWith("warn")){
+                msg = Settings.Messages.PREFIX_WARNING + msg;
+            }
+            else if (key.startsWith("success")){
+                msg = Settings.Messages.PREFIX_SUCCESS + msg;
+            }
+            else{
+                msg = Settings.Messages.PREFIX_INFO + msg;
+            }
+        }
+
+        if (Settings.Messages.USE_PLUGIN_PREFIX){
+            msg = Settings.Messages.PREFIX_PLUGIN + msg;
         }
 
         return msg;
-    }
-
-    /**
-     * Get all messages in the specified language.
-     * If this locale does not exist then server default will be used.
-     * If this server's locale does not exist (mistake in settings.yml) then english will be used.
-     * @param locale The name of the configuration message.
-     * @param useServerDefault Should we use server's default locale or not.
-     * @return All messages.
-     */
-    private Map<String, String> getMessages(String locale, boolean useServerDefault){
-        return switch (locale) {
-            case ("ru") -> MESSAGES_RU;
-            case ("en") -> MESSAGES_EN;
-            default -> (useServerDefault ? MESSAGES_EN : getMessages(Settings.LOCALE_PREFIX, true));
-        };
     }
 
 }

@@ -57,14 +57,13 @@ public class TaskCommands extends SimpleSubCommand {
         // /fn task create <town_name> <taskType> <taskName>
         if (args[0].equalsIgnoreCase("create")){
             if (args.length < 4) {
-                tell(msgs.get("task_create_syntax", sender));
+                tell(msgs.get("syntax_task_create", sender));
                 return;
             }
-
             int townId;
             TaskType taskType;
             if (!((TownDao)DataManager.getTownManager()).exists(args[1])){
-                tell(msgs.get("town_not_exist", sender));
+                tell(msgs.get("error_town_not_exist", sender));
                 return;
             }
             townId = (((TownDao)DataManager.getTownManager()).get(args[1])).getId();
