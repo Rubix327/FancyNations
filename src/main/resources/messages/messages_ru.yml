@@ -1,5 +1,27 @@
 # Syntax
-syntax_task_create: '&7Синтаксис: /fn task create <город> <тип_задания> <название>'
+syntax_task_create: 'Синтаксис: /fn task create <город> <тип_задания> <название>'
+syntax_task_remove: 'Синтаксис: /fn task remove <id_задания>'
+syntax_task_set: 'Синтаксис: /fn task set <id_задания> <переменная> <значение>'
+syntax_task_info: 'Синтаксис: /fn task info <id_задания>'
+syntax_task_start: 'Синтаксис: /fn task start <id_задания>'
+syntax_task_finish: 'Синтаксис: /fn task finish <id_задания>'
+syntax_task: 'Синтаксис: /fn task <create/remove/set/info/start/finish/cancel>'
+
+syntax_mayor_assign: 'Синтаксис: /fn mayor assign <город> <игрок>'
 
 # Errors
-error_town_not_exist: '&cТакого города не существует.'
+error_not_enough_permissions: 'У Вас недостаточно прав.'
+
+nerror_task_not_exist: 'Задания с таким ID не существует. \nНапишите /fn task list для просмотра всех заданий.'
+error_task_not_available: 'Это задание больше недоступно.'
+error_level_not_suitable: 'Ваш уровень не подходит для этого задания.\n Ваш уровень: @playerLevel. Требуемый уровень: @taskMinLevel - @taskMaxLevel'
+error_task_already_taken: 'Вы уже взяли это задание.'
+error_task_time_to_complete_expired: 'Время на выполнение задания истекло.'
+error_task_objective_not_completed: 'Вы не выполнили все цели задания.'
+error_task_not_taken: 'Вы не брали это задание.'
+
+error_town_not_exist: 'Такого города не существует.'
+
+error_player_not_exist: 'Этого игрока никогда не было на сервере.'
+
+error_task_type_not_exist: 'Такого типа задания не существует. \nДоступные типы:'

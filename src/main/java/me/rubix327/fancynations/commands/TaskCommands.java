@@ -69,9 +69,9 @@ public class TaskCommands extends SimpleSubCommand {
             townId = (((TownDao)DataManager.getTownManager()).get(args[1])).getId();
 
             if (!((TaskTypeDao)DataManager.getTaskTypeManager()).exists(args[2])){
-                tell("&cThis task type does not exist." +
-                        "\n&cAvailable types: " + DataManager.getTaskTypeManager().getAll().values()
-                        .stream().map(Object::toString).collect(Collectors.joining(", ")));
+                tell(msgs.get("error_task_type_not_exist" +
+                         DataManager.getTaskTypeManager().getAll().values()
+                        .stream().map(Object::toString).collect(Collectors.joining(", ")), sender));
                 return;
             }
             taskType = DataManager.getTaskTypeManager().get(args[2]);
@@ -97,7 +97,7 @@ public class TaskCommands extends SimpleSubCommand {
         else if (args[0].equalsIgnoreCase("remove")){
 
             if (args.length < 2) {
-                tell("&cSyntax: /fn task remove <task_id>");
+                tell(msgs.get("syntax_task_remove" , sender));
                 return;
             }
             int taskId = findNumber(1, "&cTask ID must be a number");
@@ -110,7 +110,7 @@ public class TaskCommands extends SimpleSubCommand {
         else if (args[0].equalsIgnoreCase("set")){
 
             if (args.length < 4) {
-                tell("&cSyntax: /fn task set <task_id> <variable> <value>");
+                tell(msgs.get("syntax_task_set", sender));
                 return;
             }
             int taskId = findNumber(1, "&cTask ID must be a number");
@@ -121,13 +121,13 @@ public class TaskCommands extends SimpleSubCommand {
 
             if (sender instanceof Player){
                 if (!getPlayer().hasPermission("fancynations.task.setvalue." + variable)){
-                    tell("&cYou don't have enough permissions.");
+                    tell(msgs.get("error_not_enough_permissions", sender));
                     return;
                 }
             }
 
             if (!DataManager.getTaskManager().exists(taskId)){
-                tell("&cTask with this ID does not exist.\n&cType /fn tasks to see all tasks.");
+                tell(msgs.get("error_task_not_exist", sender));
                 return;
             }
 
@@ -146,13 +146,13 @@ public class TaskCommands extends SimpleSubCommand {
         else if (args[0].equalsIgnoreCase("info")){
 
             if (args.length < 2) {
-                tell("&cSyntax: /fn task info <task_id>");
+                tell(msgs.get("syntax_task_info", sender));
                 return;
             }
             int taskId = findNumber(1, "&cTask ID must be a number");
 
             if (!DataManager.getTaskManager().exists(taskId)){
-                tell("&cTask with this ID does not exist.\n&cType /fn tasks to see all tasks.");
+                tell(msgs.get("error_task_not_exist", sender));
                 return;
             }
             Task task = DataManager.getTaskManager().get(taskId);
@@ -183,32 +183,34 @@ public class TaskCommands extends SimpleSubCommand {
             PlayerData playerData = PlayerData.get(getPlayer().getUniqueId());
 
             if (args.length < 2) {
-                tell("&cSyntax: /fn task start <task_id>");
+                tell(msgs.get("syntax_task_start", sender));
                 return;
             }
             int taskId = findNumber(2, "&cTask ID must be a number.");
 
             if (!DataManager.getTaskManager().exists(taskId)){
-                tell("&cThis task does not exist.");
+                tell(msgs.get("error_task_not_exist", sender));
                 return;
             }
             Task task = DataManager.getTaskManager().get(taskId);
 
             if (task.getTakeAmount() <= 0){
-                tell("&cThis task is not available anymore.");
+                tell(msgs.get("error_task_not_available", sender));
             }
 
             if (playerData.getLevel() < task.getMinLevel() || playerData.getLevel() > task.getMaxLevel()){
-                tell("&cYour level is not suitable for this task.\n" +
-                        "&cYour level: " + playerData.getLevel() + ". Required: " +
-                        task.getMinLevel() + " - " + task.getMaxLevel());
+                String msg1 = msgs.get("error_level_not_suitable", sender);
+                msg1 = msg1.replace("@playerLevel", String.valueOf(playerData.getLevel()))
+                                .replace("@playerMinLevel", String.valueOf(task.getMinLevel()))
+                                .replace("@playerMaxLevel", String.valueOf(task.getMaxLevel()));
+                tell(msg1);
                 return;
             }
 
             // If player own this task already
             FNPlayer fnPlayer = DataManager.getFNPlayerManager().get(getPlayer().getName());
             if (DataManager.getTakenTaskManager().exists(fnPlayer.getId(), taskId)){
-                tell("&cYou already have this task.");
+                tell(msgs.get("error_task_already_taken", sender));
                 return;
             }
 
@@ -219,33 +221,33 @@ public class TaskCommands extends SimpleSubCommand {
             PlayerData playerData = PlayerData.get(getPlayer().getUniqueId());
 
             if (args.length < 2) {
-                tell("&cSyntax: /fn task finish <task_id>");
+                tell(msgs.get("syntax_task_finish", sender));
                 return;
             }
             int taskId = findNumber(2, "&cTask ID must be a number.");
 
             if (!DataManager.getTaskManager().exists(taskId)){
-                tell("&cThis task does not exist.");
+                tell(msgs.get("error_task_not_exist", sender));
                 return;
             }
             Task task = DataManager.getTaskManager().get(taskId);
 
             if (task.getPlacementDateTime().getNanos() + task.getTimeToComplete() < LocalDateTime.now().getNano()){
-                tell("&cYour time for this task has expired.");
+                tell(msgs.get("error_task_time_to_complete_expired", sender));
                 // TODO automatically takeAmount += 1 when task expires
                 // TODO automatically remove takentask from player when task expires
                 return;
             }
 
             if (!task.isAllObjectivesCompleted(getPlayer(), taskId)){
-                tell("&cYou haven't completed all the objectives yet.");
+                tell(msgs.get("error_task_objective_not_completed", sender));
                 return;
             }
 
             // If player does not own this task
             FNPlayer fnPlayer = DataManager.getFNPlayerManager().get(getPlayer().getName());
             if (!DataManager.getTakenTaskManager().exists(fnPlayer.getId(), taskId)){
-                tell("&cYou don't have this task.");
+                tell(msgs.get("error_task_not_taken", sender));
                 return;
             }
 
@@ -262,7 +264,7 @@ public class TaskCommands extends SimpleSubCommand {
         }
 
         else{
-            tell("&cSyntax: /fn task <create/remove/set/info/start/finish/cancel>");
+            tell(msgs.get("syntax_task", sender));
             return;
         }
     }
