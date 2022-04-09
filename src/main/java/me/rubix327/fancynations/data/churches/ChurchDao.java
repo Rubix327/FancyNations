@@ -8,11 +8,17 @@ import java.sql.SQLException;
 
 public class ChurchDao extends AbstractDao<Church> implements IChurchManager {
 
-    private final String tableName;
+    private static ChurchDao instance = null;
 
-    public ChurchDao(String tableName) {
-        super(tableName);
-        this.tableName = tableName;
+    private ChurchDao(String table) {
+        super(table);
+    }
+
+    public static ChurchDao getInstance(String tableName){
+        if (instance == null){
+            instance = new ChurchDao(tableName);
+        }
+        return instance;
     }
 
     @Override
@@ -33,7 +39,7 @@ public class ChurchDao extends AbstractDao<Church> implements IChurchManager {
                 "VALUES(@TownId, '@Name', '@Location', @Level)";
 
         query = query
-                .replace("@Table", tableName)
+                .replace("@Table", table)
                 .replace("@TownId", String.valueOf(church.getTownId()))
                 .replace("@Name", String.valueOf(church.getName()))
                 .replace("@Location", DataManager.serializeLocation(church.getLocation()))

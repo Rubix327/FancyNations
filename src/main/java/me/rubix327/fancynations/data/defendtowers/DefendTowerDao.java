@@ -8,11 +8,17 @@ import java.sql.SQLException;
 
 public class DefendTowerDao extends AbstractDao<DefendTower> implements IDefendTowerManager {
 
-    private final String tableName;
+    private static DefendTowerDao instance = null;
 
-    public DefendTowerDao(String tableName) {
-        super(tableName);
-        this.tableName = tableName;
+    private DefendTowerDao(String table) {
+        super(table);
+    }
+
+    public static DefendTowerDao getInstance(String tableName){
+        if (instance == null){
+            instance = new DefendTowerDao(tableName);
+        }
+        return instance;
     }
 
     @Override
@@ -36,7 +42,7 @@ public class DefendTowerDao extends AbstractDao<DefendTower> implements IDefendT
                 "VALUES(@TownId, '@Name', '@Location', @Level, '@LoadedResource', @Amount)";
 
         query = query
-                .replace("@Table", tableName)
+                .replace("@Table", table)
                 .replace("@TownId", String.valueOf(tower.getTownId()))
                 .replace("@Name", String.valueOf(tower.getName()))
                 .replace("@Location", DataManager.serializeLocation(tower.getLocation()))

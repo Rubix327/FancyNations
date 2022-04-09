@@ -1,5 +1,27 @@
 # Syntax
-syntax_task_create: '&7Syntax: /fn task create <town_name> <type> <name>'
+syntax_task_create: 'Syntax: /fn task create <town_name> <type> <name>'
+syntax_task_remove: 'Syntax: /fn task remove <task_id>'
+syntax_task_set: 'Syntax: /fn task set <task_id> <variable> <value>'
+syntax_task_info: 'Syntax: /fn task info <task_id>'
+syntax_task_start: 'Syntax: /fn task start <task_id>'
+syntax_task_finish: 'Syntax: /fn task finish <task_id>'
+syntax_task: 'Syntax: /fn task <create/remove/set/info/start/finish/cancel>'
+
+syntax_mayor_assign: 'Syntax: /fn mayor assign <town_name> <player_name>'
 
 # Errors
-error_town_not_exist: '&cThis town does not exist.'
+error_not_enough_permissions: 'You do not have enough permissions.'
+
+nerror_task_not_exist: 'Task with this ID does not exist. \nType /fn task list to see ll tasks.'
+error_task_not_available: 'This task is not available anymore.'
+error_level_not_suitable: 'Your level is not suitable for this task.\n Your level: @playerLevel. Required: @taskMinLevel - @taskMaxLevel'
+error_task_already_taken: 'You already have this task.'
+error_task_time_to_complete_expired: 'Your time for this task has expired.'
+error_task_objective_not_completed: 'You have not completed all the objectives yet.'
+error_task_not_taken: 'You do not have this task.'
+
+error_town_not_exist: 'This town does not exist.'
+
+error_player_not_exist: 'This player never has been on the server.'
+
+error_task_type_not_exist: 'This task type does not exist. \nAvailable types:'

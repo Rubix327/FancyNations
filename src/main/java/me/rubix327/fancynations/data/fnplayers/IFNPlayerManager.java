@@ -1,6 +1,7 @@
 package me.rubix327.fancynations.data.fnplayers;
 
 import java.util.HashMap;
+import java.util.List;
 
 public interface IFNPlayerManager {
 
@@ -13,5 +14,6 @@ public interface IFNPlayerManager {
     void remove(int playerId);
     HashMap<Integer, FNPlayer> getAll();
     int getMaxId();
+    List<String> getNames();
 
 }

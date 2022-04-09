@@ -7,11 +7,17 @@ import java.sql.SQLException;
 
 public class FNPlayerDao extends AbstractDao<FNPlayer> implements IFNPlayerManager {
 
-    private final String tableName;
+    private static FNPlayerDao instance = null;
 
-    public FNPlayerDao(String tableName) {
-        super(tableName);
-        this.tableName = tableName;
+    private FNPlayerDao(String table) {
+        super(table);
+    }
+
+    public static FNPlayerDao getInstance(String tableName){
+        if (instance == null){
+            instance = new FNPlayerDao(tableName);
+        }
+        return instance;
     }
 
     @Override
@@ -28,7 +34,7 @@ public class FNPlayerDao extends AbstractDao<FNPlayer> implements IFNPlayerManag
         String query = "INSERT INTO @Table (Name, Reputation) VALUES ('@Name', @Reputation)";
 
         query = query
-                .replace("@Table", tableName)
+                .replace("@Table", table)
                 .replace("@Name", player.getName());
 
         super.executeVoid(query);

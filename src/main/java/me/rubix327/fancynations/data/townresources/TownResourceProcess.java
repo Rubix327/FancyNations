@@ -2,14 +2,19 @@ package me.rubix327.fancynations.data.townresources;
 
 import me.rubix327.fancynations.data.AbstractProcess;
 
-import java.util.HashMap;
-
 public class TownResourceProcess extends AbstractProcess<TownResource> implements ITownResourceManager {
 
-    private static final HashMap<Integer, TownResource> dtos = new HashMap<>();
+    private static TownResourceProcess instance = null;
 
-    public TownResourceProcess() {
-        super(dtos, TownResource.class);
+    private TownResourceProcess() {
+        super(TownResource.class);
+    }
+
+    public static TownResourceProcess getInstance(){
+        if (instance == null){
+            instance = new TownResourceProcess();
+        }
+        return instance;
     }
 
 }

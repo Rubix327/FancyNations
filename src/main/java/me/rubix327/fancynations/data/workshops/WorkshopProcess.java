@@ -2,14 +2,19 @@ package me.rubix327.fancynations.data.workshops;
 
 import me.rubix327.fancynations.data.AbstractProcess;
 
-import java.util.HashMap;
-
 public class WorkshopProcess extends AbstractProcess<Workshop> implements IWorkshopManager {
 
-    private static final HashMap<Integer, Workshop> dtos = new HashMap<>();
+    private static WorkshopProcess instance = null;
 
-    public WorkshopProcess() {
-        super(dtos, Workshop.class);
+    private WorkshopProcess() {
+        super(Workshop.class);
+    }
+
+    public static WorkshopProcess getInstance(){
+        if (instance == null){
+            instance = new WorkshopProcess();
+        }
+        return instance;
     }
 
 }

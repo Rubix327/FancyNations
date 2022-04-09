@@ -17,13 +17,13 @@ Messages:
   # Plugin prefix. Works only if Use_Plugin_Prefix is true
   Prefix_Plugin: '&8&l[&a&lFancyNations&8&l] '
   # Prefix for messages starting with 'error_'
-  Prefix_Error: '&8&l[&c✖&8&l] '
+  Prefix_Error: '&8&l[&c✖&8&l] &c'
   # Prefix for messages starting with 'warn_'
-  Prefix_Warning: '&8&l[&6&l!&8&l] '
+  Prefix_Warning: '&8&l[&6&l!&8&l] &6'
   # Prefix for messages starting with 'success_'
-  Prefix_Success: '&8&l[&a✔&8&l] '
+  Prefix_Success: '&8&l[&a✔&8&l] &a'
   # Prefix for other messages
-  Prefix_Info: '&8&l[&9&li&8&l] '
+  Prefix_Info: '&8&l[&9&li&8&l] &7'
 
   # Should we adjust plugin's language to every user.
   # If false, default server language (Settings.Locale) will be used for all messages.

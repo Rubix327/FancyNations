@@ -2,14 +2,19 @@ package me.rubix327.fancynations.data.defendtowers;
 
 import me.rubix327.fancynations.data.AbstractProcess;
 
-import java.util.HashMap;
-
 public class DefendTowerProcess extends AbstractProcess<DefendTower> implements IDefendTowerManager {
 
-    private static final HashMap<Integer, DefendTower> dtos = new HashMap<>();
+    private static DefendTowerProcess instance = null;
 
-    public DefendTowerProcess() {
-        super(dtos, DefendTower.class);
+    private DefendTowerProcess() {
+        super(DefendTower.class);
+    }
+
+    public static DefendTowerProcess getInstance(){
+        if (instance == null){
+            instance = new DefendTowerProcess();
+        }
+        return instance;
     }
 
 }

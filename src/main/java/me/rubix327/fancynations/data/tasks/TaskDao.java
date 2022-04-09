@@ -9,11 +9,17 @@ import java.sql.Timestamp;
 
 public class TaskDao extends AbstractDao<Task> implements ITaskManager {
 
-    private final String tableName;
+    private static TaskDao instance = null;
 
-    public TaskDao(String tableName) {
-        super(tableName);
-        this.tableName = tableName;
+    private TaskDao(String table) {
+        super(table);
+    }
+
+    public static TaskDao getInstance(String tableName){
+        if (instance == null){
+            instance = new TaskDao(tableName);
+        }
+        return instance;
     }
 
     @Override
@@ -55,7 +61,7 @@ public class TaskDao extends AbstractDao<Task> implements ITaskManager {
                 "'@PlacementDateTime', @TimeToComplete, @Priority)";
 
         query = query
-                .replace("@Table", tableName)
+                .replace("@Table", table)
                 .replace("@TownId", String.valueOf(task.getTownId()))
                 .replace("@TaskTypeId", String.valueOf(task.getTaskTypeId()))
                 .replace("@TaskName", task.getTaskName())

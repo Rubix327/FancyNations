@@ -8,11 +8,17 @@ import java.sql.SQLException;
 
 public class FarmDao extends AbstractDao<Farm> implements IFarmManager {
 
-    private final String tableName;
+    private static FarmDao instance = null;
 
-    public FarmDao(String tableName) {
-        super(tableName);
-        this.tableName = tableName;
+    private FarmDao(String table) {
+        super(table);
+    }
+
+    public static FarmDao getInstance(String tableName){
+        if (instance == null){
+            instance = new FarmDao(tableName);
+        }
+        return instance;
     }
 
     @Override
@@ -35,7 +41,7 @@ public class FarmDao extends AbstractDao<Farm> implements IFarmManager {
                 "VALUES(@TownId, '@Name', '@Location', @Level, '@LoadedResource', @Amount)";
 
         query = query
-                .replace("@Table", tableName)
+                .replace("@Table", table)
                 .replace("@TownId", String.valueOf(farm.getTownId()))
                 .replace("@Name", String.valueOf(farm.getName()))
                 .replace("@Location", DataManager.serializeLocation(farm.getLocation()))

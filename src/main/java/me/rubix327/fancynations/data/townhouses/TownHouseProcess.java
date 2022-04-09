@@ -2,14 +2,19 @@ package me.rubix327.fancynations.data.townhouses;
 
 import me.rubix327.fancynations.data.AbstractProcess;
 
-import java.util.HashMap;
-
 public class TownHouseProcess extends AbstractProcess<TownHouse> implements ITownHouseManager {
 
-    private static final HashMap<Integer, TownHouse> dtos = new HashMap<>();
+    private static TownHouseProcess instance = null;
 
-    public TownHouseProcess() {
-        super(dtos, TownHouse.class);
+    private TownHouseProcess() {
+        super(TownHouse.class);
+    }
+
+    public static TownHouseProcess getInstance(){
+        if (instance == null){
+            instance = new TownHouseProcess();
+        }
+        return instance;
     }
 
 }

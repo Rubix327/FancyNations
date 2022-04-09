@@ -1,22 +1,25 @@
 package me.rubix327.fancynations.data.objectives;
 
-import me.rubix327.fancynations.FancyNations;
 import me.rubix327.fancynations.data.AbstractDao;
 import me.rubix327.fancynations.data.DataManager;
-import me.rubix327.fancynations.data.DatabaseManager;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 
 public class ObjectivesDao extends AbstractDao<Objective> implements IObjectivesManager {
 
-    private final String tableName;
+    private static ObjectivesDao instance = null;
 
-    public ObjectivesDao(String tableName) {
-        super(tableName);
-        this.tableName = tableName;
+    private ObjectivesDao(String table) {
+        super(table);
+    }
+
+    public static ObjectivesDao getInstance(String tableName){
+        if (instance == null){
+            instance = new ObjectivesDao(tableName);
+        }
+        return instance;
     }
 
     @Override
@@ -34,7 +37,7 @@ public class ObjectivesDao extends AbstractDao<Objective> implements IObjectives
         String query = "INSERT INTO @Table (TakenTask, Name, Amount) VALUES (@TakenTask, '@Name', @Amount)";
 
         query = query
-                .replace("@Table", tableName)
+                .replace("@Table", table)
                 .replace("@TakenTask", String.valueOf(objective.getTakenTaskId()))
                 .replace("@Name", objective.getName())
                 .replace("@Amount", String.valueOf(objective.getAmount()));
@@ -46,25 +49,12 @@ public class ObjectivesDao extends AbstractDao<Objective> implements IObjectives
         int playerId = DataManager.getFNPlayerManager().get(playerName).getId();
         int takenTaskId = DataManager.getTakenTaskManager().get(playerId, taskId).getId();
 
-        try{
-            String query = "SELECT * FROM @Table WHERE TakenTask = @TakenTaskID";
-            query = query
-                    .replace("@Table", tableName)
-                    .replace("@TakenTaskID", String.valueOf(takenTaskId));
-            PreparedStatement ps = FancyNations.getInstance().database.getConnection().
-                    prepareStatement(query);
-            DatabaseManager.logSqlQuery(query);
+        String query = "SELECT * FROM @Table WHERE TakenTask = @TakenTaskID";
+        query = query
+                .replace("@Table", table)
+                .replace("@TakenTaskID", String.valueOf(takenTaskId));
 
-            ResultSet resultSet = ps.executeQuery();
-            HashMap<Integer, Objective> objectives = new HashMap<>();
-            while (resultSet.next()){
-                objectives.put(resultSet.getInt("Id"), loadObject(resultSet));
-            }
-            return objectives;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        throw new NullPointerException("Something went wrong.");
+        return executeAllObjects(query);
     }
 
 }

@@ -7,11 +7,17 @@ import java.sql.SQLException;
 
 public class NationDao extends AbstractDao<Nation> implements INationManager {
 
-    private final String tableName;
+    private static NationDao instance = null;
 
-    public NationDao(String tableName) {
-        super(tableName);
-        this.tableName = tableName;
+    private NationDao(String table) {
+        super(table);
+    }
+
+    public static NationDao getInstance(String tableName){
+        if (instance == null){
+            instance = new NationDao(tableName);
+        }
+        return instance;
     }
 
     @Override
@@ -28,7 +34,7 @@ public class NationDao extends AbstractDao<Nation> implements INationManager {
         String query = "INSERT INTO @Table (Name) VALUES ('@Name')";
 
         query = query
-                .replace("@Table", tableName)
+                .replace("@Table", table)
                 .replace("@Name", nation.getName());
 
         super.executeVoid(query);

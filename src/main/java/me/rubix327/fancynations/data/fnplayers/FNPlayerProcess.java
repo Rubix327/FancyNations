@@ -2,14 +2,19 @@ package me.rubix327.fancynations.data.fnplayers;
 
 import me.rubix327.fancynations.data.AbstractProcess;
 
-import java.util.HashMap;
-
 public class FNPlayerProcess extends AbstractProcess<FNPlayer> implements IFNPlayerManager {
 
-    private static final HashMap<Integer, FNPlayer> dtos = new HashMap<>();
+    private static FNPlayerProcess instance = null;
 
-    public FNPlayerProcess() {
-        super(dtos, FNPlayer.class);
+    private FNPlayerProcess() {
+        super(FNPlayer.class);
+    }
+
+    public static FNPlayerProcess getInstance(){
+        if (instance == null){
+            instance = new FNPlayerProcess();
+        }
+        return instance;
     }
 
 }

@@ -8,11 +8,17 @@ import java.sql.SQLException;
 
 public class WorkshopDao extends AbstractDao<Workshop> implements IWorkshopManager {
 
-    private final String tableName;
+    private static WorkshopDao instance = null;
 
-    public WorkshopDao(String tableName) {
-        super(tableName);
-        this.tableName = tableName;
+    private WorkshopDao(String table) {
+        super(table);
+    }
+
+    public static WorkshopDao getInstance(String tableName){
+        if (instance == null){
+            instance = new WorkshopDao(tableName);
+        }
+        return instance;
     }
 
     @Override
@@ -33,7 +39,7 @@ public class WorkshopDao extends AbstractDao<Workshop> implements IWorkshopManag
                 "VALUES(@TownId, '@Name', '@Location', @Level, '@LoadedResource', @Amount)";
 
         query = query
-                .replace("@Table", tableName)
+                .replace("@Table", table)
                 .replace("@TownId", String.valueOf(workshop.getTownId()))
                 .replace("@Name", String.valueOf(workshop.getName()))
                 .replace("@Location", DataManager.serializeLocation(workshop.getLocation()))

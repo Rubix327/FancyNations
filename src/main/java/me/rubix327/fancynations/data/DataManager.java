@@ -62,15 +62,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
 @Getter
 public class DataManager {
-
-    public static final List<String> gatheringTypes = Arrays.asList("food", "resource", "crafting");
-    public static final List<String> mobkillTypes = Collections.singletonList("mobkill");
 
     public static boolean isDatabaseChosen(){
         if (Settings.General.DATA_MANAGEMENT_TYPE.equalsIgnoreCase("database")){
@@ -80,71 +76,71 @@ public class DataManager {
     }
 
     public static IBarracksManager getBarracksManager(){
-        return (isDatabaseChosen() ? new BarracksDao(Settings.DbTables.BARRACKS) : new BarracksProcess());
+        return (isDatabaseChosen() ? BarracksDao.getInstance(Settings.DbTables.BARRACKS) : BarracksProcess.getInstance());
     }
 
     public static IChurchManager getChurchManager(){
-        return (isDatabaseChosen() ? new ChurchDao(Settings.DbTables.CHURCHES) : new ChurchProcess());
+        return (isDatabaseChosen() ? ChurchDao.getInstance(Settings.DbTables.CHURCHES) : ChurchProcess.getInstance());
     }
 
     public static IDefendTowerManager getDefendTowerManager(){
-        return (isDatabaseChosen() ? new DefendTowerDao(Settings.DbTables.DEFEND_TOWERS) : new DefendTowerProcess());
+        return (isDatabaseChosen() ? DefendTowerDao.getInstance(Settings.DbTables.DEFEND_TOWERS) : DefendTowerProcess.getInstance());
     }
 
     public static IFarmManager getFarmManager(){
-        return (isDatabaseChosen() ? new FarmDao(Settings.DbTables.FARMS) : new FarmProcess());
+        return (isDatabaseChosen() ? FarmDao.getInstance(Settings.DbTables.FARMS) : FarmProcess.getInstance());
     }
 
     public static IFNPlayerManager getFNPlayerManager(){
-        return (isDatabaseChosen() ? new FNPlayerDao(Settings.DbTables.FN_PLAYERS) : new FNPlayerProcess());
+        return (isDatabaseChosen() ? FNPlayerDao.getInstance(Settings.DbTables.FN_PLAYERS) : FNPlayerProcess.getInstance());
     }
 
     public static INationManager getNationManager(){
-        return (isDatabaseChosen() ? new NationDao(Settings.DbTables.NATIONS) : new NationProcess());
+        return (isDatabaseChosen() ? NationDao.getInstance(Settings.DbTables.NATIONS) : NationProcess.getInstance());
     }
 
     public static IObjectivesManager getObjectivesManager(){
-        return (isDatabaseChosen() ? new ObjectivesDao(Settings.DbTables.OBJECTIVES) : new ObjectivesProcess());
+        return (isDatabaseChosen() ? ObjectivesDao.getInstance(Settings.DbTables.OBJECTIVES) : ObjectivesProcess.getInstance());
     }
 
     public static ITakenTaskManager getTakenTaskManager(){
-        return (isDatabaseChosen() ? new TakenTaskDao(Settings.DbTables.TAKEN_TASKS) : new TakenTaskProcess());
+        return (isDatabaseChosen() ? TakenTaskDao.getInstance(Settings.DbTables.TAKEN_TASKS) : TakenTaskProcess.getInstance());
     }
 
     public static ITaskProgressManager getTaskProgressManager(){
-        return (isDatabaseChosen() ? new TaskProgressDao(Settings.DbTables.TASK_PROGRESSES) : new TaskProgressProcess());
+        return (isDatabaseChosen() ? TaskProgressDao.getInstance(Settings.DbTables.TASK_PROGRESSES) : TaskProgressProcess.getInstance());
     }
 
     public static ITaskManager getTaskManager(){
-        return (isDatabaseChosen() ? new TaskDao(Settings.DbTables.TASKS) : new TaskProcess());
+        return (isDatabaseChosen() ? TaskDao.getInstance(Settings.DbTables.TASKS) : TaskProcess.getInstance());
     }
 
     public static ITaskTypeManager getTaskTypeManager(){
-        return (isDatabaseChosen() ? new TaskTypeDao(Settings.DbTables.TASK_TYPES) : new TaskTypeProcess());
+        return (isDatabaseChosen() ? TaskTypeDao.getInstance(Settings.DbTables.TASK_TYPES) : TaskTypeProcess.getInstance());
     }
 
     public static ITownHouseManager getTownHouseManager(){
-        return (isDatabaseChosen() ? new TownHouseDao(Settings.DbTables.TOWN_HOUSES) : new TownHouseProcess());
+        return (isDatabaseChosen() ? TownHouseDao.getInstance(Settings.DbTables.TOWN_HOUSES) : TownHouseProcess.getInstance());
     }
 
     public static ITownResourceManager getTownResourceManager(){
-        return (isDatabaseChosen() ? new TownResourceDao(Settings.DbTables.TOWN_RESOURCES) : new TownResourceProcess());
+        return (isDatabaseChosen() ? TownResourceDao.getInstance(Settings.DbTables.TOWN_RESOURCES) : TownResourceProcess.getInstance());
     }
 
     public static ITownManager getTownManager(){
-        return (isDatabaseChosen() ? new TownDao(Settings.DbTables.TOWNS) : new TownProcess());
+        return (isDatabaseChosen() ? TownDao.getInstance(Settings.DbTables.TOWNS) : TownProcess.getInstance());
     }
 
     public static ITownWorkerManager getTownWorkerManager(){
-        return (isDatabaseChosen() ? new TownWorkerDao(Settings.DbTables.TOWN_WORKERS) : new TownWorkerProcess());
+        return (isDatabaseChosen() ? TownWorkerDao.getInstance(Settings.DbTables.TOWN_WORKERS) : TownWorkerProcess.getInstance());
     }
 
     public static IWorkerTypeManager getWorkerTypeManager(){
-        return (isDatabaseChosen() ? new WorkerTypeDao(Settings.DbTables.WORKER_TYPES) : new WorkerTypeProcess());
+        return (isDatabaseChosen() ? WorkerTypeDao.getInstance(Settings.DbTables.WORKER_TYPES) : WorkerTypeProcess.getInstance());
     }
 
     public static IWorkshopManager getWorkshopManager(){
-        return (isDatabaseChosen() ? new WorkshopDao(Settings.DbTables.WORKSHOPS) : new WorkshopProcess());
+        return (isDatabaseChosen() ? WorkshopDao.getInstance(Settings.DbTables.WORKSHOPS) : WorkshopProcess.getInstance());
     }
 
     /**

@@ -2,7 +2,9 @@ package me.rubix327.fancynations.data.townworkers;
 
 import me.rubix327.fancynations.FancyNations;
 import me.rubix327.fancynations.Settings;
-import me.rubix327.fancynations.data.*;
+import me.rubix327.fancynations.data.AbstractDao;
+import me.rubix327.fancynations.data.DataManager;
+import me.rubix327.fancynations.data.DatabaseManager;
 import me.rubix327.fancynations.data.workertypes.WorkerType;
 
 import java.sql.PreparedStatement;
@@ -11,11 +13,17 @@ import java.sql.SQLException;
 
 public class TownWorkerDao extends AbstractDao<TownWorker> implements ITownWorkerManager {
 
-    private final String tableName;
+    private static TownWorkerDao instance = null;
 
-    public TownWorkerDao(String tableName) {
-        super(tableName);
-        this.tableName = tableName;
+    private TownWorkerDao(String table) {
+        super(table);
+    }
+
+    public static TownWorkerDao getInstance(String tableName){
+        if (instance == null){
+            instance = new TownWorkerDao(tableName);
+        }
+        return instance;
     }
 
     @Override
@@ -38,7 +46,7 @@ public class TownWorkerDao extends AbstractDao<TownWorker> implements ITownWorke
                 "VALUES(@PlayerID, @TownID, @WorkerTypeID, '@DisplayName', @Salary)";
 
         query = query
-                .replace("@Table", tableName)
+                .replace("@Table", table)
                 .replace("@PlayerID", String.valueOf(worker.getPlayerId()))
                 .replace("@TownID", String.valueOf(worker.getTownId()))
                 .replace("@WorkerTypeID", String.valueOf(worker.getWorkerTypeId()))
@@ -64,7 +72,7 @@ public class TownWorkerDao extends AbstractDao<TownWorker> implements ITownWorke
     public boolean isWorker(int playerId) {
         String query = "SELECT Id FROM @Table WHERE Player = @PlayerID";
         query = query
-                .replace("@Table", tableName)
+                .replace("@Table", table)
                 .replace("@PlayerID", String.valueOf(playerId));
         return super.executeBool(query);
     }
@@ -74,7 +82,7 @@ public class TownWorkerDao extends AbstractDao<TownWorker> implements ITownWorke
             String query = "SELECT @WorkerTypesTable.Id FROM @Table JOIN (@WorkerTypesTable) " +
                     "ON (@Table.WorkerType = @WorkerTypesTable.Id) WHERE @Table.Player = @PlayerID";
             query = query
-                    .replace("@Table", tableName)
+                    .replace("@Table", table)
                     .replace("@WorkerTypesTable", Settings.DbTables.WORKER_TYPES)
                     .replace("@PlayerID", String.valueOf(playerId));
             PreparedStatement ps = FancyNations.getInstance().database.getConnection().

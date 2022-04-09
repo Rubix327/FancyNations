@@ -1,24 +1,27 @@
 package me.rubix327.fancynations.data.townworkers;
 
-import lombok.Getter;
 import me.rubix327.fancynations.data.AbstractProcess;
 import me.rubix327.fancynations.data.DataManager;
 import me.rubix327.fancynations.data.fnplayers.FNPlayer;
 import me.rubix327.fancynations.data.workertypes.WorkerType;
 
-import java.util.HashMap;
-
 public class TownWorkerProcess extends AbstractProcess<TownWorker> implements ITownWorkerManager {
 
-    @Getter
-    private static final HashMap<Integer, TownWorker> dtos = new HashMap<>();
+    private static TownWorkerProcess instance = null;
 
-    public TownWorkerProcess() {
-        super(dtos, TownWorker.class);
+    private TownWorkerProcess() {
+        super(TownWorker.class);
+    }
+
+    public static TownWorkerProcess getInstance(){
+        if (instance == null){
+            instance = new TownWorkerProcess();
+        }
+        return instance;
     }
 
     public TownWorker get(String playerName) throws IllegalArgumentException{
-        for (TownWorker worker : dtos.values()){
+        for (TownWorker worker : getAll().values()){
             FNPlayer fnPlayer = DataManager.getFNPlayerManager().get(worker.getPlayerId());
             if (fnPlayer.getName().equalsIgnoreCase(playerName)) return worker;
         }
@@ -31,7 +34,7 @@ public class TownWorkerProcess extends AbstractProcess<TownWorker> implements IT
     }
 
     public boolean isWorker(int playerId){
-        for (TownWorker worker : dtos.values()){
+        for (TownWorker worker : getAll().values()){
             FNPlayer fnPlayer = DataManager.getFNPlayerManager().get(worker.getPlayerId());
             if (fnPlayer.getId() == playerId) return true;
         }

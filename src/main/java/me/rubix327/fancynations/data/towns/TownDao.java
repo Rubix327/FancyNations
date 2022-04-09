@@ -2,7 +2,6 @@ package me.rubix327.fancynations.data.towns;
 
 import me.rubix327.fancynations.data.AbstractDao;
 import me.rubix327.fancynations.data.DataManager;
-import me.rubix327.fancynations.data.fnplayers.FNPlayerDao;
 import me.rubix327.fancynations.data.townworkers.TownWorker;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -15,11 +14,17 @@ import java.util.List;
 
 public class TownDao extends AbstractDao<Town> implements ITownManager {
 
-    private final String tableName;
+    private static TownDao instance = null;
 
-    public TownDao(String tableName) {
-        super(tableName);
-        this.tableName = tableName;
+    private TownDao(String table) {
+        super(table);
+    }
+
+    public static TownDao getInstance(String tableName){
+        if (instance == null){
+            instance = new TownDao(tableName);
+        }
+        return instance;
     }
 
     @Override
@@ -42,7 +47,7 @@ public class TownDao extends AbstractDao<Town> implements ITownManager {
                 "VALUES(@Nation, '@Name', @Balance, @StationsTax, @AuctionTax, @TasksTax)";
 
         query = query
-                .replace("@Table", tableName)
+                .replace("@Table", table)
                 .replace("@Nation", String.valueOf(town.getNationId()))
                 .replace("@Name", String.valueOf(town.getName()))
                 .replace("@Balance", String.valueOf(town.getBalance()))
@@ -54,7 +59,7 @@ public class TownDao extends AbstractDao<Town> implements ITownManager {
     }
 
     public List<String> getTownsFor(CommandSender sender) {
-        int playerId = ((FNPlayerDao) DataManager.getFNPlayerManager()).get(sender.getName()).getId();
+        int playerId = DataManager.getFNPlayerManager().get(sender.getName()).getId();
         if (!(sender instanceof Player) || sender.hasPermission("fancynations.admin")){
             List<String> names = new ArrayList<>();
             DataManager.getTownManager().getAll().values().forEach(town -> names.add(town.getName()));
