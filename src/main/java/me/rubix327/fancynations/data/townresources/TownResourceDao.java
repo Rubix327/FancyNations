@@ -7,11 +7,17 @@ import java.sql.SQLException;
 
 public class TownResourceDao extends AbstractDao<TownResource> implements ITownResourceManager {
 
-    private final String tableName;
+    private static TownResourceDao instance = null;
 
-    public TownResourceDao(String tableName) {
-        super(tableName);
-        this.tableName = tableName;
+    private TownResourceDao(String table) {
+        super(table);
+    }
+
+    public static TownResourceDao getInstance(String tableName){
+        if (instance == null){
+            instance = new TownResourceDao(tableName);
+        }
+        return instance;
     }
 
     @Override
@@ -30,7 +36,7 @@ public class TownResourceDao extends AbstractDao<TownResource> implements ITownR
         String query = "INSERT INTO @Table (Town, Name, Amount) VALUES (@Town, '@Name', @Amount)";
 
         query = query
-                .replace("@Table", tableName)
+                .replace("@Table", table)
                 .replace("@Town", String.valueOf(resource.getTownId()))
                 .replace("@Name", String.valueOf(resource.getName()))
                 .replace("@Amount", String.valueOf(resource.getAmount()));

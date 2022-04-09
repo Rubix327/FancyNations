@@ -1,14 +1,11 @@
 package me.rubix327.fancynations.data.towns;
 
-import me.rubix327.fancynations.FancyNations;
 import org.bukkit.command.CommandSender;
 
 import java.util.HashMap;
 import java.util.List;
 
 public interface ITownManager {
-
-    FancyNations plugin = FancyNations.getInstance();
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     boolean exists(int townId);
@@ -21,5 +18,6 @@ public interface ITownManager {
     HashMap<Integer, Town> getAll();
     List<String> getTownsFor(CommandSender sender);
     int getMaxId();
+    List<String> getNames();
 
 }

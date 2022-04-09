@@ -7,11 +7,17 @@ import java.sql.SQLException;
 
 public class TaskProgressDao extends AbstractDao<TaskProgress> implements ITaskProgressManager {
 
-    private final String tableName;
+    private static TaskProgressDao instance = null;
 
-    public TaskProgressDao(String tableName) {
-        super(tableName);
-        this.tableName = tableName;
+    private TaskProgressDao(String table) {
+        super(table);
+    }
+
+    public static TaskProgressDao getInstance(String tableName){
+        if (instance == null){
+            instance = new TaskProgressDao(tableName);
+        }
+        return instance;
     }
 
     @Override
@@ -29,7 +35,7 @@ public class TaskProgressDao extends AbstractDao<TaskProgress> implements ITaskP
         String query = "INSERT INTO @Table (Objective, Progress) VALUES (@Objective, @Progress)";
 
         query = query
-                .replace("@Table", tableName)
+                .replace("@Table", table)
                 .replace("@Objective", String.valueOf(progress.getObjectiveId()))
                 .replace("@Progress", String.valueOf(progress.getProgress()));
 

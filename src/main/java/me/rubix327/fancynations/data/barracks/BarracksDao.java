@@ -8,11 +8,17 @@ import java.sql.SQLException;
 
 public class BarracksDao extends AbstractDao<Barracks> implements IBarracksManager{
 
-    private final String tableName;
+    private static BarracksDao instance = null;
 
-    public BarracksDao(String tableName) {
-        super(tableName);
-        this.tableName = tableName;
+    private BarracksDao(String table) {
+        super(table);
+    }
+
+    public static BarracksDao getInstance(String tableName){
+        if (instance == null){
+            instance = new BarracksDao(tableName);
+        }
+        return instance;
     }
 
     @Override
@@ -33,7 +39,7 @@ public class BarracksDao extends AbstractDao<Barracks> implements IBarracksManag
                 "VALUES(@TownId, '@Name', '@Location', @Level)";
 
         query = query
-                .replace("@Table", tableName)
+                .replace("@Table", table)
                 .replace("@TownId", String.valueOf(barracks.getTownId()))
                 .replace("@Name", String.valueOf(barracks.getName()))
                 .replace("@Location", DataManager.serializeLocation(barracks.getLocation()))

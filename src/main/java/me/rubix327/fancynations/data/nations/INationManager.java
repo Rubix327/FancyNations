@@ -1,6 +1,7 @@
 package me.rubix327.fancynations.data.nations;
 
 import java.util.HashMap;
+import java.util.List;
 
 public interface INationManager {
 
@@ -13,5 +14,6 @@ public interface INationManager {
     void remove(int nationId);
     HashMap<Integer, Nation> getAll();
     int getMaxId();
+    List<String> getNames();
 
 }

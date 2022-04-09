@@ -6,10 +6,17 @@ import java.util.HashMap;
 
 public class ObjectivesProcess extends AbstractProcess<Objective> implements IObjectivesManager {
 
-    private static final HashMap<Integer, Objective> dtos = new HashMap<>();
+    private static ObjectivesProcess instance = null;
 
-    public ObjectivesProcess() {
-        super(dtos, Objective.class);
+    private ObjectivesProcess() {
+        super( Objective.class);
+    }
+
+    public static ObjectivesProcess getInstance(){
+        if (instance == null){
+            instance = new ObjectivesProcess();
+        }
+        return instance;
     }
 
     @Override

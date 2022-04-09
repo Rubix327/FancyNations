@@ -3,6 +3,7 @@ package me.rubix327.fancynations.data;
 import org.apache.commons.lang.StringUtils;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -10,11 +11,10 @@ import java.util.List;
 public abstract class AbstractProcess<T> extends AbstractDataHandler<T>{
 
     Class<T> clazz;
-    HashMap<Integer, T> dtos;
+    HashMap<Integer, T> dtos = new HashMap<>();
 
-    public AbstractProcess(HashMap<Integer, T> dtos, Class<T> clazz){
+    public AbstractProcess(Class<T> clazz) {
         this.clazz = clazz;
-        this.dtos = dtos;
     }
 
     @Override
@@ -56,9 +56,8 @@ public abstract class AbstractProcess<T> extends AbstractDataHandler<T>{
 
     @Override
     public int getMaxId() {
-        List<Integer> keys = dtos.keySet().stream().toList();
-        keys.sort(Collections.reverseOrder());
-        return keys.get(0);
+        if (dtos.isEmpty()) return 0;
+        return Collections.max(dtos.keySet());
     }
 
     public boolean exists(String name) throws NullPointerException {
@@ -67,7 +66,7 @@ public abstract class AbstractProcess<T> extends AbstractDataHandler<T>{
                 if (((IUniqueNamable)dto).getName().equalsIgnoreCase(name)) return true;
             }
         }
-        throw new NullPointerException("This object either does not exist or it is not instance of IUniqueNamable.");
+        return false;
     }
 
     public T get(String name) throws NullPointerException {
@@ -76,7 +75,17 @@ public abstract class AbstractProcess<T> extends AbstractDataHandler<T>{
                 if (((IUniqueNamable)dto).getName().equalsIgnoreCase(name)) return dto;
             }
         }
-        throw new NullPointerException("This object either does not exist or it is not instance of IUniqueNamable.");
+        throw new NullPointerException("This object either does not exist or it is not an instance of IUniqueNamable.");
+    }
+
+    public List<String> getNames() {
+        List<String> names = new ArrayList<>();
+        for (T dto : dtos.values()){
+            if (dto instanceof IUniqueNamable){
+                names.add(((IUniqueNamable) dto).getName());
+            }
+        }
+        return names;
     }
 
 }

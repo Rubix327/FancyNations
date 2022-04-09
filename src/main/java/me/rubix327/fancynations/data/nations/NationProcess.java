@@ -2,14 +2,19 @@ package me.rubix327.fancynations.data.nations;
 
 import me.rubix327.fancynations.data.AbstractProcess;
 
-import java.util.HashMap;
-
 public class NationProcess extends AbstractProcess<Nation> implements INationManager {
 
-    private static final HashMap<Integer, Nation> dtos = new HashMap<>();
+    private static NationProcess instance = null;
 
-    public NationProcess() {
-        super(dtos, Nation.class);
+    private NationProcess() {
+        super(Nation.class);
+    }
+
+    public static NationProcess getInstance(){
+        if (instance == null){
+            instance = new NationProcess();
+        }
+        return instance;
     }
 
 }

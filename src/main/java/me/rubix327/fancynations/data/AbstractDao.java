@@ -5,7 +5,9 @@ import me.rubix327.fancynations.FancyNations;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public abstract class AbstractDao<T> extends AbstractDataHandler<T> {
 
@@ -53,23 +55,13 @@ public abstract class AbstractDao<T> extends AbstractDataHandler<T> {
      @param id Record id
      @exception NullPointerException if object does not exist in the table
      */
-    public T get(int id) throws NullPointerException{
-        try{
-            String query = "SELECT * FROM @Table WHERE @ID = @ID";
-            query = query
-                    .replace("@Table", this.table)
-                    .replace("@ID", String.valueOf(id));
-            PreparedStatement ps = FancyNations.getInstance().database.getConnection().
-                    prepareStatement(query);
-            DatabaseManager.logSqlQuery(query);
-            ResultSet resultSet = ps.executeQuery();
-            if (resultSet.next()){
-                return loadObject(resultSet);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        throw new NullPointerException("Object with this id does not exist. Use Dao.exists() before this method.");
+    public T get(int id) {
+        String query = "SELECT * FROM @Table WHERE @ID = @ID";
+        query = query
+                .replace("@Table", this.table)
+                .replace("@ID", String.valueOf(id));
+
+        return executeObject(query);
     }
 
     /**
@@ -78,23 +70,13 @@ public abstract class AbstractDao<T> extends AbstractDataHandler<T> {
      @param name Record name
      @exception NullPointerException if object does not exist in the table
      */
-    public T get(String name) throws NullPointerException{
-        try{
-            String query = "SELECT * FROM @Table WHERE Name = '@Name'";
-            query = query
-                    .replace("@Table", this.table)
-                    .replace("@Name", name);
-            PreparedStatement ps = FancyNations.getInstance().database.getConnection().
-                    prepareStatement(query);
-            DatabaseManager.logSqlQuery(query);
-            ResultSet resultSet = ps.executeQuery();
-            if (resultSet.next()){
-                return loadObject(resultSet);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        throw new NullPointerException("Object with this id does not exist. Use Dao.exists() before this method.");
+    public T get(String name) {
+        String query = "SELECT * FROM @Table WHERE Name = '@Name'";
+        query = query
+                .replace("@Table", this.table)
+                .replace("@Name", name);
+
+        return executeObject(query);
     }
 
     /**
@@ -134,24 +116,10 @@ public abstract class AbstractDao<T> extends AbstractDataHandler<T> {
      @return hashmap with objects casted to dto class specified in sub-dao constructor.
      */
     public HashMap<Integer, T> getAll() throws NullPointerException{
-        try{
-            String query = "SELECT * FROM @Table";
-            query = query.replace("@Table", this.table);
+        String query = "SELECT * FROM @Table";
+        query = query.replace("@Table", this.table);
 
-            PreparedStatement ps = FancyNations.getInstance().database.getConnection().
-                    prepareStatement(query);
-            DatabaseManager.logSqlQuery(query);
-            ResultSet resultSet = ps.executeQuery();
-
-            HashMap<Integer, T> dtos = new HashMap<>();
-            while (resultSet.next()){
-                dtos.put(resultSet.getInt("ID"), loadObject(resultSet));
-            }
-            return dtos;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        throw new NullPointerException("Something went wrong.");
+        return executeAllObjects(query);
     }
 
     /**
@@ -170,6 +138,29 @@ public abstract class AbstractDao<T> extends AbstractDataHandler<T> {
                 return resultSet.getInt(1);
             }
             return 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        throw new NullPointerException("Something went wrong.");
+    }
+
+    /**
+     Get list of names in specified table.
+     @return The list of names
+     */
+    public List<String> getNames() throws NullPointerException{
+        try{
+            String query = "SELECT Name FROM @Table";
+            query = query.replace("@Table", this.table);
+            PreparedStatement ps = FancyNations.getInstance().database.getConnection().
+                    prepareStatement(query);
+            DatabaseManager.logSqlQuery(query);
+            ResultSet resultSet = ps.executeQuery();
+            List<String> list = new ArrayList<>();
+            if (resultSet.next()){
+                list.add(resultSet.getString("Name"));
+            }
+            return list;
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -196,7 +187,8 @@ public abstract class AbstractDao<T> extends AbstractDataHandler<T> {
     /**
      * Execute the specified query (request) on the database.
      * Returns true/false value. Suitable for 'exists' methods.
-     * @param query - Request to the database
+     * @param query Request to the database
+     * @return true if found one record, false otherwise
      */
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean executeBool(String query) throws NullPointerException {
@@ -206,6 +198,51 @@ public abstract class AbstractDao<T> extends AbstractDataHandler<T> {
                     prepareStatement(query);
             ResultSet resultSet = ps.executeQuery();
             return resultSet.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        throw new NullPointerException("Something went wrong.");
+    }
+
+    /**
+     * Execute the specified query (request) on the database.
+     * Returns one object. Suitable for 'get' methods.
+     * @param query - Request to the database
+     */
+    public T executeObject(String query) throws NullPointerException {
+        try{
+            PreparedStatement ps = FancyNations.getInstance().database.getConnection().
+                    prepareStatement(query);
+            DatabaseManager.logSqlQuery(query);
+            ResultSet resultSet = ps.executeQuery();
+            if (resultSet.next()){
+                return loadObject(resultSet);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        throw new NullPointerException("Object with this parameters does not exist. Use Dao.exists() before this method.");
+    }
+
+    /**
+     * Execute the specified query (request) on the database.
+     * Returns all conditions appropriate objects. Suitable for 'getAll' methods.
+     * If table does not contain any of these objects then it will return an empty HashMap.
+     * @param query - Request to the database
+     * @return HashMap of objects or empty HashMap.
+     */
+    public HashMap<Integer, T> executeAllObjects(String query) throws NullPointerException {
+        try{
+            PreparedStatement ps = FancyNations.getInstance().database.getConnection().
+                    prepareStatement(query);
+            DatabaseManager.logSqlQuery(query);
+            ResultSet resultSet = ps.executeQuery();
+
+            HashMap<Integer, T> dtos = new HashMap<>();
+            while (resultSet.next()){
+                dtos.put(resultSet.getInt("ID"), loadObject(resultSet));
+            }
+            return dtos;
         } catch (SQLException e) {
             e.printStackTrace();
         }

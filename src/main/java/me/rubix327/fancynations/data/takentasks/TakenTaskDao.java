@@ -7,11 +7,17 @@ import java.sql.SQLException;
 
 public class TakenTaskDao extends AbstractDao<TakenTask> implements ITakenTaskManager {
 
-    private final String tableName;
+    private static TakenTaskDao instance = null;
 
-    public TakenTaskDao(String tableName) {
-        super(tableName);
-        this.tableName = tableName;
+    private TakenTaskDao(String table) {
+        super(table);
+    }
+
+    public static TakenTaskDao getInstance(String tableName){
+        if (instance == null){
+            instance = new TakenTaskDao(tableName);
+        }
+        return instance;
     }
 
     @Override
@@ -28,7 +34,7 @@ public class TakenTaskDao extends AbstractDao<TakenTask> implements ITakenTaskMa
         String query = "SELECT Id FROM @Table WHERE Player = @PlayerID AND Task = @TaskID";
 
         query = query
-                .replace("@Table", tableName)
+                .replace("@Table", table)
                 .replace("@PlayerID", String.valueOf(playerId))
                 .replace("@TaskID", String.valueOf(taskId));
 
@@ -39,7 +45,7 @@ public class TakenTaskDao extends AbstractDao<TakenTask> implements ITakenTaskMa
         String query = "INSERT INTO @Table (Player, Task) VALUES (@Player, @Task)";
 
         query = query
-                .replace("@Table", tableName)
+                .replace("@Table", table)
                 .replace("@Player", String.valueOf(takenTask.getPlayerId()))
                 .replace("@Task", String.valueOf(takenTask.getTaskId()));
 

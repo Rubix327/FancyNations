@@ -8,11 +8,17 @@ import java.sql.SQLException;
 
 public class TownHouseDao extends AbstractDao<TownHouse> implements ITownHouseManager {
 
-    private final String tableName;
+    private static TownHouseDao instance = null;
 
-    public TownHouseDao(String tableName) {
-        super(tableName);
-        this.tableName = tableName;
+    private TownHouseDao(String table) {
+        super(table);
+    }
+
+    public static TownHouseDao getInstance(String tableName){
+        if (instance == null){
+            instance = new TownHouseDao(tableName);
+        }
+        return instance;
     }
 
     @Override
@@ -33,7 +39,7 @@ public class TownHouseDao extends AbstractDao<TownHouse> implements ITownHouseMa
                 "VALUES(@Town, @Owner, '@Location')";
 
         query = query
-                .replace("@Table", tableName)
+                .replace("@Table", table)
                 .replace("@Town", String.valueOf(house.getTownId()))
                 .replace("@Owner", String.valueOf(house.getOwnerId()))
                 .replace("@Location", DataManager.serializeLocation(house.getLocation()));

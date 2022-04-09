@@ -9,8 +9,6 @@ import me.rubix327.fancynations.data.tasks.GatheringTask;
 import me.rubix327.fancynations.data.tasks.MobKillTask;
 import me.rubix327.fancynations.data.tasks.Task;
 import me.rubix327.fancynations.data.tasktypes.TaskType;
-import me.rubix327.fancynations.data.tasktypes.TaskTypeDao;
-import me.rubix327.fancynations.data.towns.TownDao;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.experience.EXPSource;
 import org.bukkit.entity.Player;
@@ -62,13 +60,13 @@ public class TaskCommands extends SimpleSubCommand {
             }
             int townId;
             TaskType taskType;
-            if (!((TownDao)DataManager.getTownManager()).exists(args[1])){
+            if (!DataManager.getTownManager().exists(args[1])){
                 tell(msgs.get("error_town_not_exist", sender));
                 return;
             }
-            townId = (((TownDao)DataManager.getTownManager()).get(args[1])).getId();
+            townId = (DataManager.getTownManager().get(args[1])).getId();
 
-            if (!((TaskTypeDao)DataManager.getTaskTypeManager()).exists(args[2])){
+            if (!DataManager.getTaskTypeManager().exists(args[2])){
                 tell(msgs.get("error_task_type_not_exist" +
                          DataManager.getTaskTypeManager().getAll().values()
                         .stream().map(Object::toString).collect(Collectors.joining(", ")), sender));
@@ -274,12 +272,15 @@ public class TaskCommands extends SimpleSubCommand {
         if (args.length == 1){
             return Arrays.asList("create", "remove", "set", "info");
         }
+        // fn task create _<townId>_ <taskType>
         else if (args.length == 2 && args[0].equalsIgnoreCase("create")){
-            return DataManager.getTownManager().getTownsFor(sender);
+            List<String> towns = new ArrayList<>();
+            DataManager.getTownManager().getAll().values().forEach(town -> towns.add(town.getName()));
+            return towns;
         }
+        // fn task create <townId> _<taskType>_
         else if (args.length == 3 && args[0].equalsIgnoreCase("create")){
-            return DataManager.getTaskTypeManager().getAll().values().stream().map(Object::toString)
-                    .collect(Collectors.toList());
+            return DataManager.getTaskTypeManager().getNames();
         }
         else if (args.length == 2 && args[0].equalsIgnoreCase("remove")){
             return Collections.singletonList("<id>");
