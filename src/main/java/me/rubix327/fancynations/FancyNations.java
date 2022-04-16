@@ -63,7 +63,7 @@ public final class FancyNations extends SimplePlugin {
     }
 
     private void addDefaultEntries(){
-        DataManager.getFNPlayerManager().add(new FNPlayer("%server%"));
+        DataManager.getFNPlayerManager().add(new FNPlayer(1, "%server%"));
         DataManager.getTaskTypeManager().add(new TaskType(1, "Gathering", "Food"));
         DataManager.getTaskTypeManager().add(new TaskType(2, "Gathering", "Resource"));
         DataManager.getTaskTypeManager().add(new TaskType(3, "Gathering", "Crafting"));

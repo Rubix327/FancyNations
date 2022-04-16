@@ -36,12 +36,15 @@ INSERT IGNORE INTO Reputations(ID, Player, Town, Amount) VALUES (1, 1, 1, 0), (2
 
 INSERT IGNORE INTO Tasks(ID, TaskType, Town, Player, Name, Description, TakeAmount, MinLevel, MaxLevel, MoneyReward,
 ExpReward, RepReward, PlacementDatetime, TimeToComplete, Priority) VALUES
-(1, 1, 1, 1, "EasyTask", "Bring me some potatoes", 5, 1, 30, 100, 15, 5, "2022-04-22", 60, 2),
-(2, 3, 1, 3, "For Low Skills", "Bring me my sword now!", 1, 1, 30, 200, 30, 20, "2022-04-23 00:00:00", 5, 1),
+(1, 1, 1, 1, "EasyTask", "Bring me some vegetables", 5, 1, 30, 100, 15, 5, "2022-04-22", 60, 2),
+(2, 3, 1, 3, "For Low Skills", "Army supply!", 1, 1, 30, 200, 30, 20, "2022-04-23 00:00:00", 5, 1),
 (3, 4, 2, 2, "Make it faster", "Harder, better, faster, stronger", 20, 10, 20, 500, 200, 150, "2022-04-22 21:15:11", 20, 1);
 
 INSERT IGNORE INTO TakenTasks(ID, Player, Task) VALUES (1, 3, 1), (2, 1, 2), (3, 2, 3);
 
-INSERT IGNORE INTO Objectives(ID, TakenTask, Name, Amount) VALUES (1, 1, "POTATO", 5), (2, 2, "IRON_SWORD", 1), (3, 3, "ZOMBIE", 20);
+INSERT IGNORE INTO Objectives(ID, Task, Name, Amount) VALUES
+(1, 1, "POTATO", 5), (2, 1, "CARROT", 10), (3, 1, "BEETROOT", 1, 16),
+(4, 2, "IRON_SWORD", 1), (5, 2, "MI_STEEL_PICKAXE", 1),
+(6, 3, "ZOMBIE", 20), (7, 3, "MM_SKELETAL_KNIGHT", 5);
 
-INSERT IGNORE INTO TakenTasks(ID, Objective, Progress) VALUES (1, 1, 3), (2, 2, 0), (3, 3, 20);
+INSERT IGNORE INTO TaskProgresses(ID, Objective, TakenTask, Progress) VALUES (1, 1, 3), (2, 2, 0), (3, 3, 20);
