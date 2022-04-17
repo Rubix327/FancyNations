@@ -28,7 +28,7 @@ public class Localization {
         this.plugin = FancyNations.getInstance();
     }
 
-    Map<String, Map<String, String>> messagesMap = new HashMap<>();
+    private final Map<String, Map<String, String>> messagesMap = new HashMap<>();
 
     public void init(List<String> locales){
         File messagesFolder = new File(this.plugin.getDataFolder() + "/messages");
@@ -151,7 +151,7 @@ public class Localization {
                 this.plugin.getLogger().warning(
                         "Unable to find message with key " + key + " in english messages_en.yml. " +
                                 "Please make sure all keys are defined!");
-                msg = "&cMessage not found in any of messages files (key: " + key + ")." +
+                msg = "&cMessage not found in any of the messages files (key: " + key + ")." +
                         " Please contact an administrator.";
                 key = "warn_not_found";
             }
@@ -167,7 +167,7 @@ public class Localization {
             else if (key.startsWith("success")){
                 msg = Settings.Messages.PREFIX_SUCCESS + msg;
             }
-            else{
+            else if (key.startsWith("info")){
                 msg = Settings.Messages.PREFIX_INFO + msg;
             }
         }

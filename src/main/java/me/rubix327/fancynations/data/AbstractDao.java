@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public abstract class AbstractDao<T> extends AbstractDataHandler<T> {
+public abstract class AbstractDao<T extends AbstractDto> extends AbstractDataHandler<T> {
 
     protected String table;
 
@@ -130,7 +130,7 @@ public abstract class AbstractDao<T> extends AbstractDataHandler<T> {
         try{
             String query = "SELECT Id FROM @Table ORDER BY Id DESC LIMIT 1";
             query = query.replace("@Table", this.table);
-            PreparedStatement ps = FancyNations.getInstance().database.getConnection().
+            PreparedStatement ps = FancyNations.getInstance().getDatabase().getConnection().
                     prepareStatement(query);
             DatabaseManager.logSqlQuery(query);
             ResultSet resultSet = ps.executeQuery();
@@ -152,7 +152,7 @@ public abstract class AbstractDao<T> extends AbstractDataHandler<T> {
         try{
             String query = "SELECT Name FROM @Table";
             query = query.replace("@Table", this.table);
-            PreparedStatement ps = FancyNations.getInstance().database.getConnection().
+            PreparedStatement ps = FancyNations.getInstance().getDatabase().getConnection().
                     prepareStatement(query);
             DatabaseManager.logSqlQuery(query);
             ResultSet resultSet = ps.executeQuery();
@@ -175,7 +175,7 @@ public abstract class AbstractDao<T> extends AbstractDataHandler<T> {
     public void executeVoid(String query) throws NullPointerException {
         try{
             DatabaseManager.logSqlQuery(query);
-            PreparedStatement ps = FancyNations.getInstance().database.getConnection().prepareStatement(query);
+            PreparedStatement ps = FancyNations.getInstance().getDatabase().getConnection().prepareStatement(query);
             ps.executeUpdate();
             return;
         } catch (SQLException e) {
@@ -194,7 +194,7 @@ public abstract class AbstractDao<T> extends AbstractDataHandler<T> {
     public boolean executeBool(String query) throws NullPointerException {
         try{
             DatabaseManager.logSqlQuery(query);
-            PreparedStatement ps = FancyNations.getInstance().database.getConnection().
+            PreparedStatement ps = FancyNations.getInstance().getDatabase().getConnection().
                     prepareStatement(query);
             ResultSet resultSet = ps.executeQuery();
             return resultSet.next();
@@ -211,7 +211,7 @@ public abstract class AbstractDao<T> extends AbstractDataHandler<T> {
      */
     public T executeObject(String query) throws NullPointerException {
         try{
-            PreparedStatement ps = FancyNations.getInstance().database.getConnection().
+            PreparedStatement ps = FancyNations.getInstance().getDatabase().getConnection().
                     prepareStatement(query);
             DatabaseManager.logSqlQuery(query);
             ResultSet resultSet = ps.executeQuery();
@@ -233,7 +233,7 @@ public abstract class AbstractDao<T> extends AbstractDataHandler<T> {
      */
     public HashMap<Integer, T> executeAllObjects(String query) throws NullPointerException {
         try{
-            PreparedStatement ps = FancyNations.getInstance().database.getConnection().
+            PreparedStatement ps = FancyNations.getInstance().getDatabase().getConnection().
                     prepareStatement(query);
             DatabaseManager.logSqlQuery(query);
             ResultSet resultSet = ps.executeQuery();

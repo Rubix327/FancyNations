@@ -1,12 +1,10 @@
 package me.rubix327.fancynations.commands;
 
 import me.rubix327.fancynations.data.DataManager;
-import org.mineacademy.fo.command.SimpleCommandGroup;
-import org.mineacademy.fo.command.SimpleSubCommand;
 
-public class PlayerCommands extends SimpleSubCommand {
-    protected PlayerCommands(SimpleCommandGroup parent, String sublabel) {
-        super(parent, sublabel);
+public class PlayerCommands extends SubCommandInterlayer {
+    protected PlayerCommands(String sublabel, String permLabel) {
+        super(sublabel, permLabel);
     }
 
     @Override

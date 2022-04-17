@@ -117,6 +117,13 @@
             <version>8.0.28</version>
         </dependency>
 
+        <dependency>
+            <groupId>net.Indyuce</groupId>
+            <artifactId>mmocore</artifactId>
+            <version>1.9.1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/main/resources/libs/MMOCore-1.9.1.jar</systemPath>
+        </dependency>
     </dependencies>
 
     <pluginRepositories>

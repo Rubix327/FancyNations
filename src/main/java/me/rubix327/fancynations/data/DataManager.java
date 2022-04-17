@@ -24,6 +24,9 @@ import me.rubix327.fancynations.data.nations.NationProcess;
 import me.rubix327.fancynations.data.objectives.IObjectivesManager;
 import me.rubix327.fancynations.data.objectives.ObjectivesDao;
 import me.rubix327.fancynations.data.objectives.ObjectivesProcess;
+import me.rubix327.fancynations.data.reputations.IReputationManager;
+import me.rubix327.fancynations.data.reputations.ReputationDao;
+import me.rubix327.fancynations.data.reputations.ReputationProcess;
 import me.rubix327.fancynations.data.takentasks.ITakenTaskManager;
 import me.rubix327.fancynations.data.takentasks.TakenTaskDao;
 import me.rubix327.fancynations.data.takentasks.TakenTaskProcess;
@@ -70,7 +73,7 @@ public class DataManager {
 
     public static boolean isDatabaseChosen(){
         if (Settings.General.DATA_MANAGEMENT_TYPE.equalsIgnoreCase("database")){
-            return FancyNations.getInstance().database.isConnected();
+            return FancyNations.getInstance().getDatabase().isConnected();
         }
         return false;
     }
@@ -143,39 +146,43 @@ public class DataManager {
         return (isDatabaseChosen() ? WorkshopDao.getInstance(Settings.DbTables.WORKSHOPS) : WorkshopProcess.getInstance());
     }
 
+    public static IReputationManager getReputationsManager(){
+        return (isDatabaseChosen() ? ReputationDao.getInstance(Settings.DbTables.REPUTATIONS) : ReputationProcess.getInstance());
+    }
+
     /**
      Returns all non-static non-final fields from the specified class.
-     @param clazz class (e.g. Task.class)
+     @param from class to get fields from (e.g. Task.class)
      @return List - fields
      */
-    private static Stream<Field> getNonStaticNonFinalFields(Class<?> clazz) {
-        return Arrays.stream(clazz.getDeclaredFields())
+    private static Stream<Field> getNonStaticNonFinalFields(Class<?> from) {
+        return Arrays.stream(from.getDeclaredFields())
                 .filter(field -> !Modifier.isStatic(field.getModifiers()))
                 .filter(field -> !Modifier.isFinal(field.getModifiers()));
     }
 
     /**
     Returns all non-static non-final field names from the specified class.
-    @param clazz class (e.g. Task.class)
+    @param from class to get fields from (e.g. Task.class)
     @return List - field names
      */
-    public static List<String> getClassFields(Class<?> clazz) {
-        List<String> CLASS_FIELDS = new ArrayList<>();
-        getNonStaticNonFinalFields(clazz).forEach(field -> CLASS_FIELDS.add(field.getName()));
-        return CLASS_FIELDS;
+    public static List<String> getClassFields(Class<?> from) {
+        List<String> classFields = new ArrayList<>();
+        getNonStaticNonFinalFields(from).forEach(field -> classFields.add(field.getName()));
+        return classFields;
     }
 
     /**
      Returns all non-static non-final field names of the required type class from the specified class.
-     @param requiredType required class (e.g. int.class, double.class, etc.)
+     @param requiredType required field type class (e.g. int.class, double.class, etc.)
      @return List - field names
      */
     public static List<String> getClassFieldsByType(Class<?> from, Class<?> requiredType) {
-        List<String> CLASS_FIELDS = new ArrayList<>();
+        List<String> classFields = new ArrayList<>();
         getNonStaticNonFinalFields(from)
                 .filter(field -> field.getType() == requiredType)
-                .forEach(field -> CLASS_FIELDS.add(field.getName().toLowerCase()));
-        return CLASS_FIELDS;
+                .forEach(field -> classFields.add(field.getName().toLowerCase()));
+        return classFields;
     }
 
     /**

@@ -31,6 +31,7 @@ public class Settings extends SimpleSettings {
         public static String FN_PLAYERS;
         public static String NATIONS;
         public static String OBJECTIVES;
+        public static String REPUTATIONS;
         public static String TAKEN_TASKS;
         public static String TASK_PROGRESSES;
         public static String TASKS;
@@ -57,6 +58,7 @@ public class Settings extends SimpleSettings {
     }
 
     public static class Tasks{
+        public static Integer MAX_NAME_LENGTH;
         public static String DEFAULT_DESCRIPTION;
         public static Integer DEFAULT_TAKE_AMOUNT;
         public static Integer DEFAULT_MIN_LEVEL;
@@ -110,6 +112,7 @@ public class Settings extends SimpleSettings {
         DbTables.FN_PLAYERS = "Players";
         DbTables.NATIONS = "Nations";
         DbTables.OBJECTIVES = "Objectives";
+        DbTables.REPUTATIONS = "Reputations";
         DbTables.TAKEN_TASKS = "TakenTasks";
         DbTables.TASK_PROGRESSES = "TaskProgresses";
         DbTables.TASKS = "Tasks";
@@ -133,6 +136,7 @@ public class Settings extends SimpleSettings {
         Towns.DEFAULT_TASKS_TAX = getDouble("Default_Tasks_Tax");
 
         pathPrefix("Tasks");
+        Tasks.MAX_NAME_LENGTH = getInteger("Max_Name_Length");
         Tasks.DEFAULT_DESCRIPTION = getString("Default_Description");
         Tasks.DEFAULT_TAKE_AMOUNT = getInteger("Default_Take_Amount");
         Tasks.DEFAULT_MIN_LEVEL = getInteger("Default_Min_Level");

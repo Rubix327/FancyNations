@@ -22,8 +22,9 @@ Messages:
   Prefix_Warning: '&8&l[&6&l!&8&l] &6'
   # Prefix for messages starting with 'success_'
   Prefix_Success: '&8&l[&a✔&8&l] &a'
-  # Prefix for other messages
+  # Prefix for info messages
   Prefix_Info: '&8&l[&9&li&8&l] &7'
+  # Notice that every message not belonging to these groups will have no prefix
 
   # Should we adjust plugin's language to every user.
   # If false, default server language (Settings.Locale) will be used for all messages.
@@ -57,6 +58,7 @@ Towns:
 
 # Default values when task is created
 Tasks:
+  Max_Name_Length: 35
   Default_Description: ''
   Default_Take_Amount: 10
   Default_Min_Level: 1

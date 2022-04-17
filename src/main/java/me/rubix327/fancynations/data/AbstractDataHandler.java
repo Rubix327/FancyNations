@@ -2,7 +2,7 @@ package me.rubix327.fancynations.data;
 
 import java.util.HashMap;
 
-public abstract class AbstractDataHandler<T> {
+public abstract class AbstractDataHandler<T extends AbstractDto> {
 
     public abstract boolean exists(int id);
     public abstract void add(T dto);
@@ -11,6 +11,9 @@ public abstract class AbstractDataHandler<T> {
     public abstract void remove(int id);
     public abstract HashMap<Integer, T> getAll();
     public abstract int getMaxId();
-
+    public void addIgnore(T dto){
+        if (exists(dto.getId())) return;
+        add(dto);
+    }
 
 }

@@ -24,7 +24,7 @@ public abstract class Task extends AbstractDto {
     private final int townId;
     private final int taskTypeId;
     private final int creatorId;
-    private String taskName;
+    private final String taskName;
     private String description;
     private int takeAmount;
     private int minLevel;
@@ -67,8 +67,7 @@ public abstract class Task extends AbstractDto {
         return true;
     }
 
-    @Override
-    public String toString(){
+    public String getInfo(){
 
         return "&7#" + this.getId() + " | "
                 + DataManager.getTaskTypeManager().get(this.getTaskTypeId()).getName() + ", "
