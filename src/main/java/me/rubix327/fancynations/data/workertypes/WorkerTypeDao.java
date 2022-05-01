@@ -31,7 +31,13 @@ public class WorkerTypeDao extends AbstractDao<WorkerType> implements IWorkerTyp
 
     @Override
     public void add(WorkerType dto) {
-        // This class does not assume adding new instances,
-        // but this method must be here to override the method from the interface.
+        String query = "INSERT INTO @Table (Name, DisplayName) VALUES ('@Name', '@DisplayName')";
+
+        query = query
+                .replace("@Table", table)
+                .replace("@Name", String.valueOf(dto.getName()))
+                .replace("@DisplayName", String.valueOf(dto.getDiplayName()));
+
+        super.executeVoid(query);
     }
 }

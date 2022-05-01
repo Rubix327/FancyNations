@@ -1,14 +1,12 @@
 package me.rubix327.fancynations.commands;
 
-import me.rubix327.fancynations.Localization;
 import me.rubix327.fancynations.data.DataManager;
 import me.rubix327.fancynations.data.towns.Town;
 import org.mineacademy.fo.command.SimpleCommandGroup;
-import org.mineacademy.fo.command.SimpleSubCommand;
 
-public class TownCommands extends SimpleSubCommand {
-    protected TownCommands(SimpleCommandGroup parent, String sublabel) {
-        super(parent, sublabel);
+public class TownCommands extends SubCommandInterlayer {
+    protected TownCommands(SimpleCommandGroup group, String sublabel, String permLabel) {
+        super(group, sublabel, permLabel);
     }
 
     /*
@@ -21,10 +19,6 @@ public class TownCommands extends SimpleSubCommand {
      */
     @Override
     protected void onCommand() {
-
-        setPermission("fancynations.town");
-        addTellPrefix(false);
-        Localization msgs = Localization.getInstance();
 
         if (args[0].equalsIgnoreCase("create")){
             if (args.length < 2){

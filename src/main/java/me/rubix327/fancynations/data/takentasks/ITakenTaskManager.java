@@ -12,6 +12,7 @@ public interface ITakenTaskManager {
     void update(int takenTaskId, String variable, Object newValue);
     void remove(int takenTaskId);
     HashMap<Integer, TakenTask> getAll();
+    HashMap<Integer, TakenTask> getAll(boolean log);
     int getMaxId();
 
 }

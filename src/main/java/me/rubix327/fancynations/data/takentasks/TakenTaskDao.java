@@ -52,11 +52,16 @@ public class TakenTaskDao extends AbstractDao<TakenTask> implements ITakenTaskMa
         super.executeVoid(query);
     }
 
+    @Override
     public TakenTask get(int playerId, int taskId) {
-        for (TakenTask takenTask : getAll().values()){
-            if (takenTask.getPlayerId() == playerId && takenTask.getTaskId() == taskId) return takenTask;
-        }
-        throw new NullPointerException("Taken task with this name does not exist.");
+        String query = "SELECT * FROM @Table WHERE Player = @Player AND Task = @Task";
+
+        query = query
+                .replace("@Table", this.table)
+                .replace("@Player", String.valueOf(playerId))
+                .replace("@Task", String.valueOf(taskId));
+
+        return this.executeObject(query);
     }
 
 }

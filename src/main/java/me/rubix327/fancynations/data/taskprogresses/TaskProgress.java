@@ -13,11 +13,13 @@ public class TaskProgress extends AbstractDto {
 
     private final int id;
     private final int objectiveId;
+    private final int takenTask;
     private int progress;
 
-    public TaskProgress(int objectiveId) {
+    public TaskProgress(int objectiveId, int takenTask) {
         this.id = DataManager.getTaskProgressManager().getMaxId() + 1;
         this.objectiveId = objectiveId;
+        this.takenTask = takenTask;
     }
 
 }

@@ -5,15 +5,14 @@ import me.rubix327.fancynations.data.DataManager;
 import me.rubix327.fancynations.data.townworkers.TownWorker;
 import org.bukkit.Bukkit;
 import org.mineacademy.fo.command.SimpleCommandGroup;
-import org.mineacademy.fo.command.SimpleSubCommand;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MayorCommands extends SimpleSubCommand {
-    protected MayorCommands(SimpleCommandGroup parent, String sublabel) {
-        super(parent, sublabel);
+public class MayorCommands extends SubCommandInterlayer {
+    protected MayorCommands(SimpleCommandGroup group, String sublabel, String permLabel) {
+        super(group, sublabel, permLabel);
     }
 
     @Override

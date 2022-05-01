@@ -8,12 +8,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-public abstract class AbstractProcess<T> extends AbstractDataHandler<T>{
+public abstract class AbstractProcess<T extends AbstractDto> extends AbstractDataHandler<T>{
 
-    Class<T> clazz;
-    HashMap<Integer, T> dtos = new HashMap<>();
+    private final Class<T> clazz;
+    private final HashMap<Integer, T> dtos = new HashMap<>();
 
-    public AbstractProcess(Class<T> clazz) {
+    protected AbstractProcess(Class<T> clazz) {
         this.clazz = clazz;
     }
 
@@ -24,7 +24,7 @@ public abstract class AbstractProcess<T> extends AbstractDataHandler<T>{
 
     @Override
     public void add(T dto) {
-        dtos.put(((AbstractDto)dto).getId(), dto);
+        dtos.put((dto).getId(), dto);
     }
 
     @Override

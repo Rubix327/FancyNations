@@ -1,6 +1,7 @@
 package me.rubix327.fancynations.data;
 
 import me.rubix327.fancynations.FancyNations;
+import me.rubix327.fancynations.Settings;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public abstract class AbstractDao<T> extends AbstractDataHandler<T> {
+public abstract class AbstractDao<T extends AbstractDto> extends AbstractDataHandler<T> {
 
     protected String table;
 
@@ -25,7 +26,7 @@ public abstract class AbstractDao<T> extends AbstractDataHandler<T> {
      @param id Record id
      */
     public boolean exists(int id) throws NullPointerException{
-        String query = "SELECT Id FROM @Table WHERE Id = @ID";
+        String query = "SELECT Id FROM @Table WHERE ID = @ID";
 
         query = query
                 .replace("@Table", this.table)
@@ -40,7 +41,7 @@ public abstract class AbstractDao<T> extends AbstractDataHandler<T> {
      @param name Record name
      */
     public boolean exists(String name) throws NullPointerException{
-        String query = "SELECT Id FROM @Table WHERE Name = @Name";
+        String query = "SELECT Id FROM @Table WHERE Name = '@Name'";
 
         query = query
                 .replace("@Table", this.table)
@@ -56,7 +57,7 @@ public abstract class AbstractDao<T> extends AbstractDataHandler<T> {
      @exception NullPointerException if object does not exist in the table
      */
     public T get(int id) {
-        String query = "SELECT * FROM @Table WHERE @ID = @ID";
+        String query = "SELECT * FROM @Table WHERE ID = @ID";
         query = query
                 .replace("@Table", this.table)
                 .replace("@ID", String.valueOf(id));
@@ -86,7 +87,7 @@ public abstract class AbstractDao<T> extends AbstractDataHandler<T> {
      @param newValue New value
      */
     public void update(int id, String variable, Object newValue) throws NullPointerException{
-        String query = "UPDATE @Table SET @Var = @Value WHERE ID = @ID";
+        String query = "UPDATE @Table SET @Var = '@Value' WHERE ID = @ID";
 
         query = query.replace("@Table", this.table)
                 .replace("@Var", variable)
@@ -116,10 +117,14 @@ public abstract class AbstractDao<T> extends AbstractDataHandler<T> {
      @return hashmap with objects casted to dto class specified in sub-dao constructor.
      */
     public HashMap<Integer, T> getAll() throws NullPointerException{
+        return getAll(Settings.General.SQL_DEBUG);
+    }
+
+    public HashMap<Integer, T> getAll(boolean log) throws NullPointerException{
         String query = "SELECT * FROM @Table";
         query = query.replace("@Table", this.table);
 
-        return executeAllObjects(query);
+        return executeAll(query, log);
     }
 
     /**
@@ -130,7 +135,7 @@ public abstract class AbstractDao<T> extends AbstractDataHandler<T> {
         try{
             String query = "SELECT Id FROM @Table ORDER BY Id DESC LIMIT 1";
             query = query.replace("@Table", this.table);
-            PreparedStatement ps = FancyNations.getInstance().database.getConnection().
+            PreparedStatement ps = FancyNations.getInstance().getDatabase().getConnection().
                     prepareStatement(query);
             DatabaseManager.logSqlQuery(query);
             ResultSet resultSet = ps.executeQuery();
@@ -152,12 +157,12 @@ public abstract class AbstractDao<T> extends AbstractDataHandler<T> {
         try{
             String query = "SELECT Name FROM @Table";
             query = query.replace("@Table", this.table);
-            PreparedStatement ps = FancyNations.getInstance().database.getConnection().
+            PreparedStatement ps = FancyNations.getInstance().getDatabase().getConnection().
                     prepareStatement(query);
             DatabaseManager.logSqlQuery(query);
             ResultSet resultSet = ps.executeQuery();
             List<String> list = new ArrayList<>();
-            if (resultSet.next()){
+            while (resultSet.next()){
                 list.add(resultSet.getString("Name"));
             }
             return list;
@@ -175,7 +180,7 @@ public abstract class AbstractDao<T> extends AbstractDataHandler<T> {
     public void executeVoid(String query) throws NullPointerException {
         try{
             DatabaseManager.logSqlQuery(query);
-            PreparedStatement ps = FancyNations.getInstance().database.getConnection().prepareStatement(query);
+            PreparedStatement ps = FancyNations.getInstance().getDatabase().getConnection().prepareStatement(query);
             ps.executeUpdate();
             return;
         } catch (SQLException e) {
@@ -194,7 +199,7 @@ public abstract class AbstractDao<T> extends AbstractDataHandler<T> {
     public boolean executeBool(String query) throws NullPointerException {
         try{
             DatabaseManager.logSqlQuery(query);
-            PreparedStatement ps = FancyNations.getInstance().database.getConnection().
+            PreparedStatement ps = FancyNations.getInstance().getDatabase().getConnection().
                     prepareStatement(query);
             ResultSet resultSet = ps.executeQuery();
             return resultSet.next();
@@ -211,7 +216,7 @@ public abstract class AbstractDao<T> extends AbstractDataHandler<T> {
      */
     public T executeObject(String query) throws NullPointerException {
         try{
-            PreparedStatement ps = FancyNations.getInstance().database.getConnection().
+            PreparedStatement ps = FancyNations.getInstance().getDatabase().getConnection().
                     prepareStatement(query);
             DatabaseManager.logSqlQuery(query);
             ResultSet resultSet = ps.executeQuery();
@@ -231,11 +236,17 @@ public abstract class AbstractDao<T> extends AbstractDataHandler<T> {
      * @param query - Request to the database
      * @return HashMap of objects or empty HashMap.
      */
-    public HashMap<Integer, T> executeAllObjects(String query) throws NullPointerException {
+    public HashMap<Integer, T> executeAll(String query) throws NullPointerException {
+        return executeAll(query, Settings.General.SQL_DEBUG);
+    }
+
+    public HashMap<Integer, T> executeAll(String query, boolean log) throws NullPointerException {
         try{
-            PreparedStatement ps = FancyNations.getInstance().database.getConnection().
+            PreparedStatement ps = FancyNations.getInstance().getDatabase().getConnection().
                     prepareStatement(query);
-            DatabaseManager.logSqlQuery(query);
+            if (log) {
+                DatabaseManager.logSqlQuery(query);
+            }
             ResultSet resultSet = ps.executeQuery();
 
             HashMap<Integer, T> dtos = new HashMap<>();

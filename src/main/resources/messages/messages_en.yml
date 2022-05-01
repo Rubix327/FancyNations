@@ -1,27 +1,70 @@
 # Syntax
-syntax_task_create: 'Syntax: /fn task create <town_name> <type> <name>'
-syntax_task_remove: 'Syntax: /fn task remove <task_id>'
-syntax_task_set: 'Syntax: /fn task set <task_id> <variable> <value>'
-syntax_task_info: 'Syntax: /fn task info <task_id>'
-syntax_task_start: 'Syntax: /fn task start <task_id>'
-syntax_task_finish: 'Syntax: /fn task finish <task_id>'
-syntax_task: 'Syntax: /fn task <create/remove/set/info/start/finish/cancel>'
+syntax_task_create: '@info_prefix Syntax: /fn task create <town_name> <type> <name>'
+syntax_task_remove: '@info_prefix Syntax: /fn task remove <task_id>'
+syntax_task_set: '@info_prefix Syntax: /fn task set <task_id> <variable> <value>'
+syntax_task_info: '@info_prefix Syntax: /fn task info <task_id>'
+syntax_task_start: '@info_prefix Syntax: /fn task start <task_id>'
+syntax_task_finish: '@info_prefix Syntax: /fn task finish <task_id>'
+syntax_task_cancel: '@info_prefix Syntax: /task cancel <task_id>'
+syntax_task: '@info_prefix Syntax: /fn task <create/remove/set/info/list/start/finish/cancel>'
 
-syntax_mayor_assign: 'Syntax: /fn mayor assign <town_name> <player_name>'
+syntax_mayor_assign: '@info_prefix Syntax: /fn mayor assign <town_name> <player_name>'
 
 # Errors
-error_not_enough_permissions: 'You do not have enough permissions.'
+error_no_permission: '@error_prefix You do not have enough permissions.'
+error_id_must_be_number: '@error_prefix ID must be a number.'
+error_value_must_be_double: '@error_prefix Value must be a floating point number (double).'
+error_value_must_be_integer: '@error_prefix Value must be a whole number (integer).'
+error_variable_not_exist: '@error_prefix This variable does not exist or cannot be changed.'
+error_page_should_be_number: '@error_prefix Page should be whole number.'
 
-nerror_task_not_exist: 'Task with this ID does not exist. \nType /fn task list to see ll tasks.'
-error_task_not_available: 'This task is not available anymore.'
-error_level_not_suitable: 'Your level is not suitable for this task.\n Your level: @playerLevel. Required: @taskMinLevel - @taskMaxLevel'
-error_task_already_taken: 'You already have this task.'
-error_task_time_to_complete_expired: 'Your time for this task has expired.'
-error_task_objective_not_completed: 'You have not completed all the objectives yet.'
-error_task_not_taken: 'You do not have this task.'
+error_task_not_exist: '@error_prefix Task with this ID does not exist. @nl @error_prefix Type /fn task list to see all tasks.'
+error_task_not_available: '@error_prefix This task is not available anymore.'
+error_task_level_not_suitable: '@error_prefix Your level is not suitable for this task. @nl @error_prefix Your level: @player_level. Required: @task_min_level - @task_max_level'
+error_task_already_taken: '@error_prefix You already have this task.'
+error_task_time_to_complete_expired: '@error_prefix Your time for this task has expired.'
+error_task_objective_not_completed: '@error_prefix You have not completed all the objectives yet.'
+error_task_not_taken: '@error_prefix You do not have this task.'
+error_task_no_tasks: '@error_prefix There are no created tasks yet.'
+error_task_name_too_long: '@error_prefix Task name length must be less than @maxLength symbols.'
 
-error_town_not_exist: 'This town does not exist.'
+error_town_not_exist: '@error_prefix This town does not exist.'
 
-error_player_not_exist: 'This player never has been on the server.'
+error_player_not_exist: '@error_prefix This player never has been on the server.'
 
-error_task_type_not_exist: 'This task type does not exist. \nAvailable types:'
+error_task_type_not_exist: '@error_prefix This task type does not exist. @nl @error_prefix Available types: '
+
+# Success
+success_task_created: '@success_prefix You have successfully created &2@type &atask called &2"@name".'
+success_task_removed: '@success_prefix Task #@id has been successfully removed.'
+success_task_updated: '@success_prefix Task #@id has been successfully updated.'
+success_task_started: '@success_prefix Task #@id has been successfully started.'
+success_task_finished: '@success_prefix You have successfully finished task #@id. @nl @success_prefix Your rewards: &e@money$, @exp XP and @rep reputation points in @town town!'
+success_task_cancelled: '@success_prefix Task #@id has been successfully cancelled.'
+
+#Info
+info_task_time_to_complete_expired: '@info_prefix Your task #@id has expired and been removed from your task list.'
+
+# Other
+# Server label is how a task creator name will look like if the task was created by the server (or an admin)
+server_label: 'Nation'
+no_description: 'none'
+
+# Messages templates for such commands as /fn task info and /fn task list
+template_task_info_label: '&7Info about task &e#@id'
+template_task_info_name: '&7Name: &a@name'
+template_task_info_type: '&7Type: &a@type'
+template_task_info_town: '&7Town: &a@town'
+template_task_info_created_by: '&7Created by: &a@created_by'
+template_task_info_completions_left: '&7Completions left: &a@comp_left'
+template_task_info_money_reward: '&7Rewards: &a@money_reward$'
+template_task_info_exp_reward: '&7&e@exp_reward xp'
+template_task_info_rep_reward: '&7&d@rep_reward reputation'
+template_task_info_priority: '&7Priority: @priority'
+template_task_info_levels: '&7Levels: &a@min_level - @max_level'
+template_task_info_description: '&7Description: @description'
+template_task_info_time_to_complete: '&7Time to complete: &a@days&7d &a@hours&7h &a@minutes&7m &a@seconds&7s'
+
+template_task_list_label: '&7Tasks list (page &e@current &7of &e@max&7)'
+template_task_list_example: '&8ID &8&l| &8Type, Town, Creator, Name'
+template_task_list_element: ' &7#@id &8&l| &e@type, &a@town, &e@creator, &a@name'

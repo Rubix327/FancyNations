@@ -4,9 +4,9 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import me.rubix327.fancynations.Settings;
 import me.rubix327.fancynations.data.AbstractDto;
 import me.rubix327.fancynations.data.DataManager;
-import me.rubix327.fancynations.Settings;
 import me.rubix327.fancynations.data.objectives.Objective;
 import me.rubix327.fancynations.data.objectives.ObjectivesDao;
 import org.bukkit.entity.Player;
@@ -24,7 +24,7 @@ public abstract class Task extends AbstractDto {
     private final int townId;
     private final int taskTypeId;
     private final int creatorId;
-    private String taskName;
+    private final String taskName;
     private String description;
     private int takeAmount;
     private int minLevel;
@@ -66,13 +66,5 @@ public abstract class Task extends AbstractDto {
         }
         return true;
     }
-
-    @Override
-    public String toString(){
-
-        return "&7#" + this.getId() + " | "
-                + DataManager.getTaskTypeManager().get(this.getTaskTypeId()).getName() + ", "
-                + DataManager.getFNPlayerManager().get(this.getCreatorId()).getName() + ", "
-                + this.getTaskName();
-    }
+    
 }

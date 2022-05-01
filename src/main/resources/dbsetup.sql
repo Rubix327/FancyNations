@@ -98,18 +98,20 @@ CREATE TABLE IF NOT EXISTS TownResources (
 
 CREATE TABLE IF NOT EXISTS Objectives (
     Id INT NOT NULL AUTO_INCREMENT,
-    TakenTask INT NOT NULL,
+    Task INT NOT NULL,
     Name VARCHAR(50) NOT NULL,
     Amount INT NOT NULL,
     PRIMARY KEY (Id),
-    FOREIGN KEY (TakenTask) REFERENCES TakenTasks (Id)
+    FOREIGN KEY (Task) REFERENCES Tasks (Id)
 );
 
 CREATE TABLE IF NOT EXISTS TaskProgresses (
     Id INT NOT NULL AUTO_INCREMENT,
     Objective INT NOT NULL,
+    TakenTask INT NOT NULL,
     Progress INT NOT NULL,
     PRIMARY KEY (Id),
+    FOREIGN KEY (TakenTask) REFERENCES TakenTasks (Id),
     FOREIGN KEY (Objective) REFERENCES Objectives (Id)
 );
 
@@ -177,6 +179,12 @@ CREATE TABLE IF NOT EXISTS Churches (
     FOREIGN KEY (Town) REFERENCES Towns (Id)
 );
 
-INSERT IGNORE INTO TaskTypes(ID, TypeGroup, Name) VALUES (1, 'Gathering', 'Food'), (2, 'Gathering', 'Resource'), (3, 'Gathering', 'Crafting'), (4, 'Mobs', 'Mobkill');
-INSERT IGNORE INTO WorkerTypes(ID, Name, DisplayName) VALUES (1, 'Mayor', '@Mayor'), (2, 'Helper', '@Helper'), (3, 'Judge', '@Judge'), (4, 'Other', '@Other');
-INSERT IGNORE INTO Players(ID, Name) VALUES (1, '%server%');
+CREATE TABLE IF NOT EXISTS Reputations (
+    Id INT NOT NULL AUTO_INCREMENT,
+    Player INT NOT NULL,
+    Town INT NOT NULL,
+    Amount INT NOT NULL,
+    PRIMARY KEY (Id),
+    FOREIGN KEY (Player) REFERENCES Players (Id),
+    FOREIGN KEY (Town) REFERENCES Towns (Id)
+);

@@ -2,6 +2,8 @@ package me.rubix327.fancynations;
 
 import org.mineacademy.fo.settings.SimpleSettings;
 
+import java.util.List;
+
 public class Settings extends SimpleSettings {
 
     public static class Messages{
@@ -31,6 +33,7 @@ public class Settings extends SimpleSettings {
         public static String FN_PLAYERS;
         public static String NATIONS;
         public static String OBJECTIVES;
+        public static String REPUTATIONS;
         public static String TAKEN_TASKS;
         public static String TASK_PROGRESSES;
         public static String TASKS;
@@ -57,6 +60,7 @@ public class Settings extends SimpleSettings {
     }
 
     public static class Tasks{
+        public static Integer MAX_NAME_LENGTH;
         public static String DEFAULT_DESCRIPTION;
         public static Integer DEFAULT_TAKE_AMOUNT;
         public static Integer DEFAULT_MIN_LEVEL;
@@ -82,6 +86,12 @@ public class Settings extends SimpleSettings {
         public static Integer DEFAULT_WORKSHOP_LEVEL;
         public static Integer DEFAULT_BARRACKS_LEVEL;
         public static Integer DEFAULT_CHURCH_LEVEL;
+    }
+
+    public static class Messages_Templates{
+        public static List<String> TASK_INFO;
+        public static List<String> TASK_LIST_HEADER;
+        public static List<String> TASK_LIST_FOOTER;
     }
 
     private static void init(){
@@ -110,6 +120,7 @@ public class Settings extends SimpleSettings {
         DbTables.FN_PLAYERS = "Players";
         DbTables.NATIONS = "Nations";
         DbTables.OBJECTIVES = "Objectives";
+        DbTables.REPUTATIONS = "Reputations";
         DbTables.TAKEN_TASKS = "TakenTasks";
         DbTables.TASK_PROGRESSES = "TaskProgresses";
         DbTables.TASKS = "Tasks";
@@ -123,7 +134,7 @@ public class Settings extends SimpleSettings {
 
         pathPrefix("General");
         General.DATA_MANAGEMENT_TYPE = getString("Data_Management_Type");
-        General.SERVER_VAR = "%server%";
+        General.SERVER_VAR = getString("Server_Var");
         General.SQL_DEBUG = getBoolean("SQL_Debug");
 
         pathPrefix("Towns");
@@ -133,6 +144,7 @@ public class Settings extends SimpleSettings {
         Towns.DEFAULT_TASKS_TAX = getDouble("Default_Tasks_Tax");
 
         pathPrefix("Tasks");
+        Tasks.MAX_NAME_LENGTH = getInteger("Max_Name_Length");
         Tasks.DEFAULT_DESCRIPTION = getString("Default_Description");
         Tasks.DEFAULT_TAKE_AMOUNT = getInteger("Default_Take_Amount");
         Tasks.DEFAULT_MIN_LEVEL = getInteger("Default_Min_Level");
@@ -143,24 +155,24 @@ public class Settings extends SimpleSettings {
         Tasks.DEFAULT_PRIORITY = getInteger("Default_Priority");
         Tasks.DEFAULT_TIME_TO_COMPLETE = getInteger("Default_Time_To_Complete");
 
-        pathPrefix("TownWorkers");
-        TownWorkers.MAYOR_DEFAULT_DISPLAYNAME = getString("Mayor_Default_Displayname");
-        TownWorkers.HELPER_DEFAULT_DISPLAYNAME = getString("Helper_Default_Displayname");
-        TownWorkers.JUDGE_DEFAULT_DISPLAYNAME = getString("Judge_Default_Displayname");
-        TownWorkers.OTHER_DEFAULT_DISPLAYNAME = getString("Other_Default_Displayname");
+        pathPrefix("Town_Workers");
+        TownWorkers.MAYOR_DEFAULT_DISPLAYNAME = getString("Mayor_Default_Display_Name");
+        TownWorkers.HELPER_DEFAULT_DISPLAYNAME = getString("Helper_Default_Display_Name");
+        TownWorkers.JUDGE_DEFAULT_DISPLAYNAME = getString("Judge_Default_Display_Name");
+        TownWorkers.OTHER_DEFAULT_DISPLAYNAME = getString("Other_Default_Display_Name");
         TownWorkers.DEFAULT_SALARY = getInteger("Default_Salary");
 
-        pathPrefix("TownBuildings");
+        pathPrefix("Town_Buildings");
         TownBuildings.DEFAULT_FARM_LEVEL = getInteger("Default_Farm_Level");
         TownBuildings.DEFAULT_DEFEND_TOWER_LEVEL = getInteger("Default_Defend_Tower_Level");
         TownBuildings.DEFAULT_WORKSHOP_LEVEL = getInteger("Default_Workshop_Level");
         TownBuildings.DEFAULT_BARRACKS_LEVEL = getInteger("Default_Barracks_Level");
         TownBuildings.DEFAULT_CHURCH_LEVEL = getInteger("Default_Church_Level");
-    }
 
-    @Override
-    protected int getConfigVersion() {
-        return 1;
+        pathPrefix("Messages_Templates");
+        Messages_Templates.TASK_INFO = getStringList("Task_Info");
+        Messages_Templates.TASK_LIST_HEADER = getStringList("Task_List.Header");
+        Messages_Templates.TASK_LIST_FOOTER = getStringList("Task_List.Footer");
     }
 
     @Override

@@ -85,7 +85,7 @@ public class TownWorkerDao extends AbstractDao<TownWorker> implements ITownWorke
                     .replace("@Table", table)
                     .replace("@WorkerTypesTable", Settings.DbTables.WORKER_TYPES)
                     .replace("@PlayerID", String.valueOf(playerId));
-            PreparedStatement ps = FancyNations.getInstance().database.getConnection().
+            PreparedStatement ps = FancyNations.getInstance().getDatabase().getConnection().
                     prepareStatement(query);
             DatabaseManager.logSqlQuery(query);
             ResultSet resultSet = ps.executeQuery();

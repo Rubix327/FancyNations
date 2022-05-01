@@ -31,7 +31,7 @@ public class FNPlayerDao extends AbstractDao<FNPlayer> implements IFNPlayerManag
 
     @Override
     public void add(FNPlayer player) {
-        String query = "INSERT INTO @Table (Name, Reputation) VALUES ('@Name', @Reputation)";
+        String query = "INSERT INTO @Table (Name) VALUES ('@Name')";
 
         query = query
                 .replace("@Table", table)

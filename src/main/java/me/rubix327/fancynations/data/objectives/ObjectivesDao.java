@@ -54,7 +54,7 @@ public class ObjectivesDao extends AbstractDao<Objective> implements IObjectives
                 .replace("@Table", table)
                 .replace("@TakenTaskID", String.valueOf(takenTaskId));
 
-        return executeAllObjects(query);
+        return executeAll(query);
     }
 
 }

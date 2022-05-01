@@ -11,5 +11,7 @@ public interface ITaskProgressManager {
     void remove(int taskProgressId);
     HashMap<Integer, TaskProgress> getAll();
     int getMaxId();
+    TaskProgress get(int objectiveId, int takenTaskId);
+    HashMap<Integer, TaskProgress> getAllByTakenTask(int takenTaskId);
 
 }

@@ -1,11 +1,11 @@
 package me.rubix327.fancynations;
 
-import lombok.Getter;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.mineacademy.fo.Common;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,19 +16,22 @@ import java.util.Objects;
 
 public class Localization {
 
-    @Getter
     private static Localization instance;
+
     private final Plugin plugin;
 
-    /**
-     * Creates a new message handler instance for this plugin
-     */
-    protected Localization() {
-        instance = this;
+    private Localization() {
         this.plugin = FancyNations.getInstance();
     }
 
-    Map<String, Map<String, String>> messagesMap = new HashMap<>();
+    public static Localization getInstance(){
+        if (instance == null){
+            instance = new Localization();
+        }
+        return instance;
+    }
+
+    private final Map<String, Map<String, String>> messagesMap = new HashMap<>();
 
     public void init(List<String> locales){
         File messagesFolder = new File(this.plugin.getDataFolder() + "/messages");
@@ -45,10 +48,11 @@ public class Localization {
         for (String fileName : files){
             fileName = "messages_" + fileName + ".yml";
             File serverFile = new File(this.plugin.getDataFolder() + "/messages", fileName);
-            if (!serverFile.exists())
+            if (!serverFile.exists()){
                 plugin.getLogger().info("Localization " + fileName + " does not exist. " +
                         "Copying one from plugin's jar...");
                 this.plugin.saveResource("messages/" + fileName, false);
+            }
         }
     }
 
@@ -76,12 +80,12 @@ public class Localization {
             langTag = file.getName().replace("messages_", "").replace(".yml", "");
             plugin.getLogger().info("Found '" + langTag + "' localization. Loading all keys from the file...");
 
-            for (String key : config.getKeys(false)) {
+            for (String key : config.getKeys(true)) {
                 messages.put(key, config.getString(key));
-                messagesMap.put(langTag, messages);
             }
+            messagesMap.put(langTag, messages);
         }
-        plugin.getLogger().info("All localization files are successfully loaded.");
+        plugin.getLogger().info("All localization files have been successfully loaded.");
     }
 
     /**
@@ -151,32 +155,51 @@ public class Localization {
                 this.plugin.getLogger().warning(
                         "Unable to find message with key " + key + " in english messages_en.yml. " +
                                 "Please make sure all keys are defined!");
-                msg = "&cMessage not found in any of messages files (key: " + key + ")." +
+                msg = "@warn_prefix &cMessage not found in any of the messages files (key: " + key + ")." +
                         " Please contact an administrator.";
-                key = "warn_not_found";
             }
         }
 
-        if (Settings.Messages.USE_MESSAGE_BASED_PREFIXES){
-            if (key.startsWith("error")){
-                msg = Settings.Messages.PREFIX_ERROR + msg;
-            }
-            else if (key.startsWith("warn")){
-                msg = Settings.Messages.PREFIX_WARNING + msg;
-            }
-            else if (key.startsWith("success")){
-                msg = Settings.Messages.PREFIX_SUCCESS + msg;
-            }
-            else{
-                msg = Settings.Messages.PREFIX_INFO + msg;
-            }
-        }
+        // Replacing all placeholders like @nl and @error_prefix
+        msg = replacePlaceholders(msg);
 
+        // Adding a plugin prefix if it is enabled
         if (Settings.Messages.USE_PLUGIN_PREFIX){
             msg = Settings.Messages.PREFIX_PLUGIN + msg;
         }
 
+        // Disabling a message if it starts with @off
+        if (msg.startsWith("@off")) { msg = ""; }
+
         return msg;
+    }
+
+    /**
+     * Replaces all placeholders in the message with their values.
+     * @param message with placeholders
+     * @return replaced message
+     */
+    public String replacePlaceholders(String message){
+        return message
+                .replace("@chat_line_smooth", Common.chatLineSmooth())
+                .replace("@chat_line", Common.chatLine())
+                .replace("@error_prefix", Settings.Messages.PREFIX_ERROR)
+                .replace("@warn_prefix", Settings.Messages.PREFIX_WARNING)
+                .replace("@success_prefix", Settings.Messages.PREFIX_SUCCESS)
+                .replace("@info_prefix", Settings.Messages.PREFIX_INFO)
+                .replace("@newline ", "\n")
+                .replace("@newline", "\n")
+                .replace("@nl ", "\n");
+    }
+
+    /**
+     * Converts list to a string joining it on \n delimiter and then
+     * replaces all placeholders in the message with their values.
+     * @param messages list with placeholders
+     * @return replaced message
+     */
+    public String replacePlaceholders(List<String> messages){
+        return replacePlaceholders(String.join("\n", messages));
     }
 
 }
