@@ -12,10 +12,10 @@ public class MobKillTask extends Task{
         super(townId, taskTypeId, cretorId, taskName);
     }
 
-    public MobKillTask(int id, int townId, int taskTypeId, int cretorId, String taskName, String description,
+    public MobKillTask(int id, int townId, int taskTypeId, int creatorId, String taskName, String description,
                          int takeAmount, int minLevel, int maxLevel, double moneyReward, double expReward,
                          int repReward, int priority, Timestamp placementDateTime, int timeToComplete) {
-        super(id, townId, taskTypeId, cretorId, taskName, description,
+        super(id, townId, taskTypeId, creatorId, taskName, description,
                 takeAmount, minLevel, maxLevel, moneyReward, expReward,
                 repReward, priority, placementDateTime, timeToComplete);
     }

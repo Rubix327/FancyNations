@@ -102,7 +102,7 @@ CREATE TABLE IF NOT EXISTS Objectives (
     Name VARCHAR(50) NOT NULL,
     Amount INT NOT NULL,
     PRIMARY KEY (Id),
-    FOREIGN KEY (Task) REFERENCES Task (Id)
+    FOREIGN KEY (Task) REFERENCES Tasks (Id)
 );
 
 CREATE TABLE IF NOT EXISTS TaskProgresses (
@@ -176,5 +176,15 @@ CREATE TABLE IF NOT EXISTS Churches (
     Location VARCHAR(100) NOT NULL,
     Level INT NOT NULL,
     PRIMARY KEY (Id),
+    FOREIGN KEY (Town) REFERENCES Towns (Id)
+);
+
+CREATE TABLE IF NOT EXISTS Reputations (
+    Id INT NOT NULL AUTO_INCREMENT,
+    Player INT NOT NULL,
+    Town INT NOT NULL,
+    Amount INT NOT NULL,
+    PRIMARY KEY (Id),
+    FOREIGN KEY (Player) REFERENCES Players (Id),
     FOREIGN KEY (Town) REFERENCES Towns (Id)
 );

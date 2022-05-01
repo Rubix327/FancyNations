@@ -10,10 +10,10 @@ import java.util.List;
 
 public abstract class AbstractProcess<T extends AbstractDto> extends AbstractDataHandler<T>{
 
-    Class<T> clazz;
-    HashMap<Integer, T> dtos = new HashMap<>();
+    private final Class<T> clazz;
+    private final HashMap<Integer, T> dtos = new HashMap<>();
 
-    public AbstractProcess(Class<T> clazz) {
+    protected AbstractProcess(Class<T> clazz) {
         this.clazz = clazz;
     }
 

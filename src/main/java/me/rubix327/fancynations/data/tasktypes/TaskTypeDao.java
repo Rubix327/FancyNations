@@ -32,7 +32,13 @@ public class TaskTypeDao extends AbstractDao<TaskType> implements ITaskTypeManag
 
     @Override
     public void add(TaskType dto) {
-        // This class does not assume adding new instances,
-        // but this method must be here to override the method from the interface.
+        String query = "INSERT INTO @Table (TypeGroup, Name) VALUES ('@TypeGroup', '@Name')";
+
+        query = query
+                .replace("@Table", table)
+                .replace("@TypeGroup", String.valueOf(dto.getGroup()))
+                .replace("@Name", String.valueOf(dto.getName()));
+
+        super.executeVoid(query);
     }
 }

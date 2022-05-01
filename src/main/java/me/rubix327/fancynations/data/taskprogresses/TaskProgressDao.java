@@ -4,6 +4,7 @@ import me.rubix327.fancynations.data.AbstractDao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 public class TaskProgressDao extends AbstractDao<TaskProgress> implements ITaskProgressManager {
 
@@ -25,9 +26,10 @@ public class TaskProgressDao extends AbstractDao<TaskProgress> implements ITaskP
 
         int id = resultSet.getInt("Id");
         int objectiveId = resultSet.getInt("Objective");
+        int takenTaskId = resultSet.getInt("TakenTask");
         int progress = resultSet.getInt("Progress");
 
-        return new TaskProgress(id, objectiveId, progress);
+        return new TaskProgress(id, objectiveId, takenTaskId, progress);
     }
 
     @Override
@@ -40,6 +42,27 @@ public class TaskProgressDao extends AbstractDao<TaskProgress> implements ITaskP
                 .replace("@Progress", String.valueOf(progress.getProgress()));
 
         super.executeVoid(query);
+    }
+
+    public TaskProgress get(int objectiveId, int takenTaskId){
+        String query = "SELECT * FROM @Table WHERE Objective = @Objective AND TakenTask = @TakenTask";
+
+        query = query
+                .replace("@Table", this.table)
+                .replace("@Objective", String.valueOf(objectiveId))
+                .replace("@TakenTask", String.valueOf(takenTaskId));
+
+        return this.executeObject(query);
+    }
+
+    public HashMap<Integer, TaskProgress> getAllByTakenTask(int takenTaskId){
+        String query = "SELECT * FROM @Table WHERE TakenTask = @TakenTask";
+
+        query = query
+                .replace("@Table", this.table)
+                .replace("@TakenTask", String.valueOf(takenTaskId));
+
+        return this.executeAll(query);
     }
 
 }

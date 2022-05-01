@@ -11,14 +11,12 @@ import me.rubix327.fancynations.data.tasktypes.TaskType;
 import me.rubix327.fancynations.data.workertypes.WorkerType;
 import me.rubix327.fancynations.events.PlayerListener;
 import net.milkbowl.vault.economy.Economy;
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.mineacademy.fo.Common;
 import org.mineacademy.fo.plugin.SimplePlugin;
 import org.mineacademy.fo.settings.YamlStaticConfig;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @NoArgsConstructor
@@ -30,29 +28,37 @@ public final class FancyNations extends SimplePlugin {
     private Economy economy = null;
     @Getter
     private DatabaseManager database;
+    @Getter
+    private DataManager dataManager;
 
     @Override
     protected void onPluginStart() {
         instance = this;
+        Common.setLogPrefix("");
 
         // Localization
-        Localization localization = new Localization();
+        Localization localization = Localization.getInstance();
         localization.init(Arrays.asList("en", "ru"));
 
         // Database
         if (Settings.General.DATA_MANAGEMENT_TYPE.equalsIgnoreCase("database")){
-            this.database = new DatabaseManager();
-            database.connect();
+            this.database = DatabaseManager.getInstance();
+            database.connect("dbsetup.sql");
             if (database.isConnected()) {
-                Bukkit.getLogger().info("[FancyNations] Database is connected");
+                Common.log("[FancyNations] Database is connected.");
             }
             else{
-                Bukkit.getLogger().warning("[FancyNations] Using file system instead of database.");
+                Common.warning("[FancyNations] Database is not connected.");
+                Common.warning("[FancyNations] Using file system instead of database.");
             }
         }
         else {
-            Bukkit.getLogger().info("[FancyNations] Using file system instead of database.");
+            Common.log("[FancyNations] Using file system as indicated in settings.yml.");
         }
+
+        // DataManager
+        dataManager = DataManager.getInstance();
+        dataManager.runTaskExpireListener();
 
         // Commands and events
         registerCommand(new TestCommands());
@@ -61,7 +67,7 @@ public final class FancyNations extends SimplePlugin {
 
         // Economy
         if (!setupEconomy() ) {
-            Common.log(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
+            Common.warning(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
@@ -92,7 +98,7 @@ public final class FancyNations extends SimplePlugin {
     }
 
     private void addDefaultEntries(){
-        DataManager.getFNPlayerManager().addIgnore(new FNPlayer(1, "%server%"));
+        DataManager.getFNPlayerManager().addIgnore(new FNPlayer(1, Settings.General.SERVER_VAR));
         DataManager.getTaskTypeManager().addIgnore(new TaskType(1, "Gathering", "Food"));
         DataManager.getTaskTypeManager().addIgnore(new TaskType(2, "Gathering", "Resource"));
         DataManager.getTaskTypeManager().addIgnore(new TaskType(3, "Gathering", "Crafting"));
@@ -105,6 +111,6 @@ public final class FancyNations extends SimplePlugin {
 
     @Override
     public List<Class<? extends YamlStaticConfig>> getSettings() {
-        return Collections.singletonList(Settings.class);
+        return List.of(Settings.class);
     }
 }

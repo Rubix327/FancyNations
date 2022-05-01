@@ -1,6 +1,7 @@
 package me.rubix327.fancynations.commands;
 
 import me.rubix327.fancynations.FancyNations;
+import me.rubix327.fancynations.Localization;
 import me.rubix327.fancynations.Settings;
 import me.rubix327.fancynations.data.DataManager;
 import me.rubix327.fancynations.data.fnplayers.FNPlayer;
@@ -10,19 +11,18 @@ import me.rubix327.fancynations.data.tasks.GatheringTask;
 import me.rubix327.fancynations.data.tasks.MobKillTask;
 import me.rubix327.fancynations.data.tasks.Task;
 import me.rubix327.fancynations.data.tasktypes.TaskType;
+import me.rubix327.fancynations.util.Utils;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.experience.EXPSource;
 import org.bukkit.entity.Player;
-import org.mineacademy.fo.Common;
-import org.mineacademy.fo.model.SimpleComponent;
+import org.mineacademy.fo.command.SimpleCommandGroup;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class TaskCommands extends SubCommandInterlayer {
-    protected TaskCommands(String sublabel, String permLabel) {
-        super(sublabel, permLabel);
+    protected TaskCommands(SimpleCommandGroup group, String sublabel, String permLabel) {
+        super(group, sublabel, permLabel);
     }
 
     /*
@@ -67,17 +67,17 @@ public class TaskCommands extends SubCommandInterlayer {
 
             // Task type does not exist
             if (!DataManager.getTaskTypeManager().exists(args[2])){
-                tell(msgs.get("error_task_type_not_exist" +
-                         DataManager.getTaskTypeManager().getAll().values()
-                        .stream().map(Object::toString).collect(Collectors.joining(", ")), sender));
+                tell(msgs.get("error_task_type_not_exist", sender) +
+                        String.join(", ", DataManager.getTaskTypeManager().getNames()));
                 return;
             }
             taskType = DataManager.getTaskTypeManager().get(args[2]);
 
             final String taskName = String.join(" ", Arrays.asList(args).subList(3, args.length));
-            final int fnPlayerId = DataManager.getFNPlayerManager().get(getPlayer().getName()).getId();
-            final int serverId = DataManager.getFNPlayerManager().get(Settings.General.SERVER_VAR).getId();
-            final int taskCreatorId = (sender instanceof Player ? fnPlayerId : serverId);
+            final int taskCreatorId =
+                    (sender instanceof Player ?
+                    DataManager.getFNPlayerManager().get(getPlayer().getName()).getId() :
+                    DataManager.getFNPlayerManager().get(Settings.General.SERVER_VAR).getId());
 
             // Name length is too long
             if (taskName.length() > Settings.Tasks.MAX_NAME_LENGTH){
@@ -148,14 +148,21 @@ public class TaskCommands extends SubCommandInterlayer {
 
             // Validations
             if (shouldBeDoubles.contains(variable.toLowerCase())){
-                findNumber(Double.class, 3, msgs.get("error_value_must_be_double", sender));
+                if (!Utils.isStringDouble(args[3])) {
+                    tell(msgs.get("error_value_must_be_double", sender));
+                    return;
+                }
             }
             else if (shouldBeIntegers.contains(variable.toLowerCase())){
-                findNumber(3, msgs.get("error_value_must_be_integer", sender));
+                if (!Utils.isStringInt(args[3])) {
+                    tell(msgs.get("error_value_must_be_integer", sender));
+                    return;
+                }
             }
 
             DataManager.getTaskManager().update(taskId, variable, value);
-            tell(msgs.get("success_task_updated", sender));
+            tell(msgs.get("success_task_updated", sender)
+                    .replace("@id", String.valueOf(taskId)));
         }
 
         // Get info about task - fn task info <task_id>
@@ -176,30 +183,55 @@ public class TaskCommands extends SubCommandInterlayer {
             }
             Task task = DataManager.getTaskManager().get(taskId);
             FNPlayer fnPlayer = DataManager.getFNPlayerManager().get(task.getCreatorId());
+            int timeDays = task.getTimeToComplete() / 86400;
+            int timeHours = task.getTimeToComplete() % 86400 / 3600;
+            int timeMinutes = task.getTimeToComplete() % 86400 % 3600 / 60;
+            int timeSeconds = task.getTimeToComplete() % 60;
 
-            List<String> info = Arrays.asList(
-                    "&7Info about task #" + taskId,
-                    "",
-                    "&7Name: " + task.getTaskName(),
-                    "&7Type: " + DataManager.getTaskTypeManager().get(task.getTaskTypeId()).getName(),
-                    "&7Town: " + DataManager.getTownManager().get(task.getTownId()).getName(),
-                    "&7Created by: " + (fnPlayer.getName().equals("%server%") ? "Nation" : fnPlayer.getName()),
-                    "&7Max completions: " + task.getTakeAmount(),
-                    "&7Money reward: " + task.getMoneyReward(),
-                    "&7Experience reward: " + task.getExpReward(),
-                    "&7Reputation reward: " + task.getRepReward(),
-                    "&7Priority: " + task.getPriority(),
-                    "&7Levels: " + task.getMinLevel() + " - " + task.getMaxLevel(),
-                    "&7Description: " + task.getDescription()
-                    );
+            List<String> info = Settings.Messages_Templates.TASK_INFO;
+            final String finalInfo = Localization.getInstance().replacePlaceholders(info)
+                    .replace("@template_task_info_label", msgs.get("template_task_info_label", sender))
+                    .replace("@template_task_info_name", msgs.get("template_task_info_name", sender))
+                    .replace("@template_task_info_type", msgs.get("template_task_info_type", sender))
+                    .replace("@template_task_info_town", msgs.get("template_task_info_town", sender))
+                    .replace("@template_task_info_created_by", msgs.get("template_task_info_created_by", sender))
+                    .replace("@template_task_info_completions_left", msgs.get("template_task_info_completions_left", sender))
+                    .replace("@template_task_info_money_reward", msgs.get("template_task_info_money_reward", sender))
+                    .replace("@template_task_info_exp_reward", msgs.get("template_task_info_exp_reward", sender))
+                    .replace("@template_task_info_rep_reward", msgs.get("template_task_info_rep_reward", sender))
+                    .replace("@template_task_info_priority", msgs.get("template_task_info_priority", sender))
+                    .replace("@template_task_info_levels", msgs.get("template_task_info_levels", sender))
+                    .replace("@template_task_info_description", msgs.get("template_task_info_description", sender))
+                    .replace("@template_task_info_time_to_complete", msgs.get("template_task_info_time_to_complete", sender))
+                    .replace("@id", String.valueOf(taskId))
+                    .replace("@name", String.valueOf(task.getTaskName()))
+                    .replace("@type", String.valueOf(DataManager.getTaskTypeManager().get(task.getTaskTypeId()).getName()))
+                    .replace("@town", String.valueOf(DataManager.getTownManager().get(task.getTownId()).getName()))
+                    .replace("@created_by", String.valueOf(fnPlayer.getName().equals(Settings.General.SERVER_VAR) ?
+                            msgs.get("server_label", sender) : fnPlayer.getName()))
+                    .replace("@comp_left", String.valueOf(task.getTakeAmount()))
+                    .replace("@money_reward", String.valueOf(task.getMoneyReward()))
+                    .replace("@exp_reward", String.valueOf(task.getExpReward()))
+                    .replace("@rep_reward", String.valueOf(task.getRepReward()))
+                    .replace("@priority", String.valueOf(task.getPriority()))
+                    .replace("@min_level", String.valueOf(task.getMinLevel()))
+                    .replace("@max_level", String.valueOf(task.getMaxLevel()))
+                    .replace("@description", String.valueOf(task.getDescription()))
+                    .replace("@days", String.valueOf(timeDays))
+                    .replace("@hours", String.valueOf(timeHours))
+                    .replace("@minutes", String.valueOf(timeMinutes))
+                    .replace("@seconds", String.valueOf(timeSeconds));
 
-            List<SimpleComponent> infoMessage = Common.convert(info, SimpleComponent::of);
-            tell(infoMessage);
+            tell(finalInfo);
         }
 
-        // Get all existing tasks - fn task list
+        // Get all existing tasks - fn task list [page]
         else if (args[0].equalsIgnoreCase("list")){
             checkPermission("list");
+
+            int currentPage = 1;
+            int maxPage = 1;
+            int elementsPerPage = 8;
 
             // No tasks are created yet
             if (DataManager.getTaskManager().getAll().isEmpty()){
@@ -207,11 +239,53 @@ public class TaskCommands extends SubCommandInterlayer {
                 return;
             }
 
-            Collection<Task> tasks = DataManager.getTaskManager().getAll().values();
-            tell(msgs.get("info_task_info_label", sender));
-            for (Task task : tasks){
-                tell(task.getInfo());
+            // TODO message
+            if (args.length == 2){
+                if (!Utils.isStringInt(args[1])){
+                    tell(msgs.get("error_page_should_be_number", sender));
+                    return;
+                }
+                maxPage = DataManager.getTaskManager().getAll().size() / elementsPerPage;
             }
+
+            final Collection<Task> tasks = DataManager.getTaskManager().getAll().values();
+            final List<String> listHeader = Settings.Messages_Templates.TASK_LIST_HEADER;
+            final List<String> listFooter = Settings.Messages_Templates.TASK_LIST_FOOTER;
+
+            // Adding header
+            List<String> generalList = new ArrayList<>(listHeader);
+
+            // Adding elements
+            for (Task task: tasks){
+                String elementTemplate = msgs.get("template_task_list_element", sender);
+
+                final String type = DataManager.getTaskTypeManager().get(task.getTaskTypeId()).getName();
+                final String town = DataManager.getTownManager().get(task.getTownId()).getName();
+                final String creator = DataManager.getFNPlayerManager().get(task.getCreatorId()).getName();
+                final String finalCreator = (creator.equalsIgnoreCase(Settings.General.SERVER_VAR) ?
+                        Localization.getInstance().get("server_label", sender) : creator);
+
+                String element = elementTemplate
+                        .replace("@id", String.valueOf(task.getId()))
+                        .replace("@type", type)
+                        .replace("@town", town)
+                        .replace("@creator", finalCreator)
+                        .replace("@name", task.getTaskName());
+
+                generalList.add(element);
+            }
+
+            // Adding footer
+            generalList.addAll(listFooter);
+
+            String tasksList = Localization.getInstance().replacePlaceholders(generalList)
+                    .replace("@template_task_list_label", msgs.get("template_task_list_label", sender))
+                    .replace("@template_task_list_example", msgs.get("template_task_list_example", sender))
+                    .replace("@template_task_list_element", msgs.get("template_task_list_element", sender))
+                    .replace("@current", String.valueOf(currentPage))
+                    .replace("@max", String.valueOf(maxPage));
+
+            tell(tasksList);
 
         }
 
@@ -243,9 +317,9 @@ public class TaskCommands extends SubCommandInterlayer {
             // Player's level is not suitable for this task
             if (playerData.getLevel() < task.getMinLevel() || playerData.getLevel() > task.getMaxLevel()){
                 String msg = msgs.get("error_level_not_suitable", sender);
-                msg = msg.replace("@playerLevel", String.valueOf(playerData.getLevel()))
-                                .replace("@playerMinLevel", String.valueOf(task.getMinLevel()))
-                                .replace("@playerMaxLevel", String.valueOf(task.getMaxLevel()));
+                msg = msg.replace("@player_level", String.valueOf(playerData.getLevel()))
+                                .replace("@task_min_level", String.valueOf(task.getMinLevel()))
+                                .replace("@task_max_level", String.valueOf(task.getMaxLevel()));
                 tell(msg);
                 return;
             }
@@ -272,7 +346,8 @@ public class TaskCommands extends SubCommandInterlayer {
                 tell(msgs.get("syntax_task_finish", sender));
                 return;
             }
-            int taskId = findNumber(2, "&cTask ID must be a number.");
+            // TODO: maybe it should be taken task id (not task id)?
+            int taskId = findNumber(2, msgs.get("error_id_must_be_number", sender));
 
             // Task does not exist
             if (!DataManager.getTaskManager().exists(taskId)){
@@ -282,12 +357,15 @@ public class TaskCommands extends SubCommandInterlayer {
             Task task = DataManager.getTaskManager().get(taskId);
 
             // Time for completion has expired
+            // Despite we have runTaskExpireListener in DataManager,
+            // here we additionally check if the task is currently available just in case.
             if (task.getPlacementDateTime().getNanos() + task.getTimeToComplete() < LocalDateTime.now().getNano()){
                 tell(msgs.get("error_task_time_to_complete_expired", sender));
 
                 // TODO automatically takeAmount += 1 when task expires
 //                DataManager.getTaskManager().update(taskId, "takeAmount", task.getTakeAmount() + 1);
-                // TODO automatically remove takentask from player when task expires
+                // TODO automatically remove TaskProgress where TakenTask = thisTakenTask
+                // TODO automatically remove TakenTask from player when task expires
                 return;
             }
 
@@ -365,27 +443,39 @@ public class TaskCommands extends SubCommandInterlayer {
         if (args.length == 1){
             return Arrays.asList("create", "remove", "set", "info");
         }
-        // fn task create _<townId>_ <taskType>
+        // fn task create _<townId>_ <taskType> <name>
         else if (args.length == 2 && args[0].equalsIgnoreCase("create")){
             List<String> towns = new ArrayList<>();
             DataManager.getTownManager().getAll().values().forEach(town -> towns.add(town.getName()));
             return towns;
         }
-        // fn task create <townId> _<taskType>_
+        // fn task create <townId> _<taskType>_ <name>
         else if (args.length == 3 && args[0].equalsIgnoreCase("create")){
             return DataManager.getTaskTypeManager().getNames();
         }
-        // fn task remove _<townId>_
-        else if (args.length == 2 && args[0].equalsIgnoreCase("remove")){
-            return Collections.singletonList("<id>");
+        // fn task create <townId> <taskType> _<name>_
+        else if (args.length == 4 && args[0].equalsIgnoreCase("create")){
+            return Collections.singletonList("<name>");
         }
-        // fn task set <townId> _<var>_ <value>
+        // fn task remove _<taskId>_
+        else if (args.length == 2 && args[0].equalsIgnoreCase("remove")){
+            return Collections.singletonList("<task_id>");
+        }
+        // fn task set _<taskId>_ <var> <value>
+        else if (args.length == 2 && args[0].equalsIgnoreCase("set")){
+            return Collections.singletonList("<task_id>");
+        }
+        // fn task set <taskId> _<var>_ <value>
         else if (args.length == 3 && args[0].equalsIgnoreCase("set")){
             return DataManager.getClassFields(Task.class);
         }
-        // fn task set <townId> <var> _<value>_
+        // fn task set <taskId> <var> _<value>_
         else if (args.length == 4 && args[0].equalsIgnoreCase("set")){
             return Collections.singletonList("<value>");
+        }
+        // fn task info _<taskId>_
+        else if (args.length == 2 && args[0].equalsIgnoreCase("info")){
+            return Collections.singletonList("<task_id>");
         }
         return new ArrayList<>();
     }

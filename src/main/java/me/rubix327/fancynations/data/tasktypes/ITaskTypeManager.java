@@ -7,7 +7,6 @@ public interface ITaskTypeManager {
 
     boolean exists(int typeId);
     boolean exists(String typeName);
-    void add(TaskType taskType);
 
     /**
      * This method is only for creating default entries.

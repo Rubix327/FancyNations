@@ -1,7 +1,9 @@
 package me.rubix327.fancynations.data;
 
-import lombok.Getter;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import me.rubix327.fancynations.FancyNations;
+import me.rubix327.fancynations.Localization;
 import me.rubix327.fancynations.Settings;
 import me.rubix327.fancynations.data.barracks.BarracksDao;
 import me.rubix327.fancynations.data.barracks.BarracksProcess;
@@ -28,12 +30,14 @@ import me.rubix327.fancynations.data.reputations.IReputationManager;
 import me.rubix327.fancynations.data.reputations.ReputationDao;
 import me.rubix327.fancynations.data.reputations.ReputationProcess;
 import me.rubix327.fancynations.data.takentasks.ITakenTaskManager;
+import me.rubix327.fancynations.data.takentasks.TakenTask;
 import me.rubix327.fancynations.data.takentasks.TakenTaskDao;
 import me.rubix327.fancynations.data.takentasks.TakenTaskProcess;
 import me.rubix327.fancynations.data.taskprogresses.ITaskProgressManager;
 import me.rubix327.fancynations.data.taskprogresses.TaskProgressDao;
 import me.rubix327.fancynations.data.taskprogresses.TaskProgressProcess;
 import me.rubix327.fancynations.data.tasks.ITaskManager;
+import me.rubix327.fancynations.data.tasks.Task;
 import me.rubix327.fancynations.data.tasks.TaskDao;
 import me.rubix327.fancynations.data.tasks.TaskProcess;
 import me.rubix327.fancynations.data.tasktypes.ITaskTypeManager;
@@ -60,16 +64,32 @@ import me.rubix327.fancynations.data.workshops.WorkshopProcess;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.command.CommandSender;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.mineacademy.fo.Common;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
-@Getter
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DataManager {
+
+    private static DataManager instance;
+
+    Localization msgs = Localization.getInstance();
+
+    public static DataManager getInstance(){
+        if (instance == null){
+            instance = new DataManager();
+        }
+        return instance;
+    }
 
     public static boolean isDatabaseChosen(){
         if (Settings.General.DATA_MANAGEMENT_TYPE.equalsIgnoreCase("database")){
@@ -216,5 +236,41 @@ public class DataManager {
         float yaw = Float.parseFloat(locStr.get(5));
 
         return new Location(world, x, y, z, pitch, yaw);
+    }
+
+    /**
+     * This runnable loops through all the TakenTasks and automatically
+     * increments TakeAmount and removes TakenTask from a player when his task expire
+     * (i.e. current time > placement time + completion time)
+     */
+    public void runTaskExpireListener(){
+        new BukkitRunnable(){
+
+            @Override
+            public void run() {
+                Collection<TakenTask> takenTasks = DataManager.getTakenTaskManager().getAll(false).values();
+                for (TakenTask takenTask : takenTasks){
+                    Task task = DataManager.getTaskManager().get(takenTask.getTaskId());
+                    if (task.getPlacementDateTime().getNanos() + task.getTimeToComplete() < LocalDateTime.now().getNano()){
+                        // Increment take amount
+                        DataManager.getTaskManager().update(task.getId(), "takeAmount", task.getTakeAmount() + 1);
+                        // Remove all task progresses depending on this taken task
+                        DataManager.getTaskProgressManager().getAllByTakenTask(takenTask.getId()).values()
+                                .forEach(progress -> DataManager.getTaskProgressManager().remove(progress.getId()));
+                        // Remove taken task from a player
+                        DataManager.getTakenTaskManager().remove(takenTask.getId());
+
+                        // Tell player that this task is removed from his task list.
+                        String playerName = DataManager.getFNPlayerManager().get(takenTask.getPlayerId()).getName();
+                        CommandSender sender = Bukkit.getPlayerExact(playerName);
+                        if (sender != null){
+                            Common.tell(sender, msgs.get("info_task_time_to_complete_expired", sender)
+                                    .replace("@id", String.valueOf(takenTask.getTaskId())));
+                        }
+                    }
+                }
+            }
+
+        }.runTaskTimer(FancyNations.getInstance(), 30, 20);
     }
 }

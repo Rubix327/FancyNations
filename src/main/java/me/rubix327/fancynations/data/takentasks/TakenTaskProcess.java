@@ -2,6 +2,8 @@ package me.rubix327.fancynations.data.takentasks;
 
 import me.rubix327.fancynations.data.AbstractProcess;
 
+import java.util.HashMap;
+
 public class TakenTaskProcess extends AbstractProcess<TakenTask> implements ITakenTaskManager {
 
     private static TakenTaskProcess instance = null;
@@ -31,5 +33,10 @@ public class TakenTaskProcess extends AbstractProcess<TakenTask> implements ITak
             if (takenTask.getPlayerId() == playerId && takenTask.getTaskId() == taskId) return takenTask;
         }
         throw new NullPointerException("This object does not exist. Use exists() before this method.");
+    }
+
+    @Override
+    public HashMap<Integer, TakenTask> getAll(boolean log) {
+        return super.getAll();
     }
 }

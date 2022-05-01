@@ -11,20 +11,8 @@ public abstract class SubCommandInterlayer extends SimpleSubCommand {
     Localization msgs = Localization.getInstance();
     String permLabel;
 
-    protected SubCommandInterlayer(String sublabel) {
-        super(sublabel);
-        addTellPrefix(false);
-        setPermission(null);
-    }
-
-    protected SubCommandInterlayer(SimpleCommandGroup parent, String sublabel) {
-        super(parent, sublabel);
-        addTellPrefix(false);
-        setPermission(null);
-    }
-
-    protected SubCommandInterlayer(String sublabel, String permLabel) {
-        super(sublabel);
+    protected SubCommandInterlayer(SimpleCommandGroup group, String sublabel, String permLabel){
+        super(group, sublabel);
         addTellPrefix(false);
         setPermission(null);
         this.permLabel = permLabel;
@@ -40,8 +28,8 @@ public abstract class SubCommandInterlayer extends SimpleSubCommand {
      * Command will be aborted and the sender will receive error_no_permission message.
      */
     protected final void checkPermission(@NonNull String perm) throws CommandException {
-        if (permLabel == null) { permLabel = ""; }
-        if (isPlayer() && !sender.hasPermission(permLabel + "." + perm)){
+        final String finalPerm = (permLabel == null ? perm : permLabel + "." + perm);
+        if (isPlayer() && !sender.hasPermission(finalPerm)){
             throw new CommandException(msgs.get("error_no_permission", sender));
         }
     }

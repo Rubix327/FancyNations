@@ -7,7 +7,6 @@ public interface IWorkerTypeManager {
 
     boolean exists(int workerTypeId);
     boolean exists(String workerTypeName);
-    void add(WorkerType workerType);
 
     /**
      * This method is only for creating default entries.
