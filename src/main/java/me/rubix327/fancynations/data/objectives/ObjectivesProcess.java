@@ -20,7 +20,7 @@ public class ObjectivesProcess extends AbstractProcess<Objective> implements IOb
     }
 
     @Override
-    public HashMap<Integer, Objective> getAllFor(String playerName, int taskId) {
+    public HashMap<Integer, Objective> getAllFor(int taskId) {
         return null;
     }
 }

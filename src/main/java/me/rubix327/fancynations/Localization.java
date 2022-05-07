@@ -1,5 +1,8 @@
 package me.rubix327.fancynations;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import me.rubix327.fancynations.util.Logger;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -9,20 +12,14 @@ import org.mineacademy.fo.Common;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Localization {
 
     private static Localization instance;
 
-    private final Plugin plugin;
-
-    private Localization() {
-        this.plugin = FancyNations.getInstance();
-    }
+    private final Plugin plugin = FancyNations.getInstance();
 
     public static Localization getInstance(){
         if (instance == null){
@@ -49,8 +46,7 @@ public class Localization {
             fileName = "messages_" + fileName + ".yml";
             File serverFile = new File(this.plugin.getDataFolder() + "/messages", fileName);
             if (!serverFile.exists()){
-                plugin.getLogger().info("Localization " + fileName + " does not exist. " +
-                        "Copying one from plugin's jar...");
+                Logger.info("Localization " + fileName + " does not exist. " + "Copying one from plugin's jar...");
                 this.plugin.saveResource("messages/" + fileName, false);
             }
         }
@@ -71,21 +67,21 @@ public class Localization {
                 config.load(file);
             } catch (InvalidConfigurationException | IOException e) {
                 e.printStackTrace();
-                this.plugin.getLogger().severe("Unable to load " + file);
+                Logger.error("Unable to load " + file);
             }
 
             if (file.isDirectory()) continue;
             if (!file.getName().startsWith("messages_")) continue;
             if (!file.getName().endsWith(".yml")) continue;
             langTag = file.getName().replace("messages_", "").replace(".yml", "");
-            plugin.getLogger().info("Found '" + langTag + "' localization. Loading all keys from the file...");
+            Logger.info("Found '" + langTag + "' localization. Loading all keys from the file...");
 
             for (String key : config.getKeys(true)) {
                 messages.put(key, config.getString(key));
             }
             messagesMap.put(langTag, messages);
         }
-        plugin.getLogger().info("All localization files have been successfully loaded.");
+        Logger.info("All localization files have been successfully loaded.");
     }
 
     /**
@@ -134,30 +130,29 @@ public class Localization {
      */
     public String get(String key, String locale){
         String msg = messagesMap.get(locale).get(key);
+        String errorMsg = "Unable to find message with key " + key + " in following files: ";
+        List<String> invalidFiles = new ArrayList<>();
         int attempts = 1;
 
         while (msg == null) {
             if (attempts == 1) {
-                this.plugin.getLogger().warning(
-                        "Unable to find message with key " + key + " in messages_" + locale + ".yml. " +
-                                "Please make sure all keys are defined!");
+                invalidFiles.add("(PLAYER LOCALE) messages_" + locale + ".yml");
                 msg = messagesMap.get(Settings.LOCALE_PREFIX).get(key);
                 attempts += 1;
             }
             else if (attempts == 2) {
-                this.plugin.getLogger().warning(
-                        "Unable to find message with key " + key + " in server default messages_" +
-                                Settings.LOCALE_PREFIX + ".yml. Please make sure all keys are defined!");
+                invalidFiles.add("(SERVER DEFAULT) messages_" + Settings.LOCALE_PREFIX + ".yml");
                 msg = messagesMap.get("en").get(key);
                 attempts += 1;
             }
             else if (attempts >= 3) {
-                this.plugin.getLogger().warning(
-                        "Unable to find message with key " + key + " in english messages_en.yml. " +
-                                "Please make sure all keys are defined!");
+                invalidFiles.add("(ENG) messages_en.yml");
                 msg = "@warn_prefix &cMessage not found in any of the messages files (key: " + key + ")." +
                         " Please contact an administrator.";
             }
+        }
+        if (invalidFiles.size() != 0) {
+            Logger.warning(errorMsg + String.join(", ", invalidFiles));
         }
 
         // Replacing all placeholders like @nl and @error_prefix

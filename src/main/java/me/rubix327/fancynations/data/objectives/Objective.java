@@ -12,13 +12,13 @@ import me.rubix327.fancynations.data.AbstractDto;
 public class Objective extends AbstractDto {
 
     private final int id;
-    private final int takenTaskId;
+    private final int task;
     private final String name;
     private final int amount;
 
-    public Objective(int takenTaskId, String name, int amount) {
+    public Objective(int task, String name, int amount) {
         this.id = DataManager.getObjectivesManager().getMaxId() + 1;
-        this.takenTaskId = takenTaskId;
+        this.task = task;
         this.name = name;
         this.amount = amount;
     }

@@ -5,12 +5,15 @@ import me.rubix327.fancynations.Localization;
 import me.rubix327.fancynations.Settings;
 import me.rubix327.fancynations.data.DataManager;
 import me.rubix327.fancynations.data.fnplayers.FNPlayer;
+import me.rubix327.fancynations.data.objectives.Objective;
 import me.rubix327.fancynations.data.reputations.Reputation;
 import me.rubix327.fancynations.data.takentasks.TakenTask;
+import me.rubix327.fancynations.data.taskprogresses.TaskProgress;
 import me.rubix327.fancynations.data.tasks.GatheringTask;
 import me.rubix327.fancynations.data.tasks.MobKillTask;
 import me.rubix327.fancynations.data.tasks.Task;
 import me.rubix327.fancynations.data.tasktypes.TaskType;
+import me.rubix327.fancynations.data.townresources.TownResource;
 import me.rubix327.fancynations.util.Utils;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.experience.EXPSource;
@@ -239,7 +242,6 @@ public class TaskCommands extends SubCommandInterlayer {
                 return;
             }
 
-            // TODO message
             if (args.length == 2){
                 if (!Utils.isStringInt(args[1])){
                     tell(msgs.get("error_page_should_be_number", sender));
@@ -293,8 +295,6 @@ public class TaskCommands extends SubCommandInterlayer {
         else if (args[0].equalsIgnoreCase("start")){
             checkPermission("start");
 
-            PlayerData playerData = PlayerData.get(getPlayer().getUniqueId());
-
             // Wrong syntax
             if (args.length < 2) {
                 tell(msgs.get("syntax_task_start", sender));
@@ -314,14 +314,17 @@ public class TaskCommands extends SubCommandInterlayer {
                 tell(msgs.get("error_task_not_available", sender));
             }
 
-            // Player's level is not suitable for this task
-            if (playerData.getLevel() < task.getMinLevel() || playerData.getLevel() > task.getMaxLevel()){
-                String msg = msgs.get("error_level_not_suitable", sender);
-                msg = msg.replace("@player_level", String.valueOf(playerData.getLevel()))
-                                .replace("@task_min_level", String.valueOf(task.getMinLevel()))
-                                .replace("@task_max_level", String.valueOf(task.getMaxLevel()));
-                tell(msg);
-                return;
+            // Player's MMO level is not suitable for this task
+            if (dependencies.IS_MMOCORE_LOADED) {
+                PlayerData playerData = PlayerData.get(getPlayer().getUniqueId());
+                if (playerData.getLevel() < task.getMinLevel() || playerData.getLevel() > task.getMaxLevel()) {
+                    String msg = msgs.get("error_level_not_suitable", sender);
+                    msg = msg.replace("@player_level", String.valueOf(playerData.getLevel()))
+                            .replace("@task_min_level", String.valueOf(task.getMinLevel()))
+                            .replace("@task_max_level", String.valueOf(task.getMaxLevel()));
+                    tell(msg);
+                    return;
+                }
             }
 
             // Player already own this task
@@ -335,49 +338,43 @@ public class TaskCommands extends SubCommandInterlayer {
             tell(msgs.get("success_task_started", sender));
         }
 
-        // Finish task - fn task finish <task_id>
+        // Finish task - fn task finish <taken_task_id>
         else if (args[0].equalsIgnoreCase("finish")){
             checkPermission("finish");
-
-            PlayerData playerData = PlayerData.get(getPlayer().getUniqueId());
 
             // Wrong syntax
             if (args.length < 2) {
                 tell(msgs.get("syntax_task_finish", sender));
                 return;
             }
-            // TODO: maybe it should be taken task id (not task id)?
-            int taskId = findNumber(2, msgs.get("error_id_must_be_number", sender));
+            int takenTaskId = findNumber(2, msgs.get("error_id_must_be_number", sender));
 
-            // Task does not exist
-            if (!DataManager.getTaskManager().exists(taskId)){
-                tell(msgs.get("error_task_not_exist", sender));
+            // Taken task does not exist
+            if (!DataManager.getTakenTaskManager().exists(takenTaskId)){
+                tell(msgs.get("error_taken_task_not_exist", sender));
                 return;
             }
-            Task task = DataManager.getTaskManager().get(taskId);
+            TakenTask takenTask = DataManager.getTakenTaskManager().get(takenTaskId);
 
             // Time for completion has expired
             // Despite we have runTaskExpireListener in DataManager,
             // here we additionally check if the task is currently available just in case.
+            Task task = DataManager.getTaskManager().get(takenTask.getTaskId());
             if (task.getPlacementDateTime().getNanos() + task.getTimeToComplete() < LocalDateTime.now().getNano()){
+                DataManager.getInstance().resetTakenTask(takenTask);
                 tell(msgs.get("error_task_time_to_complete_expired", sender));
-
-                // TODO automatically takeAmount += 1 when task expires
-//                DataManager.getTaskManager().update(taskId, "takeAmount", task.getTakeAmount() + 1);
-                // TODO automatically remove TaskProgress where TakenTask = thisTakenTask
-                // TODO automatically remove TakenTask from player when task expires
                 return;
             }
 
             // One or more objectives is not completed
-            if (!task.isAllObjectivesCompleted(getPlayer(), taskId)){
+            if (!task.isAllObjectivesCompleted(getPlayer(), task.getId())){
                 tell(msgs.get("error_task_objective_not_completed", sender));
                 return;
             }
 
             // Player does not own this task
             FNPlayer fnPlayer = DataManager.getFNPlayerManager().get(getPlayer().getName());
-            if (!DataManager.getTakenTaskManager().exists(fnPlayer.getId(), taskId)){
+            if (!DataManager.getTakenTaskManager().exists(fnPlayer.getId(), task.getId())){
                 tell(msgs.get("error_task_not_taken", sender));
                 return;
             }
@@ -391,14 +388,24 @@ public class TaskCommands extends SubCommandInterlayer {
             DataManager.getReputationsManager().update(
                     repId, "amount", reputation.getAmount() + task.getRepReward());
 
-            // Give experience reward
-            playerData.giveExperience(task.getExpReward(), EXPSource.QUEST, getPlayer().getLocation(), false);
+            // Give MMO experience reward
+            if (dependencies.IS_MMOCORE_LOADED){
+                PlayerData.get(getPlayer().getUniqueId())
+                        .giveExperience(task.getExpReward(), EXPSource.QUEST, getPlayer().getLocation(), false);
+            }
 
-            // TODO if type==gathering then send 50% of resources to town
+            // Send a certain share of resources to a town
+            if (DataManager.getTaskTypeManager().get(task.getTaskTypeId()).getGroup().equalsIgnoreCase("Gathering")){
+                for (Objective objective : DataManager.getObjectivesManager().getAllFor(task.getId()).values()){
+                    TownResource townResource = new TownResource(task.getTownId(), objective.getName(),
+                            objective.getAmount() / 100 * Settings.Rewards.TOWN_RESOURCE_SHARE);
+                    DataManager.getTownResourceManager().add(townResource);
+                }
+            }
+
             // TODO if type==mobkill then ???
 
             // Remove TakenTask attached to this Task
-            TakenTask takenTask = DataManager.getTakenTaskManager().get(fnPlayer.getId(), taskId);
             DataManager.getTakenTaskManager().remove(takenTask.getId());
             tell(msgs.get("success_task_finish", sender)
                     .replace("@money", String.valueOf(task.getMoneyReward()))
@@ -427,8 +434,10 @@ public class TaskCommands extends SubCommandInterlayer {
 
             if (!DataManager.getTakenTaskManager().exists(task.getCreatorId(), task.getId())){
                 int takenTaskId = DataManager.getTakenTaskManager().get(task.getCreatorId(), task.getId()).getId();
+                for (TaskProgress progress : DataManager.getTaskProgressManager().getAllByTakenTask(takenTaskId).values()){
+                    DataManager.getTaskProgressManager().remove(progress.getId());
+                }
                 DataManager.getTakenTaskManager().remove(takenTaskId);
-                // TODO Remove TaskProgress - cascade on db but what about file system?
             }
             tell(msgs.get("success_task_cancelled", sender));
         }

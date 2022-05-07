@@ -60,7 +60,7 @@ public abstract class Task extends AbstractDto {
     public boolean isAllObjectivesCompleted(Player player, int taskId){
 
         ObjectivesDao objDao = (ObjectivesDao) DataManager.getObjectivesManager();
-        for (Map.Entry<Integer, Objective> entry : objDao.getAllFor(player.getName(), taskId).entrySet()){
+        for (Map.Entry<Integer, Objective> entry : objDao.getAllFor(taskId).entrySet()){
             Objective objective = entry.getValue();
             if (!isObjectiveCompleted(objective, player)) return false;
         }

@@ -6,6 +6,8 @@ import java.util.List;
 
 public class Settings extends SimpleSettings {
 
+    public static String LOG_PREFIX;
+
     public static class Messages{
         public static Boolean USE_PLUGIN_PREFIX;
         public static Boolean USE_MESSAGE_BASED_PREFIXES;
@@ -88,6 +90,10 @@ public class Settings extends SimpleSettings {
         public static Integer DEFAULT_CHURCH_LEVEL;
     }
 
+    public static class Rewards{
+        public static Integer TOWN_RESOURCE_SHARE;
+    }
+
     public static class Messages_Templates{
         public static List<String> TASK_INFO;
         public static List<String> TASK_LIST_HEADER;
@@ -95,6 +101,8 @@ public class Settings extends SimpleSettings {
     }
 
     private static void init(){
+        setLogPrefix();
+
         pathPrefix("Messages");
         Messages.USE_PLUGIN_PREFIX = getBoolean("Use_Plugin_Prefix");
         Messages.USE_MESSAGE_BASED_PREFIXES = getBoolean("Use_Message_Based_Prefixes");
@@ -169,6 +177,9 @@ public class Settings extends SimpleSettings {
         TownBuildings.DEFAULT_BARRACKS_LEVEL = getInteger("Default_Barracks_Level");
         TownBuildings.DEFAULT_CHURCH_LEVEL = getInteger("Default_Church_Level");
 
+        pathPrefix("Rewards");
+        Rewards.TOWN_RESOURCE_SHARE = getInteger("Town_Resource_Share");
+
         pathPrefix("Messages_Templates");
         Messages_Templates.TASK_INFO = getStringList("Task_Info");
         Messages_Templates.TASK_LIST_HEADER = getStringList("Task_List.Header");
@@ -178,6 +189,10 @@ public class Settings extends SimpleSettings {
     @Override
     protected String[] getHeader() {
         return null;
+    }
+
+    protected static void setLogPrefix(){
+        LOG_PREFIX = "[" + FancyNations.getInstance().getDescription().getName() + "] ";
     }
 
 }

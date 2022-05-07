@@ -1,7 +1,6 @@
 package me.rubix327.fancynations.data.objectives;
 
 import me.rubix327.fancynations.data.AbstractDao;
-import me.rubix327.fancynations.data.DataManager;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,33 +25,30 @@ public class ObjectivesDao extends AbstractDao<Objective> implements IObjectives
     protected Objective loadObject(ResultSet resultSet) throws SQLException{
 
         int id = resultSet.getInt("Id");
-        int takenTaskId = resultSet.getInt("TakenTask");
+        int task = resultSet.getInt("Task");
         String name = resultSet.getString("Name");
         int amount = resultSet.getInt("Amount");
 
-        return new Objective(id, takenTaskId, name, amount);
+        return new Objective(id, task, name, amount);
     }
 
     public void add(Objective objective) {
-        String query = "INSERT INTO @Table (TakenTask, Name, Amount) VALUES (@TakenTask, '@Name', @Amount)";
+        String query = "INSERT INTO @Table (Task, Name, Amount) VALUES (@Task, '@Name', @Amount)";
 
         query = query
                 .replace("@Table", table)
-                .replace("@TakenTask", String.valueOf(objective.getTakenTaskId()))
+                .replace("@Task", String.valueOf(objective.getTask()))
                 .replace("@Name", objective.getName())
                 .replace("@Amount", String.valueOf(objective.getAmount()));
 
         super.executeVoid(query);
     }
 
-    public HashMap<Integer, Objective> getAllFor(String playerName, int taskId){
-        int playerId = DataManager.getFNPlayerManager().get(playerName).getId();
-        int takenTaskId = DataManager.getTakenTaskManager().get(playerId, taskId).getId();
-
-        String query = "SELECT * FROM @Table WHERE TakenTask = @TakenTaskID";
+    public HashMap<Integer, Objective> getAllFor(int taskId){
+        String query = "SELECT * FROM @Table WHERE Task = @TaskID";
         query = query
                 .replace("@Table", table)
-                .replace("@TakenTaskID", String.valueOf(takenTaskId));
+                .replace("@TaskID", String.valueOf(taskId));
 
         return executeAll(query);
     }

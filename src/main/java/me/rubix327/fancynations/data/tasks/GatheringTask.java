@@ -4,12 +4,10 @@ import me.rubix327.fancynations.data.objectives.Objective;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.mineacademy.fo.remain.nbt.NBTContainer;
-import org.mineacademy.fo.remain.nbt.NBTItem;
 
 import java.sql.Timestamp;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import static me.rubix327.fancynations.util.ItemUtils.extractItemId;
 
 public class GatheringTask extends Task {
 
@@ -50,24 +48,4 @@ public class GatheringTask extends Task {
         return false;
     }
 
-    protected static String extractItemId(ItemStack item) {
-
-        if (item == null) return "AIR";
-
-        NBTContainer nbtItem = NBTItem.convertItemtoNBT(item);
-
-        if (nbtItem.toString().contains("MMOITEMS_ITEM_ID")){
-
-            String match = "";
-            Pattern pattern = Pattern.compile("(MMOITEMS_ITEM_ID:\")+([^\"]*)");
-            Matcher matcher = pattern.matcher(nbtItem.toString());
-            while(matcher.find())
-                match = matcher.group().replace("MMOITEMS_ITEM_ID:\"", "");
-            return match;
-        }
-        else{
-            return item.getType().toString();
-        }
-
-    }
 }

@@ -10,9 +10,6 @@ Locale: en
 Messages:
   # Should we prepend all messages with plugin prefix set on prefix_plugin?
   Use_Plugin_Prefix: false
-  # Should we prepend every message with its own prefix
-  # depending on type of message (error, warning, info or success)?
-  Use_Message_Based_Prefixes: true
 
   # Plugin prefix. Works only if Use_Plugin_Prefix is true
   Prefix_Plugin: '&8&l[&a&lFancyNations&8&l] '
@@ -84,6 +81,10 @@ Town_Buildings:
   Default_Workshop_Level: 0
   Default_Barracks_Level: 0
   Default_Church_Level: 0
+
+Rewards:
+  # What share (in %) of resources will a town get when a player finishes a task
+  Town_Resource_Share: 50
 
 # These templates take values from their corresponding messages notes in messages_<your_lang>.yml.
 # You can simply remove any line from any template, so it will not be shown in the game chat.

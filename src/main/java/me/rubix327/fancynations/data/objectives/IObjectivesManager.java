@@ -12,11 +12,10 @@ public interface IObjectivesManager {
     HashMap<Integer, Objective> getAll();
     /**
      * Get all objectives for the specified player from the specified task.
-     * @param playerName Player name for which you try to find objectives
      * @param taskId Task id for which you try to find objectives
      * @return HashMap - {ID: Objective} / may be empty if objectives not found for this player!
      */
-    HashMap<Integer, Objective> getAllFor(String playerName, int taskId);
+    HashMap<Integer, Objective> getAllFor(int taskId);
     int getMaxId();
 
 }
