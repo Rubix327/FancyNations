@@ -2,6 +2,7 @@ package me.rubix327.fancynations.data.tasks;
 
 import me.rubix327.fancynations.data.DataManager;
 import me.rubix327.fancynations.data.objectives.Objective;
+import me.rubix327.fancynations.data.takentasks.TakenTask;
 import me.rubix327.fancynations.data.taskprogresses.TaskProgress;
 import org.bukkit.entity.Player;
 
@@ -23,7 +24,12 @@ public class MobKillTask extends Task{
     @Override
     public boolean isObjectiveCompleted(Objective objective, Player player) throws IllegalArgumentException {
         if (player == null) throw new IllegalArgumentException("This player is not online");
-        TaskProgress progress = DataManager.getTaskProgressManager().get(objective.getId());
+
+        int playerId = DataManager.getFNPlayerManager().get(player.getName()).getId();
+        int taskId = objective.getTask();
+        TakenTask takenTask = DataManager.getTakenTaskManager().get(playerId, taskId);
+        TaskProgress progress = DataManager.getTaskProgressManager().get(objective.getId(), takenTask.getId());
+
         return progress.getProgress() >= objective.getAmount();
     }
 }

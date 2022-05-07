@@ -91,7 +91,7 @@ public class DataManager {
         return instance;
     }
 
-    public static boolean isDatabaseChosen(){
+    public static boolean isDatabaseChosenAndConnected(){
         if (Settings.General.DATA_MANAGEMENT_TYPE.equalsIgnoreCase("database")){
             return FancyNations.getInstance().getDatabase().isConnected();
         }
@@ -99,75 +99,75 @@ public class DataManager {
     }
 
     public static IBarracksManager getBarracksManager(){
-        return (isDatabaseChosen() ? BarracksDao.getInstance(Settings.DbTables.BARRACKS) : BarracksProcess.getInstance());
+        return (isDatabaseChosenAndConnected() ? BarracksDao.getInstance(Settings.DbTables.BARRACKS) : BarracksProcess.getInstance());
     }
 
     public static IChurchManager getChurchManager(){
-        return (isDatabaseChosen() ? ChurchDao.getInstance(Settings.DbTables.CHURCHES) : ChurchProcess.getInstance());
+        return (isDatabaseChosenAndConnected() ? ChurchDao.getInstance(Settings.DbTables.CHURCHES) : ChurchProcess.getInstance());
     }
 
     public static IDefendTowerManager getDefendTowerManager(){
-        return (isDatabaseChosen() ? DefendTowerDao.getInstance(Settings.DbTables.DEFEND_TOWERS) : DefendTowerProcess.getInstance());
+        return (isDatabaseChosenAndConnected() ? DefendTowerDao.getInstance(Settings.DbTables.DEFEND_TOWERS) : DefendTowerProcess.getInstance());
     }
 
     public static IFarmManager getFarmManager(){
-        return (isDatabaseChosen() ? FarmDao.getInstance(Settings.DbTables.FARMS) : FarmProcess.getInstance());
+        return (isDatabaseChosenAndConnected() ? FarmDao.getInstance(Settings.DbTables.FARMS) : FarmProcess.getInstance());
     }
 
     public static IFNPlayerManager getFNPlayerManager(){
-        return (isDatabaseChosen() ? FNPlayerDao.getInstance(Settings.DbTables.FN_PLAYERS) : FNPlayerProcess.getInstance());
+        return (isDatabaseChosenAndConnected() ? FNPlayerDao.getInstance(Settings.DbTables.FN_PLAYERS) : FNPlayerProcess.getInstance());
     }
 
     public static INationManager getNationManager(){
-        return (isDatabaseChosen() ? NationDao.getInstance(Settings.DbTables.NATIONS) : NationProcess.getInstance());
+        return (isDatabaseChosenAndConnected() ? NationDao.getInstance(Settings.DbTables.NATIONS) : NationProcess.getInstance());
     }
 
     public static IObjectivesManager getObjectivesManager(){
-        return (isDatabaseChosen() ? ObjectivesDao.getInstance(Settings.DbTables.OBJECTIVES) : ObjectivesProcess.getInstance());
+        return (isDatabaseChosenAndConnected() ? ObjectivesDao.getInstance(Settings.DbTables.OBJECTIVES) : ObjectivesProcess.getInstance());
     }
 
     public static ITakenTaskManager getTakenTaskManager(){
-        return (isDatabaseChosen() ? TakenTaskDao.getInstance(Settings.DbTables.TAKEN_TASKS) : TakenTaskProcess.getInstance());
+        return (isDatabaseChosenAndConnected() ? TakenTaskDao.getInstance(Settings.DbTables.TAKEN_TASKS) : TakenTaskProcess.getInstance());
     }
 
     public static ITaskProgressManager getTaskProgressManager(){
-        return (isDatabaseChosen() ? TaskProgressDao.getInstance(Settings.DbTables.TASK_PROGRESSES) : TaskProgressProcess.getInstance());
+        return (isDatabaseChosenAndConnected() ? TaskProgressDao.getInstance(Settings.DbTables.TASK_PROGRESSES) : TaskProgressProcess.getInstance());
     }
 
     public static ITaskManager getTaskManager(){
-        return (isDatabaseChosen() ? TaskDao.getInstance(Settings.DbTables.TASKS) : TaskProcess.getInstance());
+        return (isDatabaseChosenAndConnected() ? TaskDao.getInstance(Settings.DbTables.TASKS) : TaskProcess.getInstance());
     }
 
     public static ITaskTypeManager getTaskTypeManager(){
-        return (isDatabaseChosen() ? TaskTypeDao.getInstance(Settings.DbTables.TASK_TYPES) : TaskTypeProcess.getInstance());
+        return (isDatabaseChosenAndConnected() ? TaskTypeDao.getInstance(Settings.DbTables.TASK_TYPES) : TaskTypeProcess.getInstance());
     }
 
     public static ITownHouseManager getTownHouseManager(){
-        return (isDatabaseChosen() ? TownHouseDao.getInstance(Settings.DbTables.TOWN_HOUSES) : TownHouseProcess.getInstance());
+        return (isDatabaseChosenAndConnected() ? TownHouseDao.getInstance(Settings.DbTables.TOWN_HOUSES) : TownHouseProcess.getInstance());
     }
 
     public static ITownResourceManager getTownResourceManager(){
-        return (isDatabaseChosen() ? TownResourceDao.getInstance(Settings.DbTables.TOWN_RESOURCES) : TownResourceProcess.getInstance());
+        return (isDatabaseChosenAndConnected() ? TownResourceDao.getInstance(Settings.DbTables.TOWN_RESOURCES) : TownResourceProcess.getInstance());
     }
 
     public static ITownManager getTownManager(){
-        return (isDatabaseChosen() ? TownDao.getInstance(Settings.DbTables.TOWNS) : TownProcess.getInstance());
+        return (isDatabaseChosenAndConnected() ? TownDao.getInstance(Settings.DbTables.TOWNS) : TownProcess.getInstance());
     }
 
     public static ITownWorkerManager getTownWorkerManager(){
-        return (isDatabaseChosen() ? TownWorkerDao.getInstance(Settings.DbTables.TOWN_WORKERS) : TownWorkerProcess.getInstance());
+        return (isDatabaseChosenAndConnected() ? TownWorkerDao.getInstance(Settings.DbTables.TOWN_WORKERS) : TownWorkerProcess.getInstance());
     }
 
     public static IWorkerTypeManager getWorkerTypeManager(){
-        return (isDatabaseChosen() ? WorkerTypeDao.getInstance(Settings.DbTables.WORKER_TYPES) : WorkerTypeProcess.getInstance());
+        return (isDatabaseChosenAndConnected() ? WorkerTypeDao.getInstance(Settings.DbTables.WORKER_TYPES) : WorkerTypeProcess.getInstance());
     }
 
     public static IWorkshopManager getWorkshopManager(){
-        return (isDatabaseChosen() ? WorkshopDao.getInstance(Settings.DbTables.WORKSHOPS) : WorkshopProcess.getInstance());
+        return (isDatabaseChosenAndConnected() ? WorkshopDao.getInstance(Settings.DbTables.WORKSHOPS) : WorkshopProcess.getInstance());
     }
 
     public static IReputationManager getReputationsManager(){
-        return (isDatabaseChosen() ? ReputationDao.getInstance(Settings.DbTables.REPUTATIONS) : ReputationProcess.getInstance());
+        return (isDatabaseChosenAndConnected() ? ReputationDao.getInstance(Settings.DbTables.REPUTATIONS) : ReputationProcess.getInstance());
     }
 
     /**
@@ -252,15 +252,9 @@ public class DataManager {
                 for (TakenTask takenTask : takenTasks){
                     Task task = DataManager.getTaskManager().get(takenTask.getTaskId());
                     if (task.getPlacementDateTime().getNanos() + task.getTimeToComplete() < LocalDateTime.now().getNano()){
-                        // Increment take amount
-                        DataManager.getTaskManager().update(task.getId(), "takeAmount", task.getTakeAmount() + 1);
-                        // Remove all task progresses depending on this taken task
-                        DataManager.getTaskProgressManager().getAllByTakenTask(takenTask.getId()).values()
-                                .forEach(progress -> DataManager.getTaskProgressManager().remove(progress.getId()));
-                        // Remove taken task from a player
-                        DataManager.getTakenTaskManager().remove(takenTask.getId());
+                        resetTakenTask(takenTask);
 
-                        // Tell player that this task is removed from his task list.
+                        // Tell a player that this task is removed from his task list.
                         String playerName = DataManager.getFNPlayerManager().get(takenTask.getPlayerId()).getName();
                         CommandSender sender = Bukkit.getPlayerExact(playerName);
                         if (sender != null){
@@ -272,5 +266,17 @@ public class DataManager {
             }
 
         }.runTaskTimer(FancyNations.getInstance(), 30, 20);
+    }
+
+    public void resetTakenTask(TakenTask takenTask){
+        Task task = DataManager.getTaskManager().get(takenTask.getTaskId());
+
+        // Increment take amount
+        DataManager.getTaskManager().update(task.getId(), "takeAmount", task.getTakeAmount() + 1);
+        // Remove all task progresses depending on this taken task
+        DataManager.getTaskProgressManager().getAllByTakenTask(takenTask.getId()).values()
+                .forEach(progress -> DataManager.getTaskProgressManager().remove(progress.getId()));
+        // Remove taken task from a player
+        DataManager.getTakenTaskManager().remove(takenTask.getId());
     }
 }

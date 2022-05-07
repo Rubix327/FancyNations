@@ -2,12 +2,14 @@ package me.rubix327.fancynations.commands;
 
 import lombok.NonNull;
 import me.rubix327.fancynations.Localization;
+import me.rubix327.fancynations.util.DependencyManager;
 import org.mineacademy.fo.command.SimpleCommandGroup;
 import org.mineacademy.fo.command.SimpleSubCommand;
 import org.mineacademy.fo.exception.CommandException;
 
 public abstract class SubCommandInterlayer extends SimpleSubCommand {
 
+    DependencyManager dependencies = DependencyManager.getInstance();
     Localization msgs = Localization.getInstance();
     String permLabel;
 

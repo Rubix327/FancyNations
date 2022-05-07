@@ -28,6 +28,8 @@ error_task_not_taken: '@error_prefix You do not have this task.'
 error_task_no_tasks: '@error_prefix There are no created tasks yet.'
 error_task_name_too_long: '@error_prefix Task name length must be less than @maxLength symbols.'
 
+error_taken_task_not_exist: '@error_prefix Taken task with this ID does not exist.'
+
 error_town_not_exist: '@error_prefix This town does not exist.'
 
 error_player_not_exist: '@error_prefix This player never has been on the server.'
