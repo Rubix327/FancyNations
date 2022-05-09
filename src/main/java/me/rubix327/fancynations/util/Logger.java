@@ -22,6 +22,10 @@ public class Logger {
         Common.error(t, "&6" + Settings.LOG_PREFIX + s);
     }
 
+    public static void logSqlQuery(String query){
+        if (Settings.General.SQL_DEBUG) info(Settings.LOG_PREFIX + "SQL Debug: " + query);
+    }
+
     /**
      * Append prefix and colorize the message.
      * @param s the message

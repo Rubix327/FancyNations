@@ -86,7 +86,7 @@ public class DatabaseManager {
                 if (query.isBlank()) continue;
 
                 try (PreparedStatement stmt = getConnection().prepareStatement(query)) {
-                    logSqlQuery(query);
+                    Logger.logSqlQuery(query);
                     stmt.execute();
                     if (!dataSource.getDatabaseName().isBlank()) {
                         dataSource.setDatabaseName(database);
