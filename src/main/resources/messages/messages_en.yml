@@ -1,5 +1,5 @@
 # Syntax
-syntax_task_create: '@info_prefix Syntax: /fn task create <town_name> <type> <name>'
+syntax_task_create: '@info_prefix Syntax: /fn task create <town_name> <name>'
 syntax_task_remove: '@info_prefix Syntax: /fn task remove <task_id>'
 syntax_task_set: '@info_prefix Syntax: /fn task set <task_id> <variable> <value>'
 syntax_task_info: '@info_prefix Syntax: /fn task info <task_id>'
@@ -34,10 +34,10 @@ error_town_not_exist: '@error_prefix This town does not exist.'
 
 error_player_not_exist: '@error_prefix This player never has been on the server.'
 
-error_task_type_not_exist: '@error_prefix This task type does not exist. @nl @error_prefix Available types: '
+error_objective_type_not_exist: '@error_prefix This objective type does not exist. @nl @error_prefix Available types: '
 
 # Success
-success_task_created: '@success_prefix You have successfully created &2@type &atask called &2"@name".'
+success_task_created: '@success_prefix You have successfully created task called &2"@name".'
 success_task_removed: '@success_prefix Task #@id has been successfully removed.'
 success_task_updated: '@success_prefix Task #@id has been successfully updated.'
 success_task_started: '@success_prefix Task #@id has been successfully started.'
@@ -50,7 +50,13 @@ info_task_time_to_complete_expired: '@info_prefix Your task #@id has expired and
 # Other
 # Server label is how a task creator name will look like if the task was created by the server (or an admin)
 server_label: 'Nation'
-no_description: 'none'
+task_no_description: 'none'
+task_type_no_objectives: 'No objectives'
+task_type_combined: 'Combined'
+task_type_food: 'Food'
+task_type_resource: 'Resource'
+task_type_crafting: 'Crafting'
+task_type_mobkill: 'Mob kill'
 
 # Messages templates for such commands as /fn task info and /fn task list
 template_task_info_label: '&7Info about task &e#@id'

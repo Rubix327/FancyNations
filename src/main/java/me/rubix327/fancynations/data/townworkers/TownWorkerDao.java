@@ -4,8 +4,8 @@ import me.rubix327.fancynations.FancyNations;
 import me.rubix327.fancynations.Settings;
 import me.rubix327.fancynations.data.AbstractDao;
 import me.rubix327.fancynations.data.DataManager;
-import me.rubix327.fancynations.data.DatabaseManager;
 import me.rubix327.fancynations.data.workertypes.WorkerType;
+import me.rubix327.fancynations.util.Logger;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -87,7 +87,7 @@ public class TownWorkerDao extends AbstractDao<TownWorker> implements ITownWorke
                     .replace("@PlayerID", String.valueOf(playerId));
             PreparedStatement ps = FancyNations.getInstance().getDatabase().getConnection().
                     prepareStatement(query);
-            DatabaseManager.logSqlQuery(query);
+            Logger.logSqlQuery(query);
             ResultSet resultSet = ps.executeQuery();
             if (resultSet.next()){
                 DataManager.getWorkerTypeManager().get(resultSet.getInt("Id"));

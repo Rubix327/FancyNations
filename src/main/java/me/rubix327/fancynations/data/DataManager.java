@@ -40,9 +40,6 @@ import me.rubix327.fancynations.data.tasks.ITaskManager;
 import me.rubix327.fancynations.data.tasks.Task;
 import me.rubix327.fancynations.data.tasks.TaskDao;
 import me.rubix327.fancynations.data.tasks.TaskProcess;
-import me.rubix327.fancynations.data.tasktypes.ITaskTypeManager;
-import me.rubix327.fancynations.data.tasktypes.TaskTypeDao;
-import me.rubix327.fancynations.data.tasktypes.TaskTypeProcess;
 import me.rubix327.fancynations.data.townhouses.ITownHouseManager;
 import me.rubix327.fancynations.data.townhouses.TownHouseDao;
 import me.rubix327.fancynations.data.townhouses.TownHouseProcess;
@@ -136,10 +133,6 @@ public class DataManager {
 
     public static ITaskManager getTaskManager(){
         return (isDatabaseChosenAndConnected() ? TaskDao.getInstance(Settings.DbTables.TASKS) : TaskProcess.getInstance());
-    }
-
-    public static ITaskTypeManager getTaskTypeManager(){
-        return (isDatabaseChosenAndConnected() ? TaskTypeDao.getInstance(Settings.DbTables.TASK_TYPES) : TaskTypeProcess.getInstance());
     }
 
     public static ITownHouseManager getTownHouseManager(){
@@ -268,6 +261,10 @@ public class DataManager {
         }.runTaskTimer(FancyNations.getInstance(), 30, 20);
     }
 
+    /**
+     * Reset a taken task if it has expired or a player has cancelled this task.
+     * @param takenTask task to reset
+     */
     public void resetTakenTask(TakenTask takenTask){
         Task task = DataManager.getTaskManager().get(takenTask.getTaskId());
 

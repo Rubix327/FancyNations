@@ -2,6 +2,7 @@ package me.rubix327.fancynations.data;
 
 import me.rubix327.fancynations.FancyNations;
 import me.rubix327.fancynations.Settings;
+import me.rubix327.fancynations.util.Logger;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -137,7 +138,7 @@ public abstract class AbstractDao<T extends AbstractDto> extends AbstractDataHan
             query = query.replace("@Table", this.table);
             PreparedStatement ps = FancyNations.getInstance().getDatabase().getConnection().
                     prepareStatement(query);
-            DatabaseManager.logSqlQuery(query);
+            Logger.logSqlQuery(query);
             ResultSet resultSet = ps.executeQuery();
             if (resultSet.next()){
                 return resultSet.getInt(1);
@@ -159,7 +160,7 @@ public abstract class AbstractDao<T extends AbstractDto> extends AbstractDataHan
             query = query.replace("@Table", this.table);
             PreparedStatement ps = FancyNations.getInstance().getDatabase().getConnection().
                     prepareStatement(query);
-            DatabaseManager.logSqlQuery(query);
+            Logger.logSqlQuery(query);
             ResultSet resultSet = ps.executeQuery();
             List<String> list = new ArrayList<>();
             while (resultSet.next()){
@@ -179,7 +180,7 @@ public abstract class AbstractDao<T extends AbstractDto> extends AbstractDataHan
      */
     public void executeVoid(String query) throws NullPointerException {
         try{
-            DatabaseManager.logSqlQuery(query);
+            Logger.logSqlQuery(query);
             PreparedStatement ps = FancyNations.getInstance().getDatabase().getConnection().prepareStatement(query);
             ps.executeUpdate();
             return;
@@ -198,7 +199,7 @@ public abstract class AbstractDao<T extends AbstractDto> extends AbstractDataHan
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean executeBool(String query) throws NullPointerException {
         try{
-            DatabaseManager.logSqlQuery(query);
+            Logger.logSqlQuery(query);
             PreparedStatement ps = FancyNations.getInstance().getDatabase().getConnection().
                     prepareStatement(query);
             ResultSet resultSet = ps.executeQuery();
@@ -218,7 +219,7 @@ public abstract class AbstractDao<T extends AbstractDto> extends AbstractDataHan
         try{
             PreparedStatement ps = FancyNations.getInstance().getDatabase().getConnection().
                     prepareStatement(query);
-            DatabaseManager.logSqlQuery(query);
+            Logger.logSqlQuery(query);
             ResultSet resultSet = ps.executeQuery();
             if (resultSet.next()){
                 return loadObject(resultSet);
@@ -245,7 +246,7 @@ public abstract class AbstractDao<T extends AbstractDto> extends AbstractDataHan
             PreparedStatement ps = FancyNations.getInstance().getDatabase().getConnection().
                     prepareStatement(query);
             if (log) {
-                DatabaseManager.logSqlQuery(query);
+                Logger.logSqlQuery(query);
             }
             ResultSet resultSet = ps.executeQuery();
 

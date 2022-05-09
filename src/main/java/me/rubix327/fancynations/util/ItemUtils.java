@@ -1,6 +1,7 @@
 package me.rubix327.fancynations.util;
 
 import io.lumine.mythic.lib.api.item.NBTItem;
+import me.rubix327.fancynations.Settings;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,7 +23,7 @@ public class ItemUtils {
         if (DependencyManager.getInstance().IS_MMOITEMS_LOADED){
             NBTItem nbtItem = NBTItem.get(item);
             if (nbtItem.hasType()){
-                return nbtItem.getString("MMOITEMS_ITEM_ID");
+                return Settings.General.MMOITEMS_PREFIX + nbtItem.getString("MMOITEMS_ITEM_ID");
             }
         }
         return item.getType().toString();
