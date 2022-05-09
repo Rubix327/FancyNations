@@ -1,7 +1,6 @@
 package me.rubix327.fancynations.data.tasks;
 
 import me.rubix327.fancynations.data.AbstractDao;
-import me.rubix327.fancynations.data.DataManager;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,7 +25,6 @@ public class TaskDao extends AbstractDao<Task> implements ITaskManager {
     protected Task loadObject(ResultSet resultSet) throws SQLException{
 
         int id = resultSet.getInt("Id");
-        int taskTypeId = resultSet.getInt("TaskType");
         int townId = resultSet.getInt("Town");
         int creatorId = resultSet.getInt("Player");
         String taskName = resultSet.getString("Name");
@@ -41,29 +39,21 @@ public class TaskDao extends AbstractDao<Task> implements ITaskManager {
         Timestamp placementDateTime = resultSet.getTimestamp("PlacementDatetime");
         int timetoComplete = resultSet.getInt("TimeToComplete");
 
-        String taskGroup = DataManager.getTaskTypeManager().get(taskTypeId).getGroup();
-        if (taskGroup.equalsIgnoreCase("Gathering")){
-            return new GatheringTask(id, townId, taskTypeId, creatorId, taskName, description, takeAmount, minLevel,
-                    maxLevel, moneyReward, expReward, repReward, priority, placementDateTime, timetoComplete);
-        }
-        else {
-            return new MobKillTask(id, townId, taskTypeId, creatorId, taskName, description, takeAmount, minLevel,
-                    maxLevel, moneyReward, expReward, repReward, priority, placementDateTime, timetoComplete);
-        }
+        return new Task(id, townId, creatorId, taskName, description, takeAmount, minLevel,
+                maxLevel, moneyReward, expReward, repReward, priority, placementDateTime, timetoComplete);
     }
 
     @Override
     public void add(Task task) {
-        String query = "INSERT INTO @Table (Town, TaskType, Player, Name, Description, TakeAmount, MinLevel, " +
+        String query = "INSERT INTO @Table (Town, Player, Name, Description, TakeAmount, MinLevel, " +
                 "MaxLevel, MoneyReward, ExpReward, RepReward, PlacementDateTime, TimeToComplete, Priority) " +
-                "VALUES(@TownId, @TaskTypeId, @Player, '@TaskName', " +
+                "VALUES(@TownId, @Player, '@TaskName', " +
                 "'@Description', @TakeAmount, @MinLevel, @MaxLevel, @MoneyReward, @ExpReward, @RepReward, " +
                 "'@PlacementDateTime', @TimeToComplete, @Priority)";
 
         query = query
                 .replace("@Table", table)
                 .replace("@TownId", String.valueOf(task.getTownId()))
-                .replace("@TaskTypeId", String.valueOf(task.getTaskTypeId()))
                 .replace("@TaskName", task.getTaskName())
                 .replace("@Player", String.valueOf(task.getCreatorId()))
                 .replace("@Description", task.getDescription())

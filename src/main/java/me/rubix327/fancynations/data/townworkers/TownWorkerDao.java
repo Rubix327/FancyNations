@@ -4,7 +4,6 @@ import me.rubix327.fancynations.FancyNations;
 import me.rubix327.fancynations.Settings;
 import me.rubix327.fancynations.data.AbstractDao;
 import me.rubix327.fancynations.data.DataManager;
-import me.rubix327.fancynations.data.DatabaseManager;
 import me.rubix327.fancynations.data.workertypes.WorkerType;
 
 import java.sql.PreparedStatement;

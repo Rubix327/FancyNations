@@ -1,6 +1,5 @@
 package me.rubix327.fancynations.commands;
 
-import me.rubix327.fancynations.FancyNations;
 import me.rubix327.fancynations.Localization;
 import me.rubix327.fancynations.Settings;
 import me.rubix327.fancynations.data.DataManager;
@@ -9,10 +8,7 @@ import me.rubix327.fancynations.data.objectives.Objective;
 import me.rubix327.fancynations.data.reputations.Reputation;
 import me.rubix327.fancynations.data.takentasks.TakenTask;
 import me.rubix327.fancynations.data.taskprogresses.TaskProgress;
-import me.rubix327.fancynations.data.tasks.GatheringTask;
-import me.rubix327.fancynations.data.tasks.MobKillTask;
 import me.rubix327.fancynations.data.tasks.Task;
-import me.rubix327.fancynations.data.tasktypes.TaskType;
 import me.rubix327.fancynations.data.townresources.TownResource;
 import me.rubix327.fancynations.util.Utils;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -30,7 +26,7 @@ public class TaskCommands extends SubCommandInterlayer {
 
     /*
        label  a0       a1          a2         a3
-    fn task create <town_name> <taskType> <taskName>
+    fn task create <town_name> <taskName>
     fn task remove <task_id>
     fn task set    <task_id>   <variable> <value>
     fn task info <task_id>
@@ -48,12 +44,11 @@ public class TaskCommands extends SubCommandInterlayer {
             return;
         }
 
-        // Create new task - fn task create <town_name> <taskType> <taskName>
+        // Create new task - fn task create <town_name> <taskName>
         if (args[0].equalsIgnoreCase("create")){
             checkPermission("create");
 
             int townId;
-            TaskType taskType;
 
             // Wrong syntax
             if (args.length < 4) {
@@ -67,14 +62,6 @@ public class TaskCommands extends SubCommandInterlayer {
                 return;
             }
             townId = (DataManager.getTownManager().get(args[1])).getId();
-
-            // Task type does not exist
-            if (!DataManager.getTaskTypeManager().exists(args[2])){
-                tell(msgs.get("error_task_type_not_exist", sender) +
-                        String.join(", ", DataManager.getTaskTypeManager().getNames()));
-                return;
-            }
-            taskType = DataManager.getTaskTypeManager().get(args[2]);
 
             final String taskName = String.join(" ", Arrays.asList(args).subList(3, args.length));
             final int taskCreatorId =
@@ -90,16 +77,9 @@ public class TaskCommands extends SubCommandInterlayer {
             }
 
             // Create new Task instance
-            if (taskType.getGroup().equalsIgnoreCase("Gathering")){
-                GatheringTask task = new GatheringTask(townId, taskType.getId(), taskCreatorId, taskName);
-                DataManager.getTaskManager().add(task);
-            }
-            else if (taskType.getGroup().equalsIgnoreCase("Mobs")){
-                MobKillTask task = new MobKillTask(townId, taskType.getId(), taskCreatorId, taskName);
-                DataManager.getTaskManager().add(task);
-            }
+            Task task = new Task(townId, taskCreatorId, taskName);
+            DataManager.getTaskManager().add(task);
             tell(msgs.get("success_task_created", sender)
-                    .replace("@type", taskType.getName())
                     .replace("@name", taskName));
         }
 
@@ -185,7 +165,6 @@ public class TaskCommands extends SubCommandInterlayer {
                 return;
             }
             Task task = DataManager.getTaskManager().get(taskId);
-            FNPlayer fnPlayer = DataManager.getFNPlayerManager().get(task.getCreatorId());
             int timeDays = task.getTimeToComplete() / 86400;
             int timeHours = task.getTimeToComplete() % 86400 / 3600;
             int timeMinutes = task.getTimeToComplete() % 86400 % 3600 / 60;
@@ -208,10 +187,9 @@ public class TaskCommands extends SubCommandInterlayer {
                     .replace("@template_task_info_time_to_complete", msgs.get("template_task_info_time_to_complete", sender))
                     .replace("@id", String.valueOf(taskId))
                     .replace("@name", String.valueOf(task.getTaskName()))
-                    .replace("@type", String.valueOf(DataManager.getTaskTypeManager().get(task.getTaskTypeId()).getName()))
-                    .replace("@town", String.valueOf(DataManager.getTownManager().get(task.getTownId()).getName()))
-                    .replace("@created_by", String.valueOf(fnPlayer.getName().equals(Settings.General.SERVER_VAR) ?
-                            msgs.get("server_label", sender) : fnPlayer.getName()))
+                    .replace("@type", task.getLocalizedTypeName(sender))
+                    .replace("@town", task.getTownName())
+                    .replace("@created_by", task.getLocalizedCreatorName(sender))
                     .replace("@comp_left", String.valueOf(task.getTakeAmount()))
                     .replace("@money_reward", String.valueOf(task.getMoneyReward()))
                     .replace("@exp_reward", String.valueOf(task.getExpReward()))
@@ -219,7 +197,7 @@ public class TaskCommands extends SubCommandInterlayer {
                     .replace("@priority", String.valueOf(task.getPriority()))
                     .replace("@min_level", String.valueOf(task.getMinLevel()))
                     .replace("@max_level", String.valueOf(task.getMaxLevel()))
-                    .replace("@description", String.valueOf(task.getDescription()))
+                    .replace("@description", task.getLocalizedDescription(sender))
                     .replace("@days", String.valueOf(timeDays))
                     .replace("@hours", String.valueOf(timeHours))
                     .replace("@minutes", String.valueOf(timeMinutes))
@@ -261,17 +239,15 @@ public class TaskCommands extends SubCommandInterlayer {
             for (Task task: tasks){
                 String elementTemplate = msgs.get("template_task_list_element", sender);
 
-                final String type = DataManager.getTaskTypeManager().get(task.getTaskTypeId()).getName();
-                final String town = DataManager.getTownManager().get(task.getTownId()).getName();
-                final String creator = DataManager.getFNPlayerManager().get(task.getCreatorId()).getName();
-                final String finalCreator = (creator.equalsIgnoreCase(Settings.General.SERVER_VAR) ?
-                        Localization.getInstance().get("server_label", sender) : creator);
+                final String type = task.getLocalizedTypeName(sender);
+                final String town = task.getTownName();
+                final String creator = task.getLocalizedCreatorName(sender);
 
                 String element = elementTemplate
                         .replace("@id", String.valueOf(task.getId()))
                         .replace("@type", type)
                         .replace("@town", town)
-                        .replace("@creator", finalCreator)
+                        .replace("@creator", creator)
                         .replace("@name", task.getTaskName());
 
                 generalList.add(element);
@@ -367,26 +343,23 @@ public class TaskCommands extends SubCommandInterlayer {
             }
 
             // One or more objectives is not completed
-            if (!task.isAllObjectivesCompleted(getPlayer(), task.getId())){
+            if (!task.isAllObjectivesCompleted(getPlayer())){
                 tell(msgs.get("error_task_objective_not_completed", sender));
                 return;
             }
 
             // Player does not own this task
-            FNPlayer fnPlayer = DataManager.getFNPlayerManager().get(getPlayer().getName());
+            FNPlayer fnPlayer = FNPlayer.getFNPlayer(getPlayer().getName());
             if (!DataManager.getTakenTaskManager().exists(fnPlayer.getId(), task.getId())){
                 tell(msgs.get("error_task_not_taken", sender));
                 return;
             }
 
             // Give money reward
-            FancyNations.getInstance().getEconomy().depositPlayer(getPlayer(), task.getMoneyReward());
+            economy.depositPlayer(getPlayer(), task.getMoneyReward());
 
             // Give reputation reward
-            int repId = DataManager.getReputationsManager().get(fnPlayer.getId(), task.getTownId()).getId();
-            Reputation reputation = DataManager.getReputationsManager().get(repId);
-            DataManager.getReputationsManager().update(
-                    repId, "amount", reputation.getAmount() + task.getRepReward());
+            Reputation.increase(fnPlayer.getId(), task.getTownId(), task.getRepReward());
 
             // Give MMO experience reward
             if (dependencies.IS_MMOCORE_LOADED){
@@ -394,16 +367,14 @@ public class TaskCommands extends SubCommandInterlayer {
                         .giveExperience(task.getExpReward(), EXPSource.QUEST, getPlayer().getLocation(), false);
             }
 
-            // Send a certain share of resources to a town
-            if (DataManager.getTaskTypeManager().get(task.getTaskTypeId()).getGroup().equalsIgnoreCase("Gathering")){
-                for (Objective objective : DataManager.getObjectivesManager().getAllFor(task.getId()).values()){
-                    TownResource townResource = new TownResource(task.getTownId(), objective.getName(),
-                            objective.getAmount() / 100 * Settings.Rewards.TOWN_RESOURCE_SHARE);
-                    DataManager.getTownResourceManager().add(townResource);
-                }
+            // Send a certain share of resources or mobs to a town
+            for (Objective objective : DataManager.getObjectivesManager().getAllFor(task.getId()).values()){
+                Integer share = (objective.getGroup().equalsIgnoreCase("Gathering") ?
+                        Settings.Rewards.TOWN_RESOURCE_SHARE : Settings.Rewards.TOWN_MOBS_SHARE);
+                TownResource townResource = new TownResource(task.getTownId(), objective.getTarget(),
+                        objective.getAmount() / 100 * share);
+                DataManager.getTownResourceManager().add(townResource);
             }
-
-            // TODO if type==mobkill then ???
 
             // Remove TakenTask attached to this Task
             DataManager.getTakenTaskManager().remove(takenTask.getId());
@@ -452,17 +423,13 @@ public class TaskCommands extends SubCommandInterlayer {
         if (args.length == 1){
             return Arrays.asList("create", "remove", "set", "info");
         }
-        // fn task create _<townId>_ <taskType> <name>
+        // fn task create _<townId>_ <name>
         else if (args.length == 2 && args[0].equalsIgnoreCase("create")){
             List<String> towns = new ArrayList<>();
             DataManager.getTownManager().getAll().values().forEach(town -> towns.add(town.getName()));
             return towns;
         }
-        // fn task create <townId> _<taskType>_ <name>
-        else if (args.length == 3 && args[0].equalsIgnoreCase("create")){
-            return DataManager.getTaskTypeManager().getNames();
-        }
-        // fn task create <townId> <taskType> _<name>_
+        // fn task create <townId> _<name>_
         else if (args.length == 4 && args[0].equalsIgnoreCase("create")){
             return Collections.singletonList("<name>");
         }

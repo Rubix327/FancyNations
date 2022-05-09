@@ -7,7 +7,6 @@ import me.rubix327.fancynations.commands.TestCommands;
 import me.rubix327.fancynations.data.DataManager;
 import me.rubix327.fancynations.data.DatabaseManager;
 import me.rubix327.fancynations.data.fnplayers.FNPlayer;
-import me.rubix327.fancynations.data.tasktypes.TaskType;
 import me.rubix327.fancynations.data.workertypes.WorkerType;
 import me.rubix327.fancynations.events.PlayerListener;
 import me.rubix327.fancynations.util.DependencyManager;
@@ -109,10 +108,6 @@ public final class FancyNations extends SimplePlugin {
 
     private void addDefaultEntries(){
         DataManager.getFNPlayerManager().addIgnore(new FNPlayer(1, Settings.General.SERVER_VAR));
-        DataManager.getTaskTypeManager().addIgnore(new TaskType(1, "Gathering", "Food"));
-        DataManager.getTaskTypeManager().addIgnore(new TaskType(2, "Gathering", "Resource"));
-        DataManager.getTaskTypeManager().addIgnore(new TaskType(3, "Gathering", "Crafting"));
-        DataManager.getTaskTypeManager().addIgnore(new TaskType(4, "Mobs", "Mobkill"));
         DataManager.getWorkerTypeManager().addIgnore(new WorkerType(1, "Mayor"));
         DataManager.getWorkerTypeManager().addIgnore(new WorkerType(2, "Helper"));
         DataManager.getWorkerTypeManager().addIgnore(new WorkerType(3, "Judge"));

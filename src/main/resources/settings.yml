@@ -23,9 +23,9 @@ Messages:
   Prefix_Info: '&8&l[&9&li&8&l]&7'
   # Notice that every message not belonging to any of these groups will have no prefix
 
-  # Should we adjust plugin's language to every user.
+  # Should we adjust plugin's language to every user?
   # If false, default server language (Settings.Locale) will be used for all messages.
-  # If true, every message for every player will be in he's in-game set locale.
+  # If true, every message for every player will be in his in-game locale.
   # Of course, it works only if player's localization messages are available in FancyNations/messages folder.
   Use_Player_Based_Locales: true
 
@@ -56,7 +56,6 @@ Towns:
 # Default values when task is created
 Tasks:
   Max_Name_Length: 35
-  Default_Description: ''
   Default_Take_Amount: 10
   Default_Min_Level: 1
   Default_Max_Level: 100
@@ -82,9 +81,12 @@ Town_Buildings:
   Default_Barracks_Level: 0
   Default_Church_Level: 0
 
+# What share (in %) of resources or mobs will a town get when a player finishes a task.
+# For resources, town will be able to spend them for its purposes.
+# For mobs, town will be able to buy new levels of some buildings if it has some amount of killed mobs.
 Rewards:
-  # What share (in %) of resources will a town get when a player finishes a task
   Town_Resource_Share: 50
+  Town_Mobs_Share: 100
 
 # These templates take values from their corresponding messages notes in messages_<your_lang>.yml.
 # You can simply remove any line from any template, so it will not be shown in the game chat.

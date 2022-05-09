@@ -10,7 +10,6 @@ public class Settings extends SimpleSettings {
 
     public static class Messages{
         public static Boolean USE_PLUGIN_PREFIX;
-        public static Boolean USE_MESSAGE_BASED_PREFIXES;
         public static String PREFIX_PLUGIN;
         public static String PREFIX_ERROR;
         public static String PREFIX_WARNING;
@@ -39,7 +38,7 @@ public class Settings extends SimpleSettings {
         public static String TAKEN_TASKS;
         public static String TASK_PROGRESSES;
         public static String TASKS;
-        public static String TASK_TYPES;
+        public static String OBJECTIVE_TYPES;
         public static String TOWN_HOUSES;
         public static String TOWN_RESOURCES;
         public static String TOWNS;
@@ -52,6 +51,8 @@ public class Settings extends SimpleSettings {
         public static String DATA_MANAGEMENT_TYPE;
         public static String SERVER_VAR;
         public static Boolean SQL_DEBUG;
+        public static String MMOITEMS_PREFIX;
+        public static String MYTHICMOBS_PREFIX;
     }
 
     public static class Towns{
@@ -92,6 +93,7 @@ public class Settings extends SimpleSettings {
 
     public static class Rewards{
         public static Integer TOWN_RESOURCE_SHARE;
+        public static Integer TOWN_MOBS_SHARE;
     }
 
     public static class Messages_Templates{
@@ -100,12 +102,12 @@ public class Settings extends SimpleSettings {
         public static List<String> TASK_LIST_FOOTER;
     }
 
+    @SuppressWarnings("unused")
     private static void init(){
         setLogPrefix();
 
         pathPrefix("Messages");
         Messages.USE_PLUGIN_PREFIX = getBoolean("Use_Plugin_Prefix");
-        Messages.USE_MESSAGE_BASED_PREFIXES = getBoolean("Use_Message_Based_Prefixes");
         Messages.PREFIX_PLUGIN = getString("Prefix_Plugin");
         Messages.PREFIX_ERROR = getString("Prefix_Error");
         Messages.PREFIX_WARNING = getString("Prefix_Warning");
@@ -132,7 +134,7 @@ public class Settings extends SimpleSettings {
         DbTables.TAKEN_TASKS = "TakenTasks";
         DbTables.TASK_PROGRESSES = "TaskProgresses";
         DbTables.TASKS = "Tasks";
-        DbTables.TASK_TYPES = "TaskTypes";
+        DbTables.OBJECTIVE_TYPES = "ObjectiveTypes";
         DbTables.TOWN_HOUSES = "TownHouses";
         DbTables.TOWN_RESOURCES = "TownResources";
         DbTables.TOWNS = "Towns";
@@ -144,6 +146,8 @@ public class Settings extends SimpleSettings {
         General.DATA_MANAGEMENT_TYPE = getString("Data_Management_Type");
         General.SERVER_VAR = getString("Server_Var");
         General.SQL_DEBUG = getBoolean("SQL_Debug");
+        General.MMOITEMS_PREFIX = "MI_";
+        General.MYTHICMOBS_PREFIX = "MM_";
 
         pathPrefix("Towns");
         Towns.DEFAULT_BALANCE = getDouble("Default_Balance");
@@ -153,7 +157,7 @@ public class Settings extends SimpleSettings {
 
         pathPrefix("Tasks");
         Tasks.MAX_NAME_LENGTH = getInteger("Max_Name_Length");
-        Tasks.DEFAULT_DESCRIPTION = getString("Default_Description");
+        Tasks.DEFAULT_DESCRIPTION = "none";
         Tasks.DEFAULT_TAKE_AMOUNT = getInteger("Default_Take_Amount");
         Tasks.DEFAULT_MIN_LEVEL = getInteger("Default_Min_Level");
         Tasks.DEFAULT_MAX_LEVEL = getInteger("Default_Max_Level");
@@ -179,6 +183,7 @@ public class Settings extends SimpleSettings {
 
         pathPrefix("Rewards");
         Rewards.TOWN_RESOURCE_SHARE = getInteger("Town_Resource_Share");
+        Rewards.TOWN_MOBS_SHARE = getInteger("Town_Mobs_Share");
 
         pathPrefix("Messages_Templates");
         Messages_Templates.TASK_INFO = getStringList("Task_Info");

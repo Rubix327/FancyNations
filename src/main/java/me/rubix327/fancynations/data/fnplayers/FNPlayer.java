@@ -19,4 +19,8 @@ public class FNPlayer extends AbstractDto implements IUniqueNamable {
         this.id = DataManager.getFNPlayerManager().getMaxId() + 1;
         this.name = name;
     }
+
+    public static FNPlayer getFNPlayer(String name){
+        return DataManager.getFNPlayerManager().get(name);
+    }
 }

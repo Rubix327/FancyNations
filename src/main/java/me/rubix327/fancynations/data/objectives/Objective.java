@@ -4,22 +4,30 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import me.rubix327.fancynations.data.DataManager;
 import me.rubix327.fancynations.data.AbstractDto;
+import me.rubix327.fancynations.data.DataManager;
+import org.bukkit.entity.Player;
 
 @Getter @Setter(AccessLevel.PACKAGE)
 @AllArgsConstructor
-public class Objective extends AbstractDto {
+public abstract class Objective extends AbstractDto {
 
     private final int id;
-    private final int task;
-    private final String name;
+    private final String type;
+    private final String target;
     private final int amount;
+    private int task;
 
-    public Objective(int task, String name, int amount) {
+    public Objective(String type, String target, int amount) {
         this.id = DataManager.getObjectivesManager().getMaxId() + 1;
-        this.task = task;
-        this.name = name;
+        this.type = type;
+        this.target = target;
         this.amount = amount;
+    }
+
+    public abstract boolean isCompleted(Player player);
+
+    public String getGroup(){
+        return ObjectiveType.getGroup(type);
     }
 }

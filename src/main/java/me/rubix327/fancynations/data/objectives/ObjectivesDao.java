@@ -23,23 +23,30 @@ public class ObjectivesDao extends AbstractDao<Objective> implements IObjectives
 
     @Override
     protected Objective loadObject(ResultSet resultSet) throws SQLException{
-
         int id = resultSet.getInt("Id");
-        int task = resultSet.getInt("Task");
-        String name = resultSet.getString("Name");
+        String type = resultSet.getString("Type");
+        String target = resultSet.getString("Target");
         int amount = resultSet.getInt("Amount");
+        int task = resultSet.getInt("Task");
 
-        return new Objective(id, task, name, amount);
+        String group = ObjectiveType.getGroup(type);
+        if (group.equalsIgnoreCase("Gathering")){
+            return new GatheringObjective(id, type, target, amount, task);
+        }
+        else {
+            return new MobKillObjective(id, type, target, amount, task);
+        }
     }
 
     public void add(Objective objective) {
-        String query = "INSERT INTO @Table (Task, Name, Amount) VALUES (@Task, '@Name', @Amount)";
+        String query = "INSERT INTO @Table (Type, Target, Amount, Task) VALUES ('@Type', '@Target', @Amount, @Task)";
 
         query = query
                 .replace("@Table", table)
-                .replace("@Task", String.valueOf(objective.getTask()))
-                .replace("@Name", objective.getName())
-                .replace("@Amount", String.valueOf(objective.getAmount()));
+                .replace("@Type", String.valueOf(objective.getType()))
+                .replace("@Target", objective.getTarget())
+                .replace("@Amount", String.valueOf(objective.getAmount()))
+                .replace("@Task", String.valueOf(objective.getTask()));
 
         super.executeVoid(query);
     }
