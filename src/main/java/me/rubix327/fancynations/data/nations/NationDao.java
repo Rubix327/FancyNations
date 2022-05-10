@@ -31,7 +31,7 @@ public class NationDao extends AbstractDao<Nation> implements INationManager {
 
     @Override
     public void add(Nation nation) {
-        String query = "INSERT INTO @Table (Name) VALUES ('@Name')";
+        String query = getQuery("nations_add");
 
         query = query
                 .replace("@Table", table)

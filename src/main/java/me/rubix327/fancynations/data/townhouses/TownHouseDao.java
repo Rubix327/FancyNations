@@ -35,8 +35,7 @@ public class TownHouseDao extends AbstractDao<TownHouse> implements ITownHouseMa
     @Override
     public void add(TownHouse house) {
 
-        String query = "INSERT INTO @Table (Town, Owner, Location)" +
-                "VALUES(@Town, @Owner, '@Location')";
+        String query = getQuery("town_houses_add");
 
         query = query
                 .replace("@Table", table)

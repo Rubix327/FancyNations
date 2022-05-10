@@ -37,8 +37,7 @@ public class FarmDao extends AbstractDao<Farm> implements IFarmManager {
 
     @Override
     public void add(Farm farm) {
-        String query = "INSERT INTO @Table (Town, Name, Location, Level, LoadedResource, Amount)" +
-                "VALUES(@TownId, '@Name', '@Location', @Level, '@LoadedResource', @Amount)";
+        String query = getQuery("farms_add");
 
         query = query
                 .replace("@Table", table)

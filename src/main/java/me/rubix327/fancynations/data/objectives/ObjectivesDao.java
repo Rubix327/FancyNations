@@ -39,7 +39,7 @@ public class ObjectivesDao extends AbstractDao<Objective> implements IObjectives
     }
 
     public void add(Objective objective) {
-        String query = "INSERT INTO @Table (Type, Target, Amount, Task) VALUES ('@Type', '@Target', @Amount, @Task)";
+        String query = getQuery("objectives_add");
 
         query = query
                 .replace("@Table", table)
@@ -52,7 +52,7 @@ public class ObjectivesDao extends AbstractDao<Objective> implements IObjectives
     }
 
     public HashMap<Integer, Objective> getAllFor(int taskId){
-        String query = "SELECT * FROM @Table WHERE Task = @TaskID";
+        String query = getQuery("objectives_get_all_for");
         query = query
                 .replace("@Table", table)
                 .replace("@TaskID", String.valueOf(taskId));

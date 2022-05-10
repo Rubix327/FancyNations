@@ -47,9 +47,10 @@ public final class FancyNations extends SimplePlugin {
         // Database
         if (Settings.General.DATA_MANAGEMENT_TYPE.equalsIgnoreCase("database")){
             this.database = DatabaseManager.getInstance();
-            database.connect("dbsetup.sql");
+            database.connect("db_setup.sql");
             if (database.isConnected()) {
                 Logger.info("Database is connected.");
+                database.loadQueries("db_queries.sql");
             }
             else{
                 Logger.warning("Database is not connected.");
@@ -62,7 +63,7 @@ public final class FancyNations extends SimplePlugin {
 
         // DataManager
         DataManager dataManager = DataManager.getInstance();
-        dataManager.runTaskExpireListener();
+        dataManager.runTaskExpireListener(1);
 
         // Dependencies
         dependencies = DependencyManager.getInstance();

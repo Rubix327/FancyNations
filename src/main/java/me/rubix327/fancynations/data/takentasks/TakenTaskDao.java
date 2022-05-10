@@ -31,7 +31,7 @@ public class TakenTaskDao extends AbstractDao<TakenTask> implements ITakenTaskMa
     }
 
     public boolean exists(int playerId, int taskId) {
-        String query = "SELECT Id FROM @Table WHERE Player = @PlayerID AND Task = @TaskID";
+        String query = getQuery("taken_tasks_exists");
 
         query = query
                 .replace("@Table", table)
@@ -42,7 +42,7 @@ public class TakenTaskDao extends AbstractDao<TakenTask> implements ITakenTaskMa
     }
 
     public void add(TakenTask takenTask) {
-        String query = "INSERT INTO @Table (Player, Task) VALUES (@Player, @Task)";
+        String query = getQuery("taken_tasks_add");
 
         query = query
                 .replace("@Table", table)
@@ -54,7 +54,7 @@ public class TakenTaskDao extends AbstractDao<TakenTask> implements ITakenTaskMa
 
     @Override
     public TakenTask get(int playerId, int taskId) {
-        String query = "SELECT * FROM @Table WHERE Player = @Player AND Task = @Task";
+        String query = getQuery("taken_tasks_get");
 
         query = query
                 .replace("@Table", this.table)

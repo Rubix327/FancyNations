@@ -35,8 +35,7 @@ public class ChurchDao extends AbstractDao<Church> implements IChurchManager {
 
     @Override
     public void add(Church church) {
-        String query = "INSERT INTO @Table (Town, Name, Location, Level)" +
-                "VALUES(@TownId, '@Name', '@Location', @Level)";
+        String query = getQuery("churches_add");
 
         query = query
                 .replace("@Table", table)

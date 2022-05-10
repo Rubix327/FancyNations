@@ -38,8 +38,7 @@ public class DefendTowerDao extends AbstractDao<DefendTower> implements IDefendT
 
     @Override
     public void add(DefendTower tower) {
-        String query = "INSERT INTO @Table (Town, Name, Location, Level, LoadedResource, Amount)" +
-                "VALUES(@TownId, '@Name', '@Location', @Level, '@LoadedResource', @Amount)";
+        String query = getQuery("defend_towers_add");
 
         query = query
                 .replace("@Table", table)

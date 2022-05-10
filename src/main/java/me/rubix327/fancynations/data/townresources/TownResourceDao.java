@@ -33,7 +33,7 @@ public class TownResourceDao extends AbstractDao<TownResource> implements ITownR
 
     @Override
     public void add(TownResource resource) {
-        String query = "INSERT INTO @Table (Town, Name, Amount) VALUES (@Town, '@Name', @Amount)";
+        String query = getQuery("town_resources_add");
 
         query = query
                 .replace("@Table", table)

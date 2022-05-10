@@ -35,8 +35,7 @@ public class WorkshopDao extends AbstractDao<Workshop> implements IWorkshopManag
 
     @Override
     public void add(Workshop workshop) {
-        String query = "INSERT INTO @Table (Town, Name, Location, Level, LoadedResource, Amount)" +
-                "VALUES(@TownId, '@Name', '@Location', @Level, '@LoadedResource', @Amount)";
+        String query = getQuery("workshops_add");
 
         query = query
                 .replace("@Table", table)

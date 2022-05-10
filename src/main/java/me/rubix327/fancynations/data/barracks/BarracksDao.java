@@ -35,8 +35,7 @@ public class BarracksDao extends AbstractDao<Barracks> implements IBarracksManag
 
     @Override
     public void add(Barracks barracks) {
-        String query = "INSERT INTO @Table (Town, Name, Location, Level)" +
-                "VALUES(@TownId, '@Name', '@Location', @Level)";
+        String query = getQuery("barracks_add");
 
         query = query
                 .replace("@Table", table)

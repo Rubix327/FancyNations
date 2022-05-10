@@ -234,9 +234,10 @@ public class DataManager {
     /**
      * This runnable loops through all the TakenTasks and automatically
      * increments TakeAmount and removes TakenTask from a player when his task expire
-     * (i.e. current time > placement time + completion time)
+     * (i.e. current time > placement time + completion time).
+     * @param period the delay between each run in seconds
      */
-    public void runTaskExpireListener(){
+    public void runTaskExpireListener(int period){
         new BukkitRunnable(){
 
             @Override
@@ -258,7 +259,7 @@ public class DataManager {
                 }
             }
 
-        }.runTaskTimer(FancyNations.getInstance(), 30, 20);
+        }.runTaskTimer(FancyNations.getInstance(), 30, period * 20L);
     }
 
     /**

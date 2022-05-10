@@ -1,5 +1,6 @@
 package me.rubix327.fancynations.commands;
 
+import me.rubix327.fancynations.FancyNations;
 import me.rubix327.fancynations.Localization;
 import me.rubix327.fancynations.data.DatabaseManager;
 import me.rubix327.fancynations.util.ItemUtils;
@@ -9,6 +10,7 @@ import org.mineacademy.fo.command.SimpleCommandGroup;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class DebugCommands extends SubCommandInterlayer{
     protected DebugCommands(SimpleCommandGroup group, String sublabel, String permLabel) {
@@ -18,7 +20,7 @@ public class DebugCommands extends SubCommandInterlayer{
     @Override
     protected void onCommand() {
         if (args[0].equalsIgnoreCase("dbfill")){
-            DatabaseManager.getInstance().extractAndExecuteQuery("dbtest.sql");
+            DatabaseManager.getInstance().extractAndExecuteQuery("db_test.sql");
             tell("&aTest database has been successfully loaded!");
         }
         else if (args[0].equalsIgnoreCase("dbclear")){
@@ -33,6 +35,23 @@ public class DebugCommands extends SubCommandInterlayer{
         else if (args[0].equalsIgnoreCase("mi")){
             ItemStack item = getPlayer().getInventory().getItemInMainHand();
             tell(ItemUtils.extractItemId(item));
+        }
+        else if (args[0].equalsIgnoreCase("queries")){
+            if (!FancyNations.getInstance().getDatabase().isConnected()){
+                tell("Database is not connected.");
+                return;
+            }
+            for (Map.Entry<String, String> s : DatabaseManager.getInstance().getQueries().entrySet()){
+                tell("Query: " + s.getKey() + " // " + s.getValue());
+            }
+        }
+        else if (args[0].equalsIgnoreCase("getQuery")){
+            String q = DatabaseManager.getInstance().getQuery(args[1]);
+            if (q == null) {
+                tell("null");
+                return;
+            }
+            tell(q);
         }
     }
 

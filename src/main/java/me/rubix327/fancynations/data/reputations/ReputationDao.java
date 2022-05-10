@@ -32,7 +32,7 @@ public class ReputationDao extends AbstractDao<Reputation> implements IReputatio
 
     @Override
     public boolean exists(int playerId, int townId) {
-        String query = "SELECT Id FROM @Table WHERE Player = @Player AND Town = @Town";
+        String query = getQuery("reputations_exists");
 
         query = query
                 .replace("@Table", table)
@@ -44,7 +44,7 @@ public class ReputationDao extends AbstractDao<Reputation> implements IReputatio
 
     @Override
     public void add(Reputation dto) {
-        String query = "INSERT INTO @Table (Player, Town, Amount) VALUES(@Player, @Town, @Amount)";
+        String query = getQuery("reputations_add");
 
         query = query
                 .replace("@Table", table)
@@ -57,7 +57,7 @@ public class ReputationDao extends AbstractDao<Reputation> implements IReputatio
 
     @Override
     public Reputation get(int playerId, int townId) {
-        String query = "SELECT * FROM @Table WHERE Player = @Player AND Town = @Town";
+        String query = getQuery("reputations_get");
 
         query = query
                 .replace("@Table", table)

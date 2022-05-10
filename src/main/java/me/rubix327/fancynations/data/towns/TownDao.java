@@ -43,8 +43,7 @@ public class TownDao extends AbstractDao<Town> implements ITownManager {
 
     @Override
     public void add(Town town) {
-        String query = "INSERT INTO @Table (Nation, Name, Balance, StationsTax, AuctionTax, TasksTax)" +
-                "VALUES(@Nation, '@Name', @Balance, @StationsTax, @AuctionTax, @TasksTax)";
+        String query = getQuery("towns_add");
 
         query = query
                 .replace("@Table", table)
