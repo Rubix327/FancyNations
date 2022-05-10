@@ -3,6 +3,7 @@ package me.rubix327.fancynations.data;
 import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 import com.mysql.cj.jdbc.MysqlDataSource;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.rubix327.fancynations.Settings;
 import me.rubix327.fancynations.util.Logger;
@@ -12,6 +13,7 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DatabaseManager {
@@ -20,6 +22,8 @@ public class DatabaseManager {
     private Connection connection;
     private MysqlDataSource dataSource;
     private String database;
+    @Getter
+    private HashMap<String, String> queries;
 
     public static DatabaseManager getInstance(){
         if (instance == null){
@@ -65,6 +69,11 @@ public class DatabaseManager {
         return connection;
     }
 
+    /**
+     * Convert text from a file to the flat string.
+     * @param fileName to export from
+     * @return flat string
+     */
     public String extractQuery(String fileName){
         String query = null;
         try {
@@ -79,6 +88,11 @@ public class DatabaseManager {
         return query;
     }
 
+    /**
+     * Executes all the queries found in the string.
+     * Text is split by a semicolon and then each query is executed.
+     * @param setup to take queries from
+     */
     public void executeQuery(String setup){
         try {
             String[] queries = setup.split(";");
@@ -100,11 +114,46 @@ public class DatabaseManager {
         }
     }
 
+    /**
+     * Find and execute all the queries from a file.
+     * @param fileName to execute from
+     */
     public void extractAndExecuteQuery(String fileName){
         executeQuery(extractQuery(fileName));
     }
 
-    public static void logSqlQuery(String query){
-        if (Settings.General.SQL_DEBUG) Logger.info("SQL Debug: " + query);
+    /**
+     * <p>Loads all queries from the given file in the following format:</p>
+     * <p><b>name1: query1;</b></p>
+     * <p><b>name2: query2;</b></p>
+     * @param file to extract queries from
+     */
+    public void loadQueries(String file){
+        String setup = extractQuery(file);
+        HashMap<String, String> queries = new HashMap<>();
+        for (String query : setup.split(";")) {
+            if (query.isBlank()) continue;
+            String key = query.substring(0, query.indexOf(":"))
+                    .replace("\r\n", "")
+                    .replace("\n", "")
+                    .replace("\r", "");
+            String value = query.substring(query.indexOf(":") + 2)
+                    .replace("\r\n", "")
+                    .replace("\n", "")
+                    .replace("\r", "")
+                    .replace("\"", "")
+                    .replace("+", "")
+                    .replace("  ", "");
+            queries.put(key, value);
+        }
+        this.queries = queries;
     }
+
+    public String getQuery(String key) throws NullPointerException{
+        if (!queries.containsKey(key)){
+            throw new NullPointerException("Key " + key + " does not exist in queries hashmap (DatabaseManager)");
+        }
+        return queries.get(key);
+    }
+
 }

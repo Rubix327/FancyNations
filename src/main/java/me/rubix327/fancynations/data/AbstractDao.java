@@ -27,7 +27,7 @@ public abstract class AbstractDao<T extends AbstractDto> extends AbstractDataHan
      @param id Record id
      */
     public boolean exists(int id) throws NullPointerException{
-        String query = "SELECT Id FROM @Table WHERE ID = @ID";
+        String query = getQuery("general_exists_id");
 
         query = query
                 .replace("@Table", this.table)
@@ -42,7 +42,7 @@ public abstract class AbstractDao<T extends AbstractDto> extends AbstractDataHan
      @param name Record name
      */
     public boolean exists(String name) throws NullPointerException{
-        String query = "SELECT Id FROM @Table WHERE Name = '@Name'";
+        String query = getQuery("general_exists_name");
 
         query = query
                 .replace("@Table", this.table)
@@ -58,7 +58,7 @@ public abstract class AbstractDao<T extends AbstractDto> extends AbstractDataHan
      @exception NullPointerException if object does not exist in the table
      */
     public T get(int id) {
-        String query = "SELECT * FROM @Table WHERE ID = @ID";
+        String query = getQuery("general_get_id");
         query = query
                 .replace("@Table", this.table)
                 .replace("@ID", String.valueOf(id));
@@ -73,7 +73,7 @@ public abstract class AbstractDao<T extends AbstractDto> extends AbstractDataHan
      @exception NullPointerException if object does not exist in the table
      */
     public T get(String name) {
-        String query = "SELECT * FROM @Table WHERE Name = '@Name'";
+        String query = getQuery("general_get_name");
         query = query
                 .replace("@Table", this.table)
                 .replace("@Name", name);
@@ -88,7 +88,7 @@ public abstract class AbstractDao<T extends AbstractDto> extends AbstractDataHan
      @param newValue New value
      */
     public void update(int id, String variable, Object newValue) throws NullPointerException{
-        String query = "UPDATE @Table SET @Var = '@Value' WHERE ID = @ID";
+        String query = getQuery("general_update");
 
         query = query.replace("@Table", this.table)
                 .replace("@Var", variable)
@@ -103,7 +103,7 @@ public abstract class AbstractDao<T extends AbstractDto> extends AbstractDataHan
      @param id Record id
      */
     public void remove(int id) throws NullPointerException{
-        String query = "DELETE FROM @Table WHERE ID = @ID";
+        String query = getQuery("general_remove");
 
         query = query
                 .replace("@Table", this.table)
@@ -122,7 +122,7 @@ public abstract class AbstractDao<T extends AbstractDto> extends AbstractDataHan
     }
 
     public HashMap<Integer, T> getAll(boolean log) throws NullPointerException{
-        String query = "SELECT * FROM @Table";
+        String query = getQuery("general_get_all");
         query = query.replace("@Table", this.table);
 
         return executeAll(query, log);
@@ -134,7 +134,7 @@ public abstract class AbstractDao<T extends AbstractDto> extends AbstractDataHan
      */
     public int getMaxId() throws NullPointerException{
         try{
-            String query = "SELECT Id FROM @Table ORDER BY Id DESC LIMIT 1";
+            String query = getQuery("general_get_max_id");
             query = query.replace("@Table", this.table);
             PreparedStatement ps = FancyNations.getInstance().getDatabase().getConnection().
                     prepareStatement(query);
@@ -156,7 +156,7 @@ public abstract class AbstractDao<T extends AbstractDto> extends AbstractDataHan
      */
     public List<String> getNames() throws NullPointerException{
         try{
-            String query = "SELECT Name FROM @Table";
+            String query = getQuery("general_get_names");
             query = query.replace("@Table", this.table);
             PreparedStatement ps = FancyNations.getInstance().getDatabase().getConnection().
                     prepareStatement(query);
@@ -259,6 +259,10 @@ public abstract class AbstractDao<T extends AbstractDto> extends AbstractDataHan
             e.printStackTrace();
         }
         throw new NullPointerException("Something went wrong.");
+    }
+
+    protected String getQuery(String key){
+        return DatabaseManager.getInstance().getQuery(key);
     }
 
 }

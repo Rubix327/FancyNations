@@ -31,7 +31,7 @@ public class WorkerTypeDao extends AbstractDao<WorkerType> implements IWorkerTyp
 
     @Override
     public void add(WorkerType dto) {
-        String query = "INSERT INTO @Table (Name, DisplayName) VALUES ('@Name', '@DisplayName')";
+        String query = getQuery("worker_types_add");
 
         query = query
                 .replace("@Table", table)

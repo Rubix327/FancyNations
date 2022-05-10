@@ -45,11 +45,7 @@ public class TaskDao extends AbstractDao<Task> implements ITaskManager {
 
     @Override
     public void add(Task task) {
-        String query = "INSERT INTO @Table (Town, Player, Name, Description, TakeAmount, MinLevel, " +
-                "MaxLevel, MoneyReward, ExpReward, RepReward, PlacementDateTime, TimeToComplete, Priority) " +
-                "VALUES(@TownId, @Player, '@TaskName', " +
-                "'@Description', @TakeAmount, @MinLevel, @MaxLevel, @MoneyReward, @ExpReward, @RepReward, " +
-                "'@PlacementDateTime', @TimeToComplete, @Priority)";
+        String query = getQuery("tasks_add");
 
         query = query
                 .replace("@Table", table)

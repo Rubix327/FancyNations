@@ -34,7 +34,7 @@ public class TaskProgressDao extends AbstractDao<TaskProgress> implements ITaskP
 
     @Override
     public void add(TaskProgress progress) {
-        String query = "INSERT INTO @Table (Objective, Progress) VALUES (@Objective, @Progress)";
+        String query = getQuery("task_progresses_add");
 
         query = query
                 .replace("@Table", table)
@@ -45,7 +45,7 @@ public class TaskProgressDao extends AbstractDao<TaskProgress> implements ITaskP
     }
 
     public TaskProgress get(int objectiveId, int takenTaskId){
-        String query = "SELECT * FROM @Table WHERE Objective = @Objective AND TakenTask = @TakenTask";
+        String query = getQuery("task_progresses_get");
 
         query = query
                 .replace("@Table", this.table)
@@ -56,7 +56,7 @@ public class TaskProgressDao extends AbstractDao<TaskProgress> implements ITaskP
     }
 
     public HashMap<Integer, TaskProgress> getAllByTakenTask(int takenTaskId){
-        String query = "SELECT * FROM @Table WHERE TakenTask = @TakenTask";
+        String query = getQuery("task_progresses_get_all_by_taken_task");
 
         query = query
                 .replace("@Table", this.table)

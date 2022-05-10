@@ -42,8 +42,7 @@ public class TownWorkerDao extends AbstractDao<TownWorker> implements ITownWorke
 
     @Override
     public void add(TownWorker worker) {
-        String query = "INSERT INTO @Table (Player, Town, WorkerType, DisplayName, Salary)" +
-                "VALUES(@PlayerID, @TownID, @WorkerTypeID, '@DisplayName', @Salary)";
+        String query = getQuery("town_workers_add");
 
         query = query
                 .replace("@Table", table)
@@ -70,7 +69,7 @@ public class TownWorkerDao extends AbstractDao<TownWorker> implements ITownWorke
     }
 
     public boolean isWorker(int playerId) {
-        String query = "SELECT Id FROM @Table WHERE Player = @PlayerID";
+        String query = getQuery("town_workers_is_worker");
         query = query
                 .replace("@Table", table)
                 .replace("@PlayerID", String.valueOf(playerId));
@@ -79,8 +78,7 @@ public class TownWorkerDao extends AbstractDao<TownWorker> implements ITownWorke
 
     public WorkerType getWorkerType(int playerId) throws IllegalArgumentException {
         try{
-            String query = "SELECT @WorkerTypesTable.Id FROM @Table JOIN (@WorkerTypesTable) " +
-                    "ON (@Table.WorkerType = @WorkerTypesTable.Id) WHERE @Table.Player = @PlayerID";
+            String query = getQuery("town_workers_get_type");
             query = query
                     .replace("@Table", table)
                     .replace("@WorkerTypesTable", Settings.DbTables.WORKER_TYPES)
