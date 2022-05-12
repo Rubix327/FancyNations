@@ -1,6 +1,7 @@
 package me.rubix327.fancynations.data.objectives;
 
 import me.rubix327.fancynations.data.AbstractDao;
+import me.rubix327.fancynations.data.tasks.TaskGroup;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -29,13 +30,13 @@ public class ObjectivesDao extends AbstractDao<Objective> implements IObjectives
         int amount = resultSet.getInt("Amount");
         int task = resultSet.getInt("Task");
 
-        String group = ObjectiveType.getGroup(type);
-        if (group.equalsIgnoreCase("Gathering")){
+        if (ObjectiveInfo.get(type).getGroup() == TaskGroup.Gathering){
             return new GatheringObjective(id, type, target, amount, task);
         }
-        else {
+        else if (ObjectiveInfo.get(type).getGroup() == TaskGroup.Mobs) {
             return new MobKillObjective(id, type, target, amount, task);
         }
+        throw new NullPointerException("This objective type does not exist.");
     }
 
     public void add(Objective objective) {

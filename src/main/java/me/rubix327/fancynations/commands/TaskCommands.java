@@ -5,6 +5,7 @@ import me.rubix327.fancynations.Settings;
 import me.rubix327.fancynations.data.DataManager;
 import me.rubix327.fancynations.data.fnplayers.FNPlayer;
 import me.rubix327.fancynations.data.objectives.Objective;
+import me.rubix327.fancynations.data.objectives.ObjectiveInfo;
 import me.rubix327.fancynations.data.reputations.Reputation;
 import me.rubix327.fancynations.data.takentasks.TakenTask;
 import me.rubix327.fancynations.data.taskprogresses.TaskProgress;
@@ -24,17 +25,6 @@ public class TaskCommands extends SubCommandInterlayer {
         super(group, sublabel, permLabel);
     }
 
-    /*
-       label  a0       a1          a2         a3
-    fn task create <town_name> <taskName>
-    fn task remove <task_id>
-    fn task set    <task_id>   <variable> <value>
-    fn task info <task_id>
-    fn task list
-    fn task start <task_id>
-    fn task finish <task_id>
-    fn task cancel <task_id>
-     */
     @Override
     protected void onCommand() {
 
@@ -72,7 +62,7 @@ public class TaskCommands extends SubCommandInterlayer {
             // Name length is too long
             if (taskName.length() > Settings.Tasks.MAX_NAME_LENGTH){
                 tell(msgs.get("error_task_name_too_long", sender).replace(
-                        "@maxLength", String.valueOf(Settings.Tasks.MAX_NAME_LENGTH)));
+                        "@max_length", String.valueOf(Settings.Tasks.MAX_NAME_LENGTH)));
                 return;
             }
 
@@ -369,10 +359,8 @@ public class TaskCommands extends SubCommandInterlayer {
 
             // Send a certain share of resources or mobs to a town
             for (Objective objective : DataManager.getObjectivesManager().getAllFor(task.getId()).values()){
-                Integer share = (objective.getGroup().equalsIgnoreCase("Gathering") ?
-                        Settings.Rewards.TOWN_RESOURCE_SHARE : Settings.Rewards.TOWN_MOBS_SHARE);
                 TownResource townResource = new TownResource(task.getTownId(), objective.getTarget(),
-                        objective.getAmount() / 100 * share);
+                        objective.getAmount() / 100 * ObjectiveInfo.get(objective.getType()).getShare());
                 DataManager.getTownResourceManager().add(townResource);
             }
 

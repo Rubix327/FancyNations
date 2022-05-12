@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import me.rubix327.fancynations.data.AbstractDto;
 import me.rubix327.fancynations.data.DataManager;
+import me.rubix327.fancynations.data.tasks.TaskGroup;
 import org.bukkit.entity.Player;
 
 @Getter @Setter(AccessLevel.PACKAGE)
@@ -27,7 +28,7 @@ public abstract class Objective extends AbstractDto {
 
     public abstract boolean isCompleted(Player player);
 
-    public String getGroup(){
-        return ObjectiveType.getGroup(type);
+    public TaskGroup getGroup(){
+        return ObjectiveInfo.get(type).getGroup();
     }
 }
