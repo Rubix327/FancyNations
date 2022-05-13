@@ -23,11 +23,13 @@ import java.util.Map;
 @AllArgsConstructor
 public class Task extends AbstractDto {
 
+    public static ITaskManager manager = DataManager.getTaskManager();
+
     @Getter
     private final int id;
     private final int townId;
     private final int creatorId;
-    private final String taskName;
+    private final String name;
     private String description;
     private int takeAmount;
     private int minLevel;
@@ -39,11 +41,11 @@ public class Task extends AbstractDto {
     private Timestamp placementDateTime;
     private int timeToComplete;
 
-    public Task(int townId, int creatorId, String taskName){
+    public Task(int townId, int creatorId, String name){
         this.id = DataManager.getTaskManager().getMaxId() + 1;
         this.townId = townId;
         this.creatorId = creatorId;
-        this.taskName = taskName;
+        this.name = name;
         this.description = Settings.Tasks.DEFAULT_DESCRIPTION;
         this.takeAmount = Settings.Tasks.DEFAULT_TAKE_AMOUNT;
         this.minLevel = Settings.Tasks.DEFAULT_MIN_LEVEL;
@@ -56,6 +58,29 @@ public class Task extends AbstractDto {
         this.timeToComplete = Settings.Tasks.DEFAULT_TIME_TO_COMPLETE;
     }
 
+    public static boolean exists(int taskId){
+        return manager.exists(taskId);
+    }
+
+    public static void add(int townId, int creatorId, String name){
+        Task task = new Task(townId, creatorId, name);
+        manager.add(task);
+    }
+
+    public static void remove(int taskId){
+        manager.remove(taskId);
+    }
+
+    /**
+     * Increase or decrease take amount of the task.
+     */
+    public static void increaseTakeAmount(int taskId, int amount){
+        manager.update(taskId, "takeAmount", manager.get(taskId).getTakeAmount() + amount);
+    }
+
+    /**
+     * Check if all the objectives are completed by specified player.
+     */
     public boolean isAllObjectivesCompleted(Player player){
 
         ObjectivesDao objDao = (ObjectivesDao) DataManager.getObjectivesManager();
@@ -66,6 +91,9 @@ public class Task extends AbstractDto {
         return true;
     }
 
+    /**
+     * Get the type of this task, e.g. "Crafting" or "MobKill".
+     */
     public TaskType getType(){
         Map<String, String> objTypes = new HashMap<>();
         DataManager.getObjectivesManager().getAllFor(this.getId()).values()
@@ -76,10 +104,17 @@ public class Task extends AbstractDto {
         else return TaskType.Combined;
     }
 
+    /**
+     * Get localized type name of this task, e.g. "Крафтинг" or "Истребление".
+     */
     public String getLocalizedTypeName(CommandSender sender){
         return TaskType.getLocalizedName(getType().toString(), sender);
     }
 
+    /**
+     * Get localized description of this task.
+     * If task has no description set, it will return "task_no_description" node.
+     */
     public String getLocalizedDescription(CommandSender sender){
         if (this.description.equalsIgnoreCase(Settings.Tasks.DEFAULT_DESCRIPTION)){
             return Localization.getInstance().get("task_no_description", sender);
@@ -87,14 +122,20 @@ public class Task extends AbstractDto {
         return this.description;
     }
 
+    /**
+     * Get localized server label if the task has been created by the server.
+     */
     public String getLocalizedCreatorName(CommandSender sender){
         FNPlayer fnPlayer = DataManager.getFNPlayerManager().get(this.getCreatorId());
         return fnPlayer.getName().equals(Settings.General.SERVER_VAR) ?
                 Localization.getInstance().get("server_label", sender) : fnPlayer.getName();
     }
 
+    /**
+     * Get the town name which this task belongs to.
+     */
     public String getTownName(){
         return DataManager.getTownManager().get(this.getTownId()).getName();
     }
-    
+
 }

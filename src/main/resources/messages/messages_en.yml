@@ -1,14 +1,21 @@
 # Syntax
+syntax_task: '@info_prefix Syntax: /fn task <create/remove/set/info/list/start/finish/cancel>'
 syntax_task_create: '@info_prefix Syntax: /fn task create <town_name> <name>'
 syntax_task_remove: '@info_prefix Syntax: /fn task remove <task_id>'
 syntax_task_set: '@info_prefix Syntax: /fn task set <task_id> <variable> <value>'
 syntax_task_info: '@info_prefix Syntax: /fn task info <task_id>'
 syntax_task_start: '@info_prefix Syntax: /fn task start <task_id>'
 syntax_task_finish: '@info_prefix Syntax: /fn task finish <task_id>'
-syntax_task_cancel: '@info_prefix Syntax: /task cancel <task_id>'
-syntax_task: '@info_prefix Syntax: /fn task <create/remove/set/info/list/start/finish/cancel>'
+syntax_task_cancel: '@info_prefix Syntax: /fn task cancel <task_id>'
+syntax_task_add_objective: '@info_prefix Syntax: /fn task addObjective <task_id> <objective_id>'
+syntax_task_remove_objective: '@info_prefix Syntax: /fn task removeObjective <task_id> <objective_id>'
 
 syntax_mayor_assign: '@info_prefix Syntax: /fn mayor assign <town_name> <player_name>'
+
+syntax_objective: '@info_prefix Syntax: /fn obj <create|remove|set>'
+syntax_objective_create: '@info_prefix Syntax: /fn obj create <type> <target> <amount>'
+syntax_objective_remove: '@info_prefix Syntax: /fn obj remove <objective_id>'
+syntax_objective_set: '@info_prefix Syntax: /fn obj set <task_id> <objective_id>'
 
 # Errors
 error_no_permission: '@error_prefix You do not have enough permissions.'
@@ -17,8 +24,9 @@ error_value_must_be_double: '@error_prefix Value must be a floating point number
 error_value_must_be_integer: '@error_prefix Value must be a whole number (integer).'
 error_variable_not_exist: '@error_prefix This variable does not exist or cannot be changed.'
 error_page_should_be_number: '@error_prefix Page should be whole number.'
+error_amount_should_be_number: '@error_prefix Amount should be whole number.'
 
-error_task_not_exist: '@error_prefix Task with this ID does not exist. @nl @error_prefix Type /fn task list to see all tasks.'
+error_task_not_exist: '@error_prefix This task does not exist. @nl @error_prefix Type /fn task list to see all tasks.'
 error_task_not_available: '@error_prefix This task is not available anymore.'
 error_task_level_not_suitable: '@error_prefix Your level is not suitable for this task. @nl @error_prefix Your level: @player_level. Required: @task_min_level - @task_max_level'
 error_task_already_taken: '@error_prefix You already have this task.'
@@ -26,15 +34,18 @@ error_task_time_to_complete_expired: '@error_prefix Your time for this task has 
 error_task_objective_not_completed: '@error_prefix You have not completed all the objectives yet.'
 error_task_not_taken: '@error_prefix You do not have this task.'
 error_task_no_tasks: '@error_prefix There are no created tasks yet.'
-error_task_name_too_long: '@error_prefix Task name length must be less than @maxLength symbols.'
+error_task_name_too_long: '@error_prefix Task name length must be less than @max_length symbols.'
+error_task_not_contain_this_objective: '@error_prefix This task does not contain this objective.'
 
 error_taken_task_not_exist: '@error_prefix Taken task with this ID does not exist.'
 
 error_town_not_exist: '@error_prefix This town does not exist.'
 
 error_player_not_exist: '@error_prefix This player never has been on the server.'
-
 error_objective_type_not_exist: '@error_prefix This objective type does not exist. @nl @error_prefix Available types: '
+error_objective_item_in_hand: '@error_prefix You must hold an item in your main hand to create an objective with @hand.'
+error_objective_not_exist: '@error_prefix This objective does not exist.'
+error_objective_already_has_task: '@error_prefix This objective already has a task connected.'
 
 # Success
 success_task_created: '@success_prefix You have successfully created task called &2"@name".'
@@ -56,7 +67,7 @@ task_type_combined: 'Combined'
 task_type_food: 'Food'
 task_type_resource: 'Resource'
 task_type_crafting: 'Crafting'
-task_type_mobkill: 'Mob kill'
+task_type_mob_kill: 'Mob kill'
 
 # Messages templates for such commands as /fn task info and /fn task list
 template_task_info_label: '&7Info about task &e#@id'

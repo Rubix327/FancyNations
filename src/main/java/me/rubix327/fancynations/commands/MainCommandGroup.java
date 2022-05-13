@@ -11,6 +11,8 @@ public class MainCommandGroup extends SimpleCommandGroup {
         registerSubcommand(new MayorCommands(this, "mayor|m", "fancynations.mayor"));
         registerSubcommand(new PlayerCommands(this, "player", "fancynations.player"));
         registerSubcommand(new DebugCommands(this, "debug", "fancynations.debug"));
+        registerSubcommand(new ObjectiveCommands(this, "objective|obj", "fancynations.objective"));
+        registerSubcommand(new Tests(this, "test", "fancynations.test"));
 
     }
 }

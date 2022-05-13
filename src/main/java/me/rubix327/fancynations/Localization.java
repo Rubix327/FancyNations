@@ -9,6 +9,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.mineacademy.fo.Common;
+import org.mineacademy.fo.Messenger;
 
 import java.io.File;
 import java.io.IOException;
@@ -126,6 +127,7 @@ public class Localization {
      * If the key has not been found in english localization then it will drop an error message.</p>
      * <b>Suitable when you want to use specific language.</b>
      * @param key The name of the configuration message.
+     * @param locale The locale you need to use (e.g. "en" or "ru").
      * @return The message.
      */
     public String get(String key, String locale){
@@ -195,6 +197,18 @@ public class Localization {
      */
     public String replacePlaceholders(List<String> messages){
         return replacePlaceholders(String.join("\n", messages));
+    }
+
+    /**
+     * Removes Foundation prefixes.
+     */
+    public static void resetPrefixes(){
+        Messenger.setErrorPrefix("");
+        Messenger.setWarnPrefix("");
+        Messenger.setSuccessPrefix("");
+        Messenger.setInfoPrefix("");
+        Messenger.setAnnouncePrefix("");
+        Messenger.setQuestionPrefix("");
     }
 
 }

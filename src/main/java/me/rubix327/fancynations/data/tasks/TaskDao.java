@@ -50,7 +50,7 @@ public class TaskDao extends AbstractDao<Task> implements ITaskManager {
         query = query
                 .replace("@Table", table)
                 .replace("@TownId", String.valueOf(task.getTownId()))
-                .replace("@TaskName", task.getTaskName())
+                .replace("@TaskName", task.getName())
                 .replace("@Player", String.valueOf(task.getCreatorId()))
                 .replace("@Description", task.getDescription())
                 .replace("@TakeAmount", String.valueOf(task.getTakeAmount()))

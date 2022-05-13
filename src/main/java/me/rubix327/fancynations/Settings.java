@@ -38,7 +38,6 @@ public class Settings extends SimpleSettings {
         public static String TAKEN_TASKS;
         public static String TASK_PROGRESSES;
         public static String TASKS;
-        public static String OBJECTIVE_TYPES;
         public static String TOWN_HOUSES;
         public static String TOWN_RESOURCES;
         public static String TOWNS;
@@ -53,6 +52,7 @@ public class Settings extends SimpleSettings {
         public static Boolean SQL_DEBUG;
         public static String MMOITEMS_PREFIX;
         public static String MYTHICMOBS_PREFIX;
+        public static Integer NULL;
     }
 
     public static class Towns{
@@ -134,7 +134,6 @@ public class Settings extends SimpleSettings {
         DbTables.TAKEN_TASKS = "TakenTasks";
         DbTables.TASK_PROGRESSES = "TaskProgresses";
         DbTables.TASKS = "Tasks";
-        DbTables.OBJECTIVE_TYPES = "ObjectiveTypes";
         DbTables.TOWN_HOUSES = "TownHouses";
         DbTables.TOWN_RESOURCES = "TownResources";
         DbTables.TOWNS = "Towns";
@@ -148,6 +147,7 @@ public class Settings extends SimpleSettings {
         General.SQL_DEBUG = getBoolean("SQL_Debug");
         General.MMOITEMS_PREFIX = "MI_";
         General.MYTHICMOBS_PREFIX = "MM_";
+        General.NULL = 0;
 
         pathPrefix("Towns");
         Towns.DEFAULT_BALANCE = getDouble("Default_Balance");

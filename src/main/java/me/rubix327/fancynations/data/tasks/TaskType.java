@@ -11,7 +11,7 @@ public enum TaskType {
     Food,
     Resource,
     Crafting,
-    Mobkill,
+    MobKill,
     Combined;
 
     private static final HashMap<TaskType, String> locales = new HashMap<>() {{

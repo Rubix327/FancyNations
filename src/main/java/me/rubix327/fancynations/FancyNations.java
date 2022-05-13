@@ -46,6 +46,7 @@ public final class FancyNations extends SimplePlugin {
         // Localization
         Localization localization = Localization.getInstance();
         localization.init(Arrays.asList("en", "ru"));
+        Localization.resetPrefixes();
 
         // Database
         if (Settings.General.DATA_MANAGEMENT_TYPE.equalsIgnoreCase("database")){
@@ -118,7 +119,7 @@ public final class FancyNations extends SimplePlugin {
                 TaskGroup.Gathering, Settings.Rewards.TOWN_RESOURCE_SHARE, "task_type_resource"));
         ObjectiveInfo.add(TaskType.Crafting, new ObjectiveInfo(
                 TaskGroup.Gathering, Settings.Rewards.TOWN_RESOURCE_SHARE, "task_type_crafting"));
-        ObjectiveInfo.add(TaskType.Mobkill, new ObjectiveInfo(
+        ObjectiveInfo.add(TaskType.MobKill, new ObjectiveInfo(
                 TaskGroup.Mobs, Settings.Rewards.TOWN_MOBS_SHARE, "task_type_mob_kill"));
         DataManager.getWorkerTypeManager().addIgnore(new WorkerType(1, "Mayor"));
         DataManager.getWorkerTypeManager().addIgnore(new WorkerType(2, "Helper"));
