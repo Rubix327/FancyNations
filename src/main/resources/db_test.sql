@@ -47,9 +47,4 @@ INSERT IGNORE INTO Objectives(ID, Task, Type, Target, Amount) VALUES
 
 INSERT IGNORE INTO TakenTasks(ID, Player, Task) VALUES (1, 4, 1), (2, 2, 2), (3, 3, 3);
 
-INSERT IGNORE INTO Objectives(ID, Task, Name, Amount) VALUES
-(1, 1, "POTATO", 5), (2, 1, "CARROT", 10), (3, 1, "BEETROOT", 16),
-(4, 2, "IRON_SWORD", 1), (5, 2, "MI_STEEL_PICKAXE", 1),
-(6, 3, "ZOMBIE", 20), (7, 3, "MM_SKELETAL_KNIGHT", 5);
-
 INSERT IGNORE INTO TaskProgresses(ID, Objective, TakenTask, Progress) VALUES (1, 1, 1, 3), (2, 2, 2, 0), (3, 3, 3, 20);
