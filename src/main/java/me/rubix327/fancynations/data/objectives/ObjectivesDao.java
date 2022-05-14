@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 public class ObjectivesDao extends AbstractDao<Objective> implements IObjectivesManager {
 
-    private static ObjectivesDao instance = null;
+    private static ObjectivesDao instance;
 
     private ObjectivesDao(String table) {
         super(table);
@@ -36,7 +36,7 @@ public class ObjectivesDao extends AbstractDao<Objective> implements IObjectives
         else if (ObjectiveInfo.get(type).getGroup() == TaskGroup.Mobs) {
             return new MobKillObjective(id, type, target, amount, task);
         }
-        throw new NullPointerException("This objective type does not exist.");
+        throw new NullPointerException("This objective type group does not exist.");
     }
 
     public void add(Objective objective) {

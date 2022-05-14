@@ -1,5 +1,8 @@
 package me.rubix327.fancynations.util;
 
+import com.google.common.base.CaseFormat;
+
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,6 +33,15 @@ public class Utils {
         } catch (NumberFormatException ex) {
             return false;
         }
+    }
+
+    public static List<String> toSnakeCase(List<String> list){
+        return list.stream().map(e -> CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, e)).toList();
+    }
+
+    public static String toCamelCase(String s){
+        s = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, s);
+        return CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, s);
     }
 
 }

@@ -2,8 +2,12 @@ package me.rubix327.fancynations.commands;
 
 import me.rubix327.fancynations.util.ItemUtils;
 import me.rubix327.fancynations.util.Replacer;
+import me.rubix327.fancynations.util.Utils;
 import org.bukkit.inventory.ItemStack;
 import org.mineacademy.fo.command.SimpleCommandGroup;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class Tests extends SubCommandInterlayer {
 
@@ -24,12 +28,74 @@ public class Tests extends SubCommandInterlayer {
             tell(ItemUtils.extractItemId(item));
         }
 
+        // Utils
+        if (isArg(0, "hasSpecialChars")){
+            if (args.length == 1){
+                tell(String.valueOf(Utils.hasSpecialChars("1234567890abcde"))); // false
+                tell(String.valueOf(Utils.hasSpecialChars("123#456"))); // true
+                tell(String.valueOf(Utils.hasSpecialChars("abc%def"))); // true
+                tell(String.valueOf(Utils.hasSpecialChars("!@#$%^&*"))); // true
+            }
+            else if (args.length == 2){
+                tell(String.valueOf(Utils.hasSpecialChars(args[1])));
+            }
+        }
+        if (isArg(0, "isStringInt")){
+            if (args.length == 1){
+                tell(String.valueOf(Utils.isStringInt("123"))); // true
+                tell(String.valueOf(Utils.isStringInt("-123"))); // true
+                tell(String.valueOf(Utils.isStringInt("100.0"))); // false
+                tell(String.valueOf(Utils.isStringInt("100.123"))); // false
+                tell(String.valueOf(Utils.isStringInt("1234567890abcde"))); // false
+                tell(String.valueOf(Utils.isStringInt("123#456"))); // false
+            }
+            else if (args.length == 2){
+                tell(String.valueOf(Utils.isStringInt(args[1])));
+            }
+        }
+        if (isArg(0, "isStringDouble")){
+            if (args.length == 1){
+                tell(String.valueOf(Utils.isStringDouble("123"))); // true
+                tell(String.valueOf(Utils.isStringDouble("-123"))); // true
+                tell(String.valueOf(Utils.isStringDouble("100.0"))); // true
+                tell(String.valueOf(Utils.isStringDouble("100.123"))); // true
+                tell(String.valueOf(Utils.isStringDouble("1234567890abcde"))); // false
+                tell(String.valueOf(Utils.isStringDouble("123#456"))); // false
+            }
+            else if (args.length == 2){
+                tell(String.valueOf(Utils.isStringDouble(args[1])));
+            }
+        }
+        if (isArg(0, "toSnakeCase")){
+            if (args.length == 1){
+                tell(Utils.toSnakeCase(Arrays.asList("OneTwo", "fiveSix", "seven_eight")).toString()); // works
+            }
+            else if (args.length == 2){
+                tell(Utils.toSnakeCase(List.of(args[1])));
+            }
+        }
+        if (isArg(0, "toCamelCase")){
+            if (args.length == 1){
+                tell(Utils.toCamelCase("OneTwo")); // oneTwo
+                tell(Utils.toCamelCase("OneTwo90Three")); // oneTwo90Three
+                tell(Utils.toCamelCase("OneTwo90_tHree")); // oneTwo90THree
+                tell(Utils.toCamelCase("One_Two90_three")); // oneTwo90Three
+                tell(Utils.toCamelCase("Three_Four")); // threeFour
+                tell(Utils.toCamelCase("five_six")); // fiveSix
+            }
+            else if (args.length == 2){
+                tell(Utils.toCamelCase(args[1]));
+            }
+        }
+
         // SubCommandInterlayer
         if (isArg(0, "checkPermission")){
             checkPermission("123");
+            tell("Something");
         }
         if (isArg(0, "checkPermissionBlank")){
             checkPermission("");
+            tell("Something");
         }
         if (isArg(0, "replace")){
             Replacer r = replace("@target", "@replacement");

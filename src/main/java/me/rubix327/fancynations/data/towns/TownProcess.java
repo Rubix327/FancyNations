@@ -33,7 +33,7 @@ public class TownProcess extends AbstractProcess<Town> implements ITownManager {
             return names;
         }
         else if ((DataManager.getTownWorkerManager()).isMayor(playerId)){
-            TownWorker townWorker = DataManager.getTownWorkerManager().get(sender.getName());
+            TownWorker townWorker = DataManager.getTownWorkerManager().getByPlayer(sender.getName());
             String townName = DataManager.getTownManager().get(townWorker.getTownId()).getName();
             return Collections.singletonList(townName);
         }

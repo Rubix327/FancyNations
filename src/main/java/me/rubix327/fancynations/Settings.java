@@ -42,7 +42,7 @@ public class Settings extends SimpleSettings {
         public static String TOWN_RESOURCES;
         public static String TOWNS;
         public static String TOWN_WORKERS;
-        public static String WORKER_TYPES;
+        public static String PROFESSIONS;
         public static String WORKSHOPS;
     }
 
@@ -73,14 +73,7 @@ public class Settings extends SimpleSettings {
         public static Integer DEFAULT_REP_REWARD;
         public static Integer DEFAULT_PRIORITY;
         public static Integer DEFAULT_TIME_TO_COMPLETE;
-    }
-
-    public static class TownWorkers{
-        public static String MAYOR_DEFAULT_DISPLAYNAME;
-        public static String HELPER_DEFAULT_DISPLAYNAME;
-        public static String JUDGE_DEFAULT_DISPLAYNAME;
-        public static String OTHER_DEFAULT_DISPLAYNAME;
-        public static Integer DEFAULT_SALARY;
+        public static Integer MINIMUM_LEVELS_DIFFERENCE;
     }
 
     public static class TownBuildings{
@@ -94,6 +87,27 @@ public class Settings extends SimpleSettings {
     public static class Rewards{
         public static Integer TOWN_RESOURCE_SHARE;
         public static Integer TOWN_MOBS_SHARE;
+    }
+
+    public static class Professions{
+        public static class Mayor{
+            public static Double SALARY;
+            public static Integer STATIONS_TAX_BONUS;
+            public static Integer AUCTION_TAX_BONUS;
+            public static Integer TASKS_TAX_BONUS;
+        }
+        public static class Helper{
+            public static Double SALARY;
+            public static Integer STATIONS_TAX_BONUS;
+            public static Integer AUCTION_TAX_BONUS;
+            public static Integer TASKS_TAX_BONUS;
+        }
+        public static class Other{
+            public static Double SALARY;
+            public static Integer STATIONS_TAX_BONUS;
+            public static Integer AUCTION_TAX_BONUS;
+            public static Integer TASKS_TAX_BONUS;
+        }
     }
 
     public static class Messages_Templates{
@@ -138,7 +152,7 @@ public class Settings extends SimpleSettings {
         DbTables.TOWN_RESOURCES = "TownResources";
         DbTables.TOWNS = "Towns";
         DbTables.TOWN_WORKERS = "TownWorkers";
-        DbTables.WORKER_TYPES = "WorkerTypes";
+        DbTables.PROFESSIONS = "Professions";
         DbTables.WORKSHOPS = "Workshops";
 
         pathPrefix("General");
@@ -166,13 +180,7 @@ public class Settings extends SimpleSettings {
         Tasks.DEFAULT_REP_REWARD = getInteger("Default_Rep_Reward");
         Tasks.DEFAULT_PRIORITY = getInteger("Default_Priority");
         Tasks.DEFAULT_TIME_TO_COMPLETE = getInteger("Default_Time_To_Complete");
-
-        pathPrefix("Town_Workers");
-        TownWorkers.MAYOR_DEFAULT_DISPLAYNAME = getString("Mayor_Default_Display_Name");
-        TownWorkers.HELPER_DEFAULT_DISPLAYNAME = getString("Helper_Default_Display_Name");
-        TownWorkers.JUDGE_DEFAULT_DISPLAYNAME = getString("Judge_Default_Display_Name");
-        TownWorkers.OTHER_DEFAULT_DISPLAYNAME = getString("Other_Default_Display_Name");
-        TownWorkers.DEFAULT_SALARY = getInteger("Default_Salary");
+        Tasks.MINIMUM_LEVELS_DIFFERENCE = getInteger("Minimum_Levels_Difference");
 
         pathPrefix("Town_Buildings");
         TownBuildings.DEFAULT_FARM_LEVEL = getInteger("Default_Farm_Level");
@@ -184,6 +192,24 @@ public class Settings extends SimpleSettings {
         pathPrefix("Rewards");
         Rewards.TOWN_RESOURCE_SHARE = getInteger("Town_Resource_Share");
         Rewards.TOWN_MOBS_SHARE = getInteger("Town_Mobs_Share");
+
+        pathPrefix("Professions.Mayor");
+        Professions.Mayor.SALARY = getDouble("Default_Salary");
+        Professions.Mayor.STATIONS_TAX_BONUS = getInteger("Stations_Tax_Bonus");
+        Professions.Mayor.AUCTION_TAX_BONUS = getInteger("Auction_Tax_Bonus");
+        Professions.Mayor.TASKS_TAX_BONUS = getInteger("Tasks_Tax_Bonus");
+
+        pathPrefix("Professions.Helper");
+        Professions.Helper.SALARY = getDouble("Default_Salary");
+        Professions.Helper.STATIONS_TAX_BONUS = getInteger("Stations_Tax_Bonus");
+        Professions.Helper.AUCTION_TAX_BONUS = getInteger("Auction_Tax_Bonus");
+        Professions.Helper.TASKS_TAX_BONUS = getInteger("Tasks_Tax_Bonus");
+
+        pathPrefix("Professions.Other");
+        Professions.Other.SALARY = getDouble("Default_Salary");
+        Professions.Other.STATIONS_TAX_BONUS = getInteger("Stations_Tax_Bonus");
+        Professions.Other.AUCTION_TAX_BONUS = getInteger("Auction_Tax_Bonus");
+        Professions.Other.TASKS_TAX_BONUS = getInteger("Tasks_Tax_Bonus");
 
         pathPrefix("Messages_Templates");
         Messages_Templates.TASK_INFO = getStringList("Task_Info");

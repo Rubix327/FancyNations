@@ -1,6 +1,7 @@
 package me.rubix327.fancynations.data.objectives;
 
 import lombok.Getter;
+import me.rubix327.fancynations.Settings;
 import me.rubix327.fancynations.data.tasks.TaskGroup;
 import me.rubix327.fancynations.data.tasks.TaskType;
 
@@ -10,7 +11,9 @@ import java.util.List;
 @Getter
 public class ObjectiveInfo {
 
+    @Getter
     private final static HashMap<TaskType, ObjectiveInfo> objectiveInfo = new HashMap<>();
+    private static boolean initiated = false;
 
     private final TaskGroup group;
     private final Integer share;
@@ -22,12 +25,25 @@ public class ObjectiveInfo {
         this.localeNode = localeNode;
     }
 
+    public static void init(){
+        if (initiated) return;
+        ObjectiveInfo.add(TaskType.Food, new ObjectiveInfo(
+                TaskGroup.Gathering, Settings.Rewards.TOWN_RESOURCE_SHARE, "task_type_food"));
+        ObjectiveInfo.add(TaskType.Resource, new ObjectiveInfo(
+                TaskGroup.Gathering, Settings.Rewards.TOWN_RESOURCE_SHARE, "task_type_resource"));
+        ObjectiveInfo.add(TaskType.Crafting, new ObjectiveInfo(
+                TaskGroup.Gathering, Settings.Rewards.TOWN_RESOURCE_SHARE, "task_type_crafting"));
+        ObjectiveInfo.add(TaskType.MobKill, new ObjectiveInfo(
+                TaskGroup.Mobs, Settings.Rewards.TOWN_MOBS_SHARE, "task_type_mob_kill"));
+        initiated = true;
+    }
+
     public static ObjectiveInfo get(String name){
-        return objectiveInfo.get(TaskType.valueOf(name));
+        return ObjectiveInfo.getObjectiveInfo().get(TaskType.valueOf(name));
     }
 
     public static void add(TaskType name, ObjectiveInfo objType){
-        objectiveInfo.put(name, objType);
+        ObjectiveInfo.getObjectiveInfo().put(name, objType);
     }
 
     /**
@@ -35,7 +51,7 @@ public class ObjectiveInfo {
      * @return names list
      */
     public static List<String> getStringList(){
-        return objectiveInfo.keySet().stream().map(Object::toString).toList();
+        return ObjectiveInfo.getObjectiveInfo().keySet().stream().map(Object::toString).toList();
     }
 
     /**
@@ -48,7 +64,11 @@ public class ObjectiveInfo {
 
     public static HashMap<TaskType, String> getLocales(){
         HashMap<TaskType, String> locales = new HashMap<>();
-        objectiveInfo.forEach((key, value) -> locales.put(key, value.getLocaleNode()));
+        ObjectiveInfo.getObjectiveInfo().forEach((key, value) -> locales.put(key, value.getLocaleNode()));
         return locales;
+    }
+
+    public static List<String> getObjectiveTypes(){
+        return ObjectiveInfo.getObjectiveInfo().keySet().stream().map(TaskType::toString).toList();
     }
 }

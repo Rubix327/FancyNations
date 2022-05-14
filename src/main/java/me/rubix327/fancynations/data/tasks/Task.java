@@ -72,6 +72,18 @@ public class Task extends AbstractDto {
     }
 
     /**
+     * Attempts to find a Task by its id, but if it does not exist
+     * sends a message to the command sender and throws CommandException.
+     * @param sender command sender
+     * @param messageKey key from messages_x.yml
+     * @return Task object
+     */
+    public static Task find(int taskId, CommandSender sender, String messageKey){
+        if (!manager.exists(taskId)) Localization.getInstance().locReturnTell(messageKey, sender);
+        return manager.get(taskId);
+    }
+
+    /**
      * Increase or decrease take amount of the task.
      */
     public static void increaseTakeAmount(int taskId, int amount){
@@ -100,7 +112,9 @@ public class Task extends AbstractDto {
                 .forEach(obj -> objTypes.put(obj.getType(), obj.getType()));
 
         if (objTypes.isEmpty()) return TaskType.No;
-        else if (objTypes.size() == 1) return TaskType.valueOf(objTypes.keySet().toArray()[0].toString());
+        else if (objTypes.size() == 1) {
+            return TaskType.valueOf(objTypes.entrySet().iterator().next().getKey());
+        }
         else return TaskType.Combined;
     }
 

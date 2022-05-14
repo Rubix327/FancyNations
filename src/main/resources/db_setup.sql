@@ -1,10 +1,16 @@
 CREATE DATABASE IF NOT EXISTS @db;
 USE @db;
 
-CREATE TABLE IF NOT EXISTS WorkerTypes (
+CREATE TABLE IF NOT EXISTS Professions (
     Id INT NOT NULL AUTO_INCREMENT,
     Name VARCHAR(50) NOT NULL,
-    DisplayName VARCHAR(50) NOT NULL,
+    Salary DECIMAL NOT NULL,
+    StationsTaxBonus DECIMAL NOT NULL,
+    AuctionTaxBonus DECIMAL NOT NULL,
+    TasksTaxBonus DECIMAL NOT NULL,
+    PermissionOpenBank BIT NOT NULL,
+    PermissionDeposit BIT NOT NULL,
+    PermissionWithdraw BIT NOT NULL,
     PRIMARY KEY (Id),
     UNIQUE(Name)
 );
@@ -69,13 +75,14 @@ CREATE TABLE IF NOT EXISTS TownWorkers (
     Id INT NOT NULL AUTO_INCREMENT,
     Player INT NOT NULL,
     Town INT NOT NULL,
-    WorkerType INT NOT NULL,
+    Profession INT NOT NULL,
     DisplayName VARCHAR(50) NOT NULL,
     Salary DECIMAL NOT NULL,
     PRIMARY KEY (Id),
     FOREIGN KEY (Player) REFERENCES Players (Id),
     FOREIGN KEY (Town) REFERENCES Towns (Id),
-    FOREIGN KEY (WorkerType) REFERENCES WorkerTypes (Id)
+    FOREIGN KEY (Profession) REFERENCES Professions (Id),
+    UNIQUE(Player)
 );
 
 CREATE TABLE IF NOT EXISTS TownResources (

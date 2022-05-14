@@ -3,12 +3,17 @@ package me.rubix327.fancynations.commands;
 import lombok.NonNull;
 import me.rubix327.fancynations.FancyNations;
 import me.rubix327.fancynations.Localization;
+import me.rubix327.fancynations.data.DataManager;
+import me.rubix327.fancynations.data.fnplayers.FNPlayer;
+import me.rubix327.fancynations.data.townworkers.TownWorker;
 import me.rubix327.fancynations.util.DependencyManager;
+import me.rubix327.fancynations.util.PlayerUtils;
 import me.rubix327.fancynations.util.Replacer;
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.mineacademy.fo.command.SimpleCommandGroup;
 import org.mineacademy.fo.command.SimpleSubCommand;
-import org.mineacademy.fo.exception.CommandException;
 
 public abstract class SubCommandInterlayer extends SimpleSubCommand {
 
@@ -37,12 +42,24 @@ public abstract class SubCommandInterlayer extends SimpleSubCommand {
         if (perm.equals("")) throw new IllegalArgumentException("Permission must not be a blank string.");
         final String finalPerm = (permLabel == null || permLabel.isBlank() ? perm : permLabel + "." + perm);
         if (isPlayer() && !sender.hasPermission(finalPerm.toLowerCase())){
-            locTell("error_no_permission");
+            locReturnTell("error_no_permission");
         }
     }
 
+    protected final void checkPermissionOrMayor(@NonNull String perm, int townId) {
+        if (perm.equals("")) throw new IllegalArgumentException("Permission must not be a blank string.");
+        final String finalPerm = (permLabel == null || permLabel.isBlank() ? perm : permLabel + "." + perm);
+        if (isPlayer()){
+            int playerId = FNPlayer.getFNPlayer(getPlayer().getName()).getId();
+            if (!getPlayer().hasPermission(finalPerm) && !TownWorker.isMayor(playerId, townId)){
+                locReturnTell("error_no_permission");
+            }
+        }
+
+    }
+
     protected Replacer replace(String target, Object replacement){
-        return new Replacer(target, String.valueOf(replacement));
+        return msgs.replace(target, replacement);
     }
 
     /**
@@ -50,7 +67,7 @@ public abstract class SubCommandInterlayer extends SimpleSubCommand {
      * @param key The key from messages_x.yml
      */
     protected final void locTell(String key){
-        tell(msgs.get(key, sender));
+        msgs.locTell(key, sender);
     }
 
     /**
@@ -60,11 +77,7 @@ public abstract class SubCommandInterlayer extends SimpleSubCommand {
      * @param r Replaces
      */
     protected final void locTell(String key, Replacer... r){
-        String msg = msgs.get(key, sender);
-        for (Replacer replacer : r) {
-            msg = msg.replace(replacer.target(), replacer.replacement());
-        }
-        tell(msg);
+        msgs.locTell(key, sender, r);
     }
 
     /**
@@ -73,8 +86,7 @@ public abstract class SubCommandInterlayer extends SimpleSubCommand {
      * @param key The key from messages_x.yml
      */
     protected final void locReturnTell(String key){
-        locTell(key);
-        throw new CommandException();
+        msgs.locReturnTell(key, sender);
     }
 
     /**
@@ -85,8 +97,7 @@ public abstract class SubCommandInterlayer extends SimpleSubCommand {
      * @param r Replaces
      */
     protected final void locReturnTell(String key, Replacer... r){
-        locTell(key, r);
-        throw new CommandException();
+        msgs.locReturnTell(key, sender, r);
     }
 
     /**
@@ -112,5 +123,21 @@ public abstract class SubCommandInterlayer extends SimpleSubCommand {
      */
     protected String getMsg(String key){
         return msgs.get(key, sender);
+    }
+
+    protected void tellOnlinePlayer(int playerId, String messageKey){
+        String playerName = DataManager.getFNPlayerManager().get(playerId).getName();
+        if (PlayerUtils.isOnline(playerName)){
+            Player player = Bukkit.getPlayerExact(playerName);
+            Localization.getInstance().locTell(messageKey, player);
+        }
+    }
+
+    protected void tellOnlinePlayer(int playerId, String messageKey, Replacer... r){
+        String playerName = DataManager.getFNPlayerManager().get(playerId).getName();
+        if (PlayerUtils.isOnline(playerName)){
+            Player player = Bukkit.getPlayerExact(playerName);
+            Localization.getInstance().locTell(messageKey, player);
+        }
     }
 }

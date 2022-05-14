@@ -2,6 +2,8 @@ package me.rubix327.fancynations.data.towns;
 
 import me.rubix327.fancynations.data.AbstractDao;
 import me.rubix327.fancynations.data.DataManager;
+import me.rubix327.fancynations.data.professions.PredefinedProfession;
+import me.rubix327.fancynations.data.professions.Profession;
 import me.rubix327.fancynations.data.townworkers.TownWorker;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -57,17 +59,21 @@ public class TownDao extends AbstractDao<Town> implements ITownManager {
         super.executeVoid(query);
     }
 
+    /**
+     * Shows list of towns that player (sender) can edit.
+     * For admins and console the list consists of all created towns.
+     * For mayor the list consists of only the town he controls.
+     */
     public List<String> getTownsFor(CommandSender sender) {
-        int playerId = DataManager.getFNPlayerManager().get(sender.getName()).getId();
+        TownWorker worker = DataManager.getTownWorkerManager().getByPlayer(sender.getName());
+        String profession = Profession.get(worker.getProfessionId()).getName();
         if (!(sender instanceof Player) || sender.hasPermission("fancynations.admin")){
             List<String> names = new ArrayList<>();
             DataManager.getTownManager().getAll().values().forEach(town -> names.add(town.getName()));
             return names;
         }
-        else if (DataManager.getTownWorkerManager().isMayor(playerId)){
-            TownWorker townWorker = DataManager.getTownWorkerManager().get(sender.getName());
-            String townName = DataManager.getTownManager().get(townWorker.getTownId()).getName();
-            return Collections.singletonList(townName);
+        else if (profession.equalsIgnoreCase(PredefinedProfession.Mayor.toString())){
+            return Collections.singletonList(Town.get(worker.getTownId()).getName());
         }
         return new ArrayList<>();
     }

@@ -34,7 +34,7 @@ public class TaskCommands extends SubCommandInterlayer {
         }
 
         // Create new task - fn task create <town_name> <taskName>
-        if (args[0].equalsIgnoreCase("create")){
+        if (isArg(0, "create")){
             checkPermission("create");
 
             int townId;
@@ -68,7 +68,7 @@ public class TaskCommands extends SubCommandInterlayer {
         }
 
         // Remove task - fn task remove <task_id>
-        else if (args[0].equalsIgnoreCase("remove")){
+        else if (isArg(0, "remove")){
             checkPermission("remove");
 
             // Wrong syntax
@@ -81,11 +81,11 @@ public class TaskCommands extends SubCommandInterlayer {
         }
 
         // Change any task value - fn task set <task_id> <variable> <value>
-        else if (args[0].equalsIgnoreCase("set")){
+        else if (isArg(0, "set")){
 
-            final List<String> taskFields = DataManager.getClassFields(Task.class);
-            final List<String> shouldBeIntegers = DataManager.getClassFieldsByType(Task.class, int.class);
-            final List<String> shouldBeDoubles = DataManager.getClassFieldsByType(Task.class, double.class);
+            final List<String> taskFields = Utils.toSnakeCase(DataManager.getClassFields(Task.class));
+            final List<String> shouldBeIntegers = Utils.toSnakeCase(DataManager.getClassFieldsByType(Task.class, int.class));
+            final List<String> shouldBeDoubles = Utils.toSnakeCase(DataManager.getClassFieldsByType(Task.class, double.class));
 
             // Wrong syntax
             checkArgs(4, getMsg("syntax_task_set"));
@@ -95,7 +95,7 @@ public class TaskCommands extends SubCommandInterlayer {
             final String value = args[3];
 
             // Variable does not exist
-            if (!taskFields.contains(args[2])){
+            if (!taskFields.contains(variable)){
                 locReturnTell("error_variable_not_exist");
             }
 
@@ -118,12 +118,25 @@ public class TaskCommands extends SubCommandInterlayer {
                 }
             }
 
-            DataManager.getTaskManager().update(taskId, variable, value);
+            Task task = DataManager.getTaskManager().get(taskId);
+            int difference = Settings.Tasks.MINIMUM_LEVELS_DIFFERENCE;
+            if (variable.equalsIgnoreCase("min_level")){
+                if (Math.abs(task.getMaxLevel() - Integer.parseInt(value)) <= difference){
+                    locReturnTell("error_task_levels_difference_too_low", replace("@difference", difference));
+                }
+            }
+            if (variable.equalsIgnoreCase("max_level")){
+                if (Math.abs(task.getMinLevel() - Integer.parseInt(value)) <= difference){
+                    locReturnTell("error_task_levels_difference_too_low", replace("@difference", difference));
+                }
+            }
+
+            DataManager.getTaskManager().update(taskId, Utils.toCamelCase(variable), value);
             locTell("success_task_updated", replace("@id", taskId));
         }
 
         // Get info about task - fn task info <task_id>
-        else if (args[0].equalsIgnoreCase("info")){
+        else if (isArg(0, "info")){
             checkPermission("info");
 
             // Wrong syntax
@@ -177,7 +190,7 @@ public class TaskCommands extends SubCommandInterlayer {
         }
 
         // Get all existing tasks - fn task list [page]
-        else if (args[0].equalsIgnoreCase("list")){
+        else if (isArg(0, "list")){
             checkPermission("list");
 
             int currentPage = 1;
@@ -236,7 +249,7 @@ public class TaskCommands extends SubCommandInterlayer {
         }
 
         // Start task - fn task start <task_id>
-        else if (args[0].equalsIgnoreCase("start")){
+        else if (isArg(0, "start")){
             checkPermission("start");
 
             // Wrong syntax
@@ -276,7 +289,7 @@ public class TaskCommands extends SubCommandInterlayer {
         }
 
         // Finish task - fn task finish <taken_task_id>
-        else if (args[0].equalsIgnoreCase("finish")){
+        else if (isArg(0, "finish")){
             checkPermission("finish");
 
             // Wrong syntax
@@ -337,7 +350,7 @@ public class TaskCommands extends SubCommandInterlayer {
         }
 
         // Cancel task - fn task cancel <task_id>
-        else if (args[0].equalsIgnoreCase("cancel")){
+        else if (isArg(0, "cancel")){
             checkPermission("cancel");
 
             // Wrong syntax
@@ -345,10 +358,7 @@ public class TaskCommands extends SubCommandInterlayer {
             int taskId = findNumber(2, getMsg("error_id_must_be_number"));
 
             // Task does not exist
-            if (!DataManager.getTaskManager().exists(taskId)){
-                locReturnTell("error_task_not_exist");
-            }
-            Task task = DataManager.getTaskManager().get(taskId);
+            Task task = Task.find(taskId, sender, "error_task_not_exist");
 
             // Remove connected task progresses
             if (!DataManager.getTakenTaskManager().exists(task.getCreatorId(), task.getId())){
@@ -428,7 +438,7 @@ public class TaskCommands extends SubCommandInterlayer {
         }
         // fn task set <taskId> _<var>_ <value>
         else if (args.length == 3 && args[0].equalsIgnoreCase("set")){
-            return DataManager.getClassFields(Task.class);
+            return Utils.toSnakeCase(DataManager.getClassFields(Task.class));
         }
         // fn task set <taskId> <var> _<value>_
         else if (args.length == 4 && args[0].equalsIgnoreCase("set")){

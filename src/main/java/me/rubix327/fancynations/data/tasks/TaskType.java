@@ -14,11 +14,13 @@ public enum TaskType {
     MobKill,
     Combined;
 
-    private static final HashMap<TaskType, String> locales = new HashMap<>() {{
-        put(No, "task_type_no_objectives");
-        put(Combined, "task_type_combined");
-        putAll(ObjectiveInfo.getLocales());
-    }};
+    private static final HashMap<TaskType, String> locales = new HashMap<>();
+
+    public static void init(){
+        locales.put(No, "task_type_no_objectives");
+        locales.put(Combined, "task_type_combined");
+        locales.putAll(ObjectiveInfo.getLocales());
+    }
 
     /**
      * Get the name of the type translated to the language of this sender.

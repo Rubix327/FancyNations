@@ -8,9 +8,8 @@ import me.rubix327.fancynations.data.DataManager;
 import me.rubix327.fancynations.data.DatabaseManager;
 import me.rubix327.fancynations.data.fnplayers.FNPlayer;
 import me.rubix327.fancynations.data.objectives.ObjectiveInfo;
-import me.rubix327.fancynations.data.tasks.TaskGroup;
+import me.rubix327.fancynations.data.professions.Profession;
 import me.rubix327.fancynations.data.tasks.TaskType;
-import me.rubix327.fancynations.data.workertypes.WorkerType;
 import me.rubix327.fancynations.events.PlayerListener;
 import me.rubix327.fancynations.util.DependencyManager;
 import me.rubix327.fancynations.util.Logger;
@@ -112,19 +111,10 @@ public final class FancyNations extends SimplePlugin {
     }
 
     private void addDefaultEntries(){
-        DataManager.getFNPlayerManager().addIgnore(new FNPlayer(1, Settings.General.SERVER_VAR));
-        ObjectiveInfo.add(TaskType.Food, new ObjectiveInfo(
-                TaskGroup.Gathering, Settings.Rewards.TOWN_RESOURCE_SHARE, "task_type_food"));
-        ObjectiveInfo.add(TaskType.Resource, new ObjectiveInfo(
-                TaskGroup.Gathering, Settings.Rewards.TOWN_RESOURCE_SHARE, "task_type_resource"));
-        ObjectiveInfo.add(TaskType.Crafting, new ObjectiveInfo(
-                TaskGroup.Gathering, Settings.Rewards.TOWN_RESOURCE_SHARE, "task_type_crafting"));
-        ObjectiveInfo.add(TaskType.MobKill, new ObjectiveInfo(
-                TaskGroup.Mobs, Settings.Rewards.TOWN_MOBS_SHARE, "task_type_mob_kill"));
-        DataManager.getWorkerTypeManager().addIgnore(new WorkerType(1, "Mayor"));
-        DataManager.getWorkerTypeManager().addIgnore(new WorkerType(2, "Helper"));
-        DataManager.getWorkerTypeManager().addIgnore(new WorkerType(3, "Judge"));
-        DataManager.getWorkerTypeManager().addIgnore(new WorkerType(4, "Other"));
+        FNPlayer.init();
+        ObjectiveInfo.init();
+        TaskType.init();
+        Profession.init();
     }
 
     @Override

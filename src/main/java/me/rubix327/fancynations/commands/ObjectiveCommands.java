@@ -1,6 +1,7 @@
 package me.rubix327.fancynations.commands;
 
 import me.rubix327.fancynations.data.objectives.Objective;
+import me.rubix327.fancynations.data.objectives.ObjectiveInfo;
 import me.rubix327.fancynations.data.tasks.Task;
 import me.rubix327.fancynations.util.ItemUtils;
 import org.mineacademy.fo.command.SimpleCommandGroup;
@@ -20,13 +21,14 @@ public class ObjectiveCommands extends SubCommandInterlayer{
 
         // Create new objective - /fn objective create <type> <target> <amount>
         if (isArg(0, "create")){
+            checkPermission("create");
             checkArgs(4, getMsg("syntax_objective_create"));
 
             String type = args[1];
             String target = args[2];
             int amount = findNumber(3, getMsg("error_amount_should_be_number"));
 
-            if (!isArg(1, "food|resource|crafting|mobkill")){
+            if (!ObjectiveInfo.getObjectiveTypes().contains(args[1])){
                 locReturnTell("error_objective_type_not_exist");
             }
 

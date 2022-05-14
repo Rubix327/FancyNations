@@ -26,6 +26,9 @@ import me.rubix327.fancynations.data.nations.NationProcess;
 import me.rubix327.fancynations.data.objectives.IObjectivesManager;
 import me.rubix327.fancynations.data.objectives.ObjectivesDao;
 import me.rubix327.fancynations.data.objectives.ObjectivesProcess;
+import me.rubix327.fancynations.data.professions.IProfessionManager;
+import me.rubix327.fancynations.data.professions.ProfessionDao;
+import me.rubix327.fancynations.data.professions.ProfessionProcess;
 import me.rubix327.fancynations.data.reputations.IReputationManager;
 import me.rubix327.fancynations.data.reputations.ReputationDao;
 import me.rubix327.fancynations.data.reputations.ReputationProcess;
@@ -52,16 +55,14 @@ import me.rubix327.fancynations.data.towns.TownProcess;
 import me.rubix327.fancynations.data.townworkers.ITownWorkerManager;
 import me.rubix327.fancynations.data.townworkers.TownWorkerDao;
 import me.rubix327.fancynations.data.townworkers.TownWorkerProcess;
-import me.rubix327.fancynations.data.workertypes.IWorkerTypeManager;
-import me.rubix327.fancynations.data.workertypes.WorkerTypeDao;
-import me.rubix327.fancynations.data.workertypes.WorkerTypeProcess;
 import me.rubix327.fancynations.data.workshops.IWorkshopManager;
 import me.rubix327.fancynations.data.workshops.WorkshopDao;
 import me.rubix327.fancynations.data.workshops.WorkshopProcess;
+import me.rubix327.fancynations.util.PlayerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.mineacademy.fo.Common;
 
@@ -151,8 +152,8 @@ public class DataManager {
         return (isDatabaseChosenAndConnected() ? TownWorkerDao.getInstance(Settings.DbTables.TOWN_WORKERS) : TownWorkerProcess.getInstance());
     }
 
-    public static IWorkerTypeManager getWorkerTypeManager(){
-        return (isDatabaseChosenAndConnected() ? WorkerTypeDao.getInstance(Settings.DbTables.WORKER_TYPES) : WorkerTypeProcess.getInstance());
+    public static IProfessionManager getProfessionManager(){
+        return (isDatabaseChosenAndConnected() ? ProfessionDao.getInstance(Settings.DbTables.PROFESSIONS) : ProfessionProcess.getInstance());
     }
 
     public static IWorkshopManager getWorkshopManager(){
@@ -194,7 +195,7 @@ public class DataManager {
         List<String> classFields = new ArrayList<>();
         getNonStaticNonFinalFields(from)
                 .filter(field -> field.getType() == requiredType)
-                .forEach(field -> classFields.add(field.getName().toLowerCase()));
+                .forEach(field -> classFields.add(field.getName()));
         return classFields;
     }
 
@@ -250,9 +251,9 @@ public class DataManager {
 
                         // Tell a player that this task is removed from his task list.
                         String playerName = DataManager.getFNPlayerManager().get(takenTask.getPlayerId()).getName();
-                        CommandSender sender = Bukkit.getPlayerExact(playerName);
-                        if (sender != null){
-                            Common.tell(sender, msgs.get("info_task_time_to_complete_expired", sender)
+                        Player player = Bukkit.getPlayerExact(playerName);
+                        if (PlayerUtils.isOnline(playerName)){
+                            Common.tell(player, msgs.get("info_task_time_to_complete_expired", player)
                                     .replace("@id", String.valueOf(takenTask.getTaskId())));
                         }
                     }

@@ -1,5 +1,5 @@
 # Syntax
-syntax_task: '@info_prefix Syntax: /fn task <create/remove/set/info/list/start/finish/cancel>'
+syntax_task: '@info_prefix Syntax: /fn task <create|remove|set|info|list|start|finish|cancel>'
 syntax_task_create: '@info_prefix Syntax: /fn task create <town_name> <name>'
 syntax_task_remove: '@info_prefix Syntax: /fn task remove <task_id>'
 syntax_task_set: '@info_prefix Syntax: /fn task set <task_id> <variable> <value>'
@@ -10,7 +10,16 @@ syntax_task_cancel: '@info_prefix Syntax: /fn task cancel <task_id>'
 syntax_task_add_objective: '@info_prefix Syntax: /fn task addObjective <task_id> <objective_id>'
 syntax_task_remove_objective: '@info_prefix Syntax: /fn task removeObjective <task_id> <objective_id>'
 
-syntax_mayor_assign: '@info_prefix Syntax: /fn mayor assign <town_name> <player_name>'
+syntax_town: '@info_prefix Syntax: /fn town <create|remove|set|mayor|worker|building|resource|info>'
+syntax_town_create: '@info_prefix Syntax: /fn town create <name>'
+syntax_town_remove: '@info_prefix Syntax: /fn town remove <name>'
+syntax_town_set: '@info_prefix Syntax: /fn town set <town_name> <variable> <value>'
+syntax_town_worker: '@info_prefix Syntax: /fn town worker <town_name> <hire|fire|pos>'
+syntax_town_worker_hire: '@info_prefix Syntax: /fn town worker <town_name> <hire|pos> <player_name> <profession>'
+syntax_town_worker_fire: '@info_prefix Syntax: /fn town worker <town_name> fire <player_name>'
+syntax_town_building: '@info_prefix Syntax: /fn town building <town_name> <create|remove> <building_type>'
+syntax_town_resource: '@info_prefix Syntax: /fn town resource <add|subtract|remove|set|list>'
+syntax_town_info: '@info_prefix Syntax: /fn town info <@town_id|town_name>'
 
 syntax_objective: '@info_prefix Syntax: /fn obj <create|remove|set>'
 syntax_objective_create: '@info_prefix Syntax: /fn obj create <type> <target> <amount>'
@@ -25,6 +34,7 @@ error_value_must_be_integer: '@error_prefix Value must be a whole number (intege
 error_variable_not_exist: '@error_prefix This variable does not exist or cannot be changed.'
 error_page_should_be_number: '@error_prefix Page should be whole number.'
 error_amount_should_be_number: '@error_prefix Amount should be whole number.'
+error_has_special_chars: '@error_prefix Name must not contain special characters.'
 
 error_task_not_exist: '@error_prefix This task does not exist. @nl @error_prefix Type /fn task list to see all tasks.'
 error_task_not_available: '@error_prefix This task is not available anymore.'
@@ -36,16 +46,24 @@ error_task_not_taken: '@error_prefix You do not have this task.'
 error_task_no_tasks: '@error_prefix There are no created tasks yet.'
 error_task_name_too_long: '@error_prefix Task name length must be less than @max_length symbols.'
 error_task_not_contain_this_objective: '@error_prefix This task does not contain this objective.'
+error_task_levels_difference_too_low: '@error_prefix Maximum task level should be at least @difference levels higher than minimum level.'
 
 error_taken_task_not_exist: '@error_prefix Taken task with this ID does not exist.'
 
 error_town_not_exist: '@error_prefix This town does not exist.'
+error_town_already_exist: '@error_prefix Town with this name already exist.'
+error_town_name_too_long: '@error_prefix Town name length must be less than @max_length symbols.'
 
 error_player_not_exist: '@error_prefix This player never has been on the server.'
+error_player_not_worker: '@error_prefix This player is not a worker of this town.'
+error_player_already_works: '@error_prefix This player already works in this town. @nl @error_prefix To change his profession, type /fn town worker pos <player_name> <new_profession>'
+
 error_objective_type_not_exist: '@error_prefix This objective type does not exist. @nl @error_prefix Available types: '
 error_objective_item_in_hand: '@error_prefix You must hold an item in your main hand to create an objective with @hand.'
 error_objective_not_exist: '@error_prefix This objective does not exist.'
 error_objective_already_has_task: '@error_prefix This objective already has a task connected.'
+
+error_profession_not_exist: '@error_prefix This profession does not exist.'
 
 # Success
 success_task_created: '@success_prefix You have successfully created task called &2"@name".'
@@ -55,8 +73,16 @@ success_task_started: '@success_prefix Task #@id has been successfully started.'
 success_task_finished: '@success_prefix You have successfully finished task #@id. @nl @success_prefix Your rewards: &e@money$, @exp XP and @rep reputation points in @town town!'
 success_task_cancelled: '@success_prefix Task #@id has been successfully cancelled.'
 
+success_town_created: '@success_prefix Town @name has been successfully created.'
+success_town_removed: '@success_prefix Town @name has been successfully removed.'
+success_town_worker_hired: '@success_prefix You have successfully assigned @player to the @profession profession in town @town.'
+success_town_worker_fired: '@success_prefix You have successfully dismissed @player from the @profession profession in town @town.'
+
 #Info
 info_task_time_to_complete_expired: '@info_prefix Your task #@id has expired and been removed from your task list.'
+info_you_hired: '@info_prefix You have been hired on the @profession profession in town @town!'
+info_you_fired: '@info_prefix You have been fired from the @profession profession in town @town!'
+info_your_profession_changed: '@info_prefix Your profession in town @town has been changed to @profession!'
 
 # Other
 # Server label is how a task creator name will look like if the task was created by the server (or an admin)
@@ -68,6 +94,8 @@ task_type_food: 'Food'
 task_type_resource: 'Resource'
 task_type_crafting: 'Crafting'
 task_type_mob_kill: 'Mob kill'
+profession_mayor: 'Mayor'
+profession_helper: 'Helper'
 
 # Messages templates for such commands as /fn task info and /fn task list
 template_task_info_label: '&7Info about task &e#@id'

@@ -1,13 +1,10 @@
 package me.rubix327.fancynations.data.townworkers;
 
-import me.rubix327.fancynations.FancyNations;
-import me.rubix327.fancynations.Settings;
 import me.rubix327.fancynations.data.AbstractDao;
 import me.rubix327.fancynations.data.DataManager;
-import me.rubix327.fancynations.data.workertypes.WorkerType;
-import me.rubix327.fancynations.util.Logger;
+import me.rubix327.fancynations.data.professions.PredefinedProfession;
+import me.rubix327.fancynations.data.professions.Profession;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -32,12 +29,12 @@ public class TownWorkerDao extends AbstractDao<TownWorker> implements ITownWorke
         int id = resultSet.getInt("Id");
         int playerId = resultSet.getInt("Player");
         int townId = resultSet.getInt("Town");
-        int workerTypeId = resultSet.getInt("WorkerType");
+        int profession = resultSet.getInt("Profession");
         String displayName = resultSet.getString("DisplayName");
         int salary = resultSet.getInt("Salary");
 
         return new TownWorker(
-                id, playerId, townId, workerTypeId, displayName, salary);
+                id, townId, playerId, profession, displayName, salary);
     }
 
     @Override
@@ -48,7 +45,7 @@ public class TownWorkerDao extends AbstractDao<TownWorker> implements ITownWorke
                 .replace("@Table", table)
                 .replace("@PlayerID", String.valueOf(worker.getPlayerId()))
                 .replace("@TownID", String.valueOf(worker.getTownId()))
-                .replace("@WorkerTypeID", String.valueOf(worker.getWorkerTypeId()))
+                .replace("@Profession", String.valueOf(worker.getProfessionId()))
                 .replace("@DisplayName", String.valueOf(worker.getDisplayName()))
                 .replace("@Salary", String.valueOf(worker.getSalary()));
 
@@ -63,36 +60,36 @@ public class TownWorkerDao extends AbstractDao<TownWorker> implements ITownWorke
         throw new NullPointerException("Town worker with this player name does not exist.");
     }
 
-    public boolean isMayor(int playerId) {
-        if (!isWorker(playerId)) return false;
-        return getWorkerType(playerId).getName().equalsIgnoreCase("Mayor");
+    public Profession getProfession(int playerId){
+        String playerName = DataManager.getFNPlayerManager().get(playerId).getName();
+        TownWorker worker = DataManager.getTownWorkerManager().getByPlayer(playerName);
+        return DataManager.getProfessionManager().get(worker.getProfessionId());
     }
 
-    public boolean isWorker(int playerId) {
+    public boolean isMayor(int playerId){
+        if (!isWorker(playerId)) return false;
+        return getProfession(playerId).getName().equalsIgnoreCase(PredefinedProfession.Mayor.toString());
+    }
+
+    public boolean isWorker(int playerId){
         String query = getQuery("town_workers_is_worker");
         query = query
                 .replace("@Table", table)
                 .replace("@PlayerID", String.valueOf(playerId));
-        return super.executeBool(query);
+        return executeBool(query);
     }
 
-    public WorkerType getWorkerType(int playerId) throws IllegalArgumentException {
-        try{
-            String query = getQuery("town_workers_get_type");
-            query = query
-                    .replace("@Table", table)
-                    .replace("@WorkerTypesTable", Settings.DbTables.WORKER_TYPES)
-                    .replace("@PlayerID", String.valueOf(playerId));
-            PreparedStatement ps = FancyNations.getInstance().getDatabase().getConnection().
-                    prepareStatement(query);
-            Logger.logSqlQuery(query);
-            ResultSet resultSet = ps.executeQuery();
-            if (resultSet.next()){
-                DataManager.getWorkerTypeManager().get(resultSet.getInt("Id"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        throw new NullPointerException("Object with this id does not exist. Use Dao.exists() before this method.");
+    public boolean isMayor(int playerId, int townId) {
+        if (!isWorker(playerId, townId)) return false;
+        return getProfession(playerId).getName().equalsIgnoreCase(PredefinedProfession.Mayor.toString());
+    }
+
+    public boolean isWorker(int playerId, int townId) {
+        String query = getQuery("town_workers_is_worker_in_town");
+        query = query
+                .replace("@Table", table)
+                .replace("@PlayerID", String.valueOf(playerId))
+                .replace("@TownID", String.valueOf(townId));
+        return executeBool(query);
     }
 }

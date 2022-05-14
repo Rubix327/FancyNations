@@ -23,7 +23,7 @@ public class Logger {
     }
 
     public static void logSqlQuery(String query){
-        if (Settings.General.SQL_DEBUG) info(Settings.LOG_PREFIX + "SQL Debug: " + query);
+        if (Settings.General.SQL_DEBUG) info("SQL Debug: " + query);
     }
 
     /**

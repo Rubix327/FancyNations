@@ -3,7 +3,8 @@ package me.rubix327.fancynations.data.townworkers;
 import me.rubix327.fancynations.data.AbstractProcess;
 import me.rubix327.fancynations.data.DataManager;
 import me.rubix327.fancynations.data.fnplayers.FNPlayer;
-import me.rubix327.fancynations.data.workertypes.WorkerType;
+import me.rubix327.fancynations.data.professions.PredefinedProfession;
+import me.rubix327.fancynations.data.professions.Profession;
 
 public class TownWorkerProcess extends AbstractProcess<TownWorker> implements ITownWorkerManager {
 
@@ -20,7 +21,7 @@ public class TownWorkerProcess extends AbstractProcess<TownWorker> implements IT
         return instance;
     }
 
-    public TownWorker get(String playerName) throws IllegalArgumentException{
+    public TownWorker getByPlayer(String playerName) throws IllegalArgumentException{
         for (TownWorker worker : getAll().values()){
             FNPlayer fnPlayer = DataManager.getFNPlayerManager().get(worker.getPlayerId());
             if (fnPlayer.getName().equalsIgnoreCase(playerName)) return worker;
@@ -30,7 +31,7 @@ public class TownWorkerProcess extends AbstractProcess<TownWorker> implements IT
 
     public boolean isMayor(int playerId) {
         if (!isWorker(playerId)) return false;
-        return getWorkerType(playerId).getName().equalsIgnoreCase("Mayor");
+        return getProfession(playerId).getName().equalsIgnoreCase(PredefinedProfession.Mayor.toString());
     }
 
     public boolean isWorker(int playerId){
@@ -41,8 +42,23 @@ public class TownWorkerProcess extends AbstractProcess<TownWorker> implements IT
         return false;
     }
 
-    public WorkerType getWorkerType(int playerId) throws IllegalArgumentException{
-        return ((TownWorkerDao)DataManager.getTownWorkerManager()).getWorkerType(playerId);
+    public boolean isMayor(int playerId, int townId){
+        if (!isWorker(playerId, townId)) return false;
+        return getProfession(playerId).getName().equalsIgnoreCase(PredefinedProfession.Mayor.toString());
+    }
+
+    public boolean isWorker(int playerId, int townId){
+        for (TownWorker worker : getAll().values()){
+            FNPlayer fnPlayer = DataManager.getFNPlayerManager().get(worker.getPlayerId());
+            if (fnPlayer.getId() == playerId && worker.getTownId() == townId) return true;
+        }
+        return false;
+    }
+
+    public Profession getProfession(int playerId) throws IllegalArgumentException{
+        String playerName = DataManager.getFNPlayerManager().get(playerId).getName();
+        TownWorker worker = getByPlayer(playerName);
+        return Profession.get(worker.getProfessionId());
     }
 
 }

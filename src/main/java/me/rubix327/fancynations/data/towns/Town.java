@@ -4,14 +4,18 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import me.rubix327.fancynations.Localization;
 import me.rubix327.fancynations.data.DataManager;
 import me.rubix327.fancynations.data.AbstractDto;
 import me.rubix327.fancynations.Settings;
 import me.rubix327.fancynations.data.IUniqueNamable;
+import org.bukkit.command.CommandSender;
 
 @Getter @Setter(AccessLevel.PACKAGE)
 @AllArgsConstructor
 public class Town extends AbstractDto implements IUniqueNamable {
+
+    private static ITownManager manager = DataManager.getTownManager();
 
     private final int id;
     private int nationId;
@@ -29,6 +33,40 @@ public class Town extends AbstractDto implements IUniqueNamable {
         this.stationsTax = Settings.Towns.DEFAULT_STATIONS_TAX;
         this.auctionTax = Settings.Towns.DEFAULT_AUCTION_TAX;
         this.tasksTax = Settings.Towns.DEFAULT_TASKS_TAX;
+    }
+
+    public static void add(int nationId, String name){
+        manager.add(new Town(nationId, name));
+    }
+
+    public static void remove(int townId){
+        manager.remove(townId);
+    }
+
+    public static boolean exists(int townId){
+        return manager.exists(townId);
+    }
+
+    public static boolean exists(String name){
+        return manager.exists(name);
+    }
+
+    public static Town get(int id){
+        return manager.get(id);
+    }
+
+    public static Town get(String name){
+        return manager.get(name);
+    }
+
+    public static Town find(int townId, CommandSender sender, String messageKey){
+        if (!manager.exists(townId)) Localization.getInstance().locReturnTell(messageKey, sender);
+        return manager.get(townId);
+    }
+
+    public static Town find(String townName, CommandSender sender, String messageKey){
+        if (!manager.exists(townName)) Localization.getInstance().locReturnTell(messageKey, sender);
+        return manager.get(townName);
     }
 
 }
