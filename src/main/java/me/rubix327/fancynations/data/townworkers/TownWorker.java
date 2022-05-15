@@ -4,10 +4,13 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import me.rubix327.fancynations.Localization;
 import me.rubix327.fancynations.data.AbstractDto;
 import me.rubix327.fancynations.data.DataManager;
 import me.rubix327.fancynations.data.fnplayers.FNPlayer;
 import me.rubix327.fancynations.data.professions.Profession;
+import me.rubix327.fancynations.data.towns.Town;
+import org.bukkit.command.CommandSender;
 
 @Getter @Setter(AccessLevel.PACKAGE)
 @AllArgsConstructor
@@ -35,16 +38,12 @@ public class TownWorker extends AbstractDto {
     }
 
     public static void remove(int playerId){
-        String playerName = DataManager.getFNPlayerManager().get(playerId).getName();
-        manager.remove(manager.getByPlayer(playerName).getId());
+        manager.remove(manager.getByPlayer(playerId).getId());
     }
 
     public static void setProfession(int playerId, int newProfessionId){
-        manager.update(manager.getByPlayer(FNPlayer.getName(playerId)).getId(), "professionId", newProfessionId);
-    }
-
-    public static Profession getProfession(int playerId){
-        return manager.getProfession(playerId);
+        int townWorkerId = manager.getByPlayer(playerId).getId();
+        manager.update(townWorkerId, "professionId", newProfessionId);
     }
 
     /**
@@ -70,6 +69,23 @@ public class TownWorker extends AbstractDto {
      */
     public static boolean isWorker(int playerId, int townId){
         return manager.isWorker(playerId, townId);
+    }
+
+    public static TownWorker findWorker(int playerId, int townId, CommandSender sender, String messageKey){
+        if (!isWorker(playerId, townId)) Localization.getInstance().locReturnTell(messageKey, sender);
+        return manager.getByPlayer(playerId);
+    }
+
+    public Town getTown(){
+        return DataManager.getTownManager().get(townId);
+    }
+
+    public FNPlayer getFNPlayer(){
+        return DataManager.getFNPlayerManager().get(playerId);
+    }
+
+    public Profession getProfession(){
+        return DataManager.getProfessionManager().get(professionId);
     }
 
 }

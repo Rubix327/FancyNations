@@ -171,7 +171,7 @@ public class TaskCommands extends SubCommandInterlayer {
                     .replace("@id", String.valueOf(taskId))
                     .replace("@name", String.valueOf(task.getName()))
                     .replace("@type", task.getLocalizedTypeName(sender))
-                    .replace("@town", task.getTownName())
+                    .replace("@town", task.getTown().getName())
                     .replace("@created_by", task.getLocalizedCreatorName(sender))
                     .replace("@comp_left", String.valueOf(task.getTakeAmount()))
                     .replace("@money_reward", String.valueOf(task.getMoneyReward()))
@@ -221,7 +221,7 @@ public class TaskCommands extends SubCommandInterlayer {
                 String elementTemplate = getMsg("template_task_list_element");
 
                 final String type = task.getLocalizedTypeName(sender);
-                final String town = task.getTownName();
+                final String town = task.getTown().getName();
                 final String creator = task.getLocalizedCreatorName(sender);
 
                 String element = elementTemplate
@@ -317,7 +317,7 @@ public class TaskCommands extends SubCommandInterlayer {
             }
 
             // Player does not own this task
-            FNPlayer fnPlayer = FNPlayer.getFNPlayer(getPlayer().getName());
+            FNPlayer fnPlayer = FNPlayer.get(getPlayer().getName());
             if (!DataManager.getTakenTaskManager().exists(fnPlayer.getId(), task.getId())){
                 locReturnTell("error_task_not_taken");
             }
@@ -383,11 +383,11 @@ public class TaskCommands extends SubCommandInterlayer {
             if (!Task.exists(taskId)) locReturnTell("error_task_not_exist");
             if (!Objective.exists(objectiveId)) locReturnTell("error_objective_not_exist");
 
-            if (DataManager.getObjectivesManager().get(objectiveId).getTask() == Settings.General.NULL){
+            if (DataManager.getObjectivesManager().get(objectiveId).getTaskId() == Settings.General.NULL){
                 locReturnTell("error_objective_already_has_task");
             }
 
-            Objective.setTask(objectiveId, taskId);
+            Objective.setTaskId(objectiveId, taskId);
         }
 
         // /fn task removeObjective <task_id> <objective_id>
@@ -405,7 +405,7 @@ public class TaskCommands extends SubCommandInterlayer {
                 locReturnTell("error_task_not_contain_this_objective");
             }
 
-            Objective.setTask(objectiveId, Settings.General.NULL);
+            Objective.setTaskId(objectiveId, Settings.General.NULL);
         }
 
         else{

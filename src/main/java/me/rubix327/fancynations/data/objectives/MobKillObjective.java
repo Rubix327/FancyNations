@@ -18,7 +18,7 @@ public class MobKillObjective extends Objective{
         if (player == null) throw new IllegalArgumentException("This player is not online");
 
         int playerId = DataManager.getFNPlayerManager().get(player.getName()).getId();
-        TakenTask takenTask = DataManager.getTakenTaskManager().get(playerId, getTask());
+        TakenTask takenTask = DataManager.getTakenTaskManager().get(playerId, getTaskId());
         TaskProgress progress = DataManager.getTaskProgressManager().get(getId(), takenTask.getId());
 
         return progress.getProgress() >= getAmount();

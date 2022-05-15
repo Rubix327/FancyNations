@@ -4,9 +4,10 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import me.rubix327.fancynations.data.DataManager;
-import me.rubix327.fancynations.data.AbstractDto;
 import me.rubix327.fancynations.Settings;
+import me.rubix327.fancynations.data.AbstractDto;
+import me.rubix327.fancynations.data.DataManager;
+import me.rubix327.fancynations.data.towns.Town;
 import org.bukkit.Location;
 
 @Getter @Setter(AccessLevel.PACKAGE)
@@ -27,4 +28,7 @@ public class Workshop extends AbstractDto {
         this.level = Settings.TownBuildings.DEFAULT_WORKSHOP_LEVEL;
     }
 
+    public Town getTown(){
+        return DataManager.getTownManager().get(townId);
+    }
 }

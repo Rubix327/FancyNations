@@ -67,7 +67,7 @@ public class ObjectiveCommands extends SubCommandInterlayer{
             if (!Task.exists(taskId)) locReturnTell("error_task_not_exist");
             if (!Objective.exists(objectiveId)) locReturnTell("error_objective_not_exist");
 
-            Objective.setTask(objectiveId, taskId);
+            Objective.setTaskId(objectiveId, taskId);
         }
 
     }

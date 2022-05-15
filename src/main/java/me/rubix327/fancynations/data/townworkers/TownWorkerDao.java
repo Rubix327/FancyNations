@@ -2,8 +2,8 @@ package me.rubix327.fancynations.data.townworkers;
 
 import me.rubix327.fancynations.data.AbstractDao;
 import me.rubix327.fancynations.data.DataManager;
+import me.rubix327.fancynations.data.fnplayers.FNPlayer;
 import me.rubix327.fancynations.data.professions.PredefinedProfession;
-import me.rubix327.fancynations.data.professions.Profession;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -52,6 +52,13 @@ public class TownWorkerDao extends AbstractDao<TownWorker> implements ITownWorke
         super.executeVoid(query);
     }
 
+    public TownWorker getByPlayer(int playerId) throws NullPointerException {
+        for (TownWorker worker : getAll().values()){
+            if (worker.getPlayerId() == playerId) return worker;
+        }
+        throw new NullPointerException("Town worker with this player name does not exist.");
+    }
+
     public TownWorker getByPlayer(String playerName) throws NullPointerException {
         int playerId = DataManager.getFNPlayerManager().get(playerName).getId();
         for (TownWorker worker : getAll().values()){
@@ -60,15 +67,9 @@ public class TownWorkerDao extends AbstractDao<TownWorker> implements ITownWorke
         throw new NullPointerException("Town worker with this player name does not exist.");
     }
 
-    public Profession getProfession(int playerId){
-        String playerName = DataManager.getFNPlayerManager().get(playerId).getName();
-        TownWorker worker = DataManager.getTownWorkerManager().getByPlayer(playerName);
-        return DataManager.getProfessionManager().get(worker.getProfessionId());
-    }
-
     public boolean isMayor(int playerId){
         if (!isWorker(playerId)) return false;
-        return getProfession(playerId).getName().equalsIgnoreCase(PredefinedProfession.Mayor.toString());
+        return FNPlayer.get(playerId).getProfession().getName().equalsIgnoreCase(PredefinedProfession.Mayor.toString());
     }
 
     public boolean isWorker(int playerId){
@@ -81,7 +82,7 @@ public class TownWorkerDao extends AbstractDao<TownWorker> implements ITownWorke
 
     public boolean isMayor(int playerId, int townId) {
         if (!isWorker(playerId, townId)) return false;
-        return getProfession(playerId).getName().equalsIgnoreCase(PredefinedProfession.Mayor.toString());
+        return FNPlayer.get(playerId).getProfession().getName().equalsIgnoreCase(PredefinedProfession.Mayor.toString());
     }
 
     public boolean isWorker(int playerId, int townId) {

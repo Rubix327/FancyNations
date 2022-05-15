@@ -7,6 +7,7 @@ import lombok.Setter;
 import me.rubix327.fancynations.data.DataManager;
 import me.rubix327.fancynations.data.AbstractDto;
 import me.rubix327.fancynations.Settings;
+import me.rubix327.fancynations.data.towns.Town;
 import org.bukkit.Location;
 
 @Getter @Setter(AccessLevel.PACKAGE)
@@ -27,5 +28,9 @@ public class Farm extends AbstractDto {
         this.name = name;
         this.location = location;
         this.level = Settings.TownBuildings.DEFAULT_FARM_LEVEL;
+    }
+
+    public Town getTown(){
+        return DataManager.getTownManager().get(townId);
     }
 }

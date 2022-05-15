@@ -50,7 +50,7 @@ public abstract class SubCommandInterlayer extends SimpleSubCommand {
         if (perm.equals("")) throw new IllegalArgumentException("Permission must not be a blank string.");
         final String finalPerm = (permLabel == null || permLabel.isBlank() ? perm : permLabel + "." + perm);
         if (isPlayer()){
-            int playerId = FNPlayer.getFNPlayer(getPlayer().getName()).getId();
+            int playerId = FNPlayer.get(getPlayer().getName()).getId();
             if (!getPlayer().hasPermission(finalPerm) && !TownWorker.isMayor(playerId, townId)){
                 locReturnTell("error_no_permission");
             }
@@ -137,7 +137,7 @@ public abstract class SubCommandInterlayer extends SimpleSubCommand {
         String playerName = DataManager.getFNPlayerManager().get(playerId).getName();
         if (PlayerUtils.isOnline(playerName)){
             Player player = Bukkit.getPlayerExact(playerName);
-            Localization.getInstance().locTell(messageKey, player);
+            Localization.getInstance().locTell(messageKey, player, r);
         }
     }
 }

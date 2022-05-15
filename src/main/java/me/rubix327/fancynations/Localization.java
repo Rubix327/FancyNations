@@ -233,10 +233,7 @@ public class Localization {
      */
     public final void locTell(String key, CommandSender sender, Replacer... r){
         String msg = get(key, sender);
-        for (Replacer replacer : r) {
-            msg = msg.replace(replacer.target(), replacer.replacement());
-        }
-        Common.tell(sender, msg);
+        Common.tell(sender, Replacer.replaceAll(msg, r));
     }
 
     /**

@@ -7,6 +7,7 @@ import lombok.Setter;
 import me.rubix327.fancynations.Settings;
 import me.rubix327.fancynations.data.AbstractDto;
 import me.rubix327.fancynations.data.DataManager;
+import me.rubix327.fancynations.data.tasks.Task;
 import me.rubix327.fancynations.data.tasks.TaskGroup;
 import org.bukkit.entity.Player;
 
@@ -20,14 +21,14 @@ public abstract class Objective extends AbstractDto {
     private final String type;
     private final String target;
     private final int amount;
-    private int task;
+    private int taskId;
 
     public Objective(String type, String target, int amount) {
         this.id = DataManager.getObjectivesManager().getMaxId() + 1;
         this.type = type;
         this.target = target;
         this.amount = amount;
-        this.task = Settings.General.NULL;
+        this.taskId = Settings.General.NULL;
     }
 
     public static boolean exists(int objectiveId){
@@ -49,9 +50,13 @@ public abstract class Objective extends AbstractDto {
         manager.remove(id);
     }
 
-    public static void setTask(int objectiveId, int taskId){
+    public static void setTaskId(int objectiveId, int taskId){
         manager.update(objectiveId, "task", taskId);
     }
 
     public abstract boolean isCompleted(Player player);
+
+    public Task getTask(){
+        return DataManager.getTaskManager().get(taskId);
+    }
 }

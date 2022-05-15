@@ -9,6 +9,8 @@ import me.rubix327.fancynations.Settings;
 import me.rubix327.fancynations.data.AbstractDto;
 import me.rubix327.fancynations.data.DataManager;
 import me.rubix327.fancynations.data.IUniqueNamable;
+import me.rubix327.fancynations.data.professions.Profession;
+import me.rubix327.fancynations.data.townworkers.TownWorker;
 import org.bukkit.command.CommandSender;
 
 @Getter @Setter(AccessLevel.PACKAGE)
@@ -32,7 +34,11 @@ public class FNPlayer extends AbstractDto implements IUniqueNamable {
         initiated = true;
     }
 
-    public static FNPlayer getFNPlayer(String name){
+    public static FNPlayer get(int id){
+        return DataManager.getFNPlayerManager().get(id);
+    }
+
+    public static FNPlayer get(String name){
         return DataManager.getFNPlayerManager().get(name);
     }
 
@@ -41,7 +47,11 @@ public class FNPlayer extends AbstractDto implements IUniqueNamable {
         return manager.get(name);
     }
 
-    public static String getName(int playerId){
-        return DataManager.getFNPlayerManager().get(playerId).getName();
+    /**
+     * Gets profession object of a player
+     */
+    public Profession getProfession(){
+        if (!TownWorker.isWorker(id)) throw new NullPointerException("This player is not a worker.");
+        return DataManager.getTownWorkerManager().getByPlayer(get(id).getId()).getProfession();
     }
 }

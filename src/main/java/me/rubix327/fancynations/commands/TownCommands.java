@@ -82,7 +82,7 @@ public class TownCommands extends SubCommandInterlayer {
                 tellOnlinePlayer(playerId, "info_you_hired",
                         replace("@profession", profession.getName()),
                         replace("@town", town.getName()));
-                locReturnTell("success_town_worker_hired", replace("@player", FNPlayer.getName(playerId)),
+                locReturnTell("success_town_worker_hired", replace("@player", args[3]),
                         replace("@profession", profession.getLocalizedName()), replace("@town", town.getName()));
             }
 
@@ -91,12 +91,13 @@ public class TownCommands extends SubCommandInterlayer {
                 checkPermission("worker.fire");
                 checkArgs(4, "syntax_town_worker_fire");
 
-                int playerId = FNPlayer.find(args[3], sender, "error_player_not_exist").getId();
-                if (!TownWorker.isWorker(playerId, town.getId())) locReturnTell("error_player_not_worker");
+                FNPlayer player = FNPlayer.find(args[3], sender, "error_player_not_exist");
+                if (!TownWorker.isWorker(player.getId(), town.getId())) locReturnTell("error_player_not_worker");
+                TownWorker worker = DataManager.getTownWorkerManager().getByPlayer(player.getName());
 
-                TownWorker.remove(playerId);
-                tellOnlinePlayer(playerId, "info_you_fired",
-                        replace("@profession", TownWorker.getProfession(playerId).getName()),
+                TownWorker.remove(player.getId());
+                tellOnlinePlayer(player.getId(), "info_you_fired",
+                        replace("@profession", worker.getProfession().getName()),
                         replace("@town", town.getName()));
                 locReturnTell("success_town_worker_fired");
             }
@@ -109,10 +110,10 @@ public class TownCommands extends SubCommandInterlayer {
                 int playerId = FNPlayer.find(args[3], sender, "error_player_not_exist").getId();
                 int professionId = Profession.find(args[4], sender, "error_profession_not_exist").getId();
 
+                TownWorker.setProfession(playerId, professionId);
                 tellOnlinePlayer(playerId, "info_your_profession_changed",
                         replace("@profession", Profession.get(professionId).getName()),
                         replace("@town", town.getName()));
-                TownWorker.setProfession(playerId, professionId);
                 locReturnTell("success_town_worker_profession_changed");
             }
 

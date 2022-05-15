@@ -11,6 +11,7 @@ import me.rubix327.fancynations.data.DataManager;
 import me.rubix327.fancynations.data.fnplayers.FNPlayer;
 import me.rubix327.fancynations.data.objectives.Objective;
 import me.rubix327.fancynations.data.objectives.ObjectivesDao;
+import me.rubix327.fancynations.data.towns.Town;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -145,11 +146,12 @@ public class Task extends AbstractDto {
                 Localization.getInstance().get("server_label", sender) : fnPlayer.getName();
     }
 
-    /**
-     * Get the town name which this task belongs to.
-     */
-    public String getTownName(){
-        return DataManager.getTownManager().get(this.getTownId()).getName();
+    public Town getTown(){
+        return DataManager.getTownManager().get(townId);
+    }
+
+    public FNPlayer getCreator(){
+        return DataManager.getFNPlayerManager().get(creatorId);
     }
 
 }

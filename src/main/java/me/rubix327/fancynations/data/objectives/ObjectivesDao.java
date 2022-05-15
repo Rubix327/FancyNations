@@ -28,13 +28,13 @@ public class ObjectivesDao extends AbstractDao<Objective> implements IObjectives
         String type = resultSet.getString("Type");
         String target = resultSet.getString("Target");
         int amount = resultSet.getInt("Amount");
-        int task = resultSet.getInt("Task");
+        int taskId = resultSet.getInt("Task");
 
         if (ObjectiveInfo.get(type).getGroup() == TaskGroup.Gathering){
-            return new GatheringObjective(id, type, target, amount, task);
+            return new GatheringObjective(id, type, target, amount, taskId);
         }
         else if (ObjectiveInfo.get(type).getGroup() == TaskGroup.Mobs) {
-            return new MobKillObjective(id, type, target, amount, task);
+            return new MobKillObjective(id, type, target, amount, taskId);
         }
         throw new NullPointerException("This objective type group does not exist.");
     }
@@ -47,7 +47,7 @@ public class ObjectivesDao extends AbstractDao<Objective> implements IObjectives
                 .replace("@Type", String.valueOf(objective.getType()))
                 .replace("@Target", objective.getTarget())
                 .replace("@Amount", String.valueOf(objective.getAmount()))
-                .replace("@Task", String.valueOf(objective.getTask()));
+                .replace("@Task", String.valueOf(objective.getTaskId()));
 
         super.executeVoid(query);
     }
