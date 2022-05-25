@@ -11,6 +11,7 @@ public interface ITaskManager {
     void update(int taskId, String variable, Object newValue);
     void remove(int taskId);
     HashMap<Integer, Task> getAll();
+    HashMap<Integer, Task> getAllFor(int townId);
     int getMaxId();
 
 }

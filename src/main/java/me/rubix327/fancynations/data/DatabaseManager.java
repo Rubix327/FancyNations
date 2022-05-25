@@ -149,6 +149,9 @@ public class DatabaseManager {
         this.queries = queries;
     }
 
+    /**
+     * Get the query by the specified key.
+     */
     public String getQuery(String key) throws NullPointerException{
         if (!queries.containsKey(key)){
             throw new NullPointerException("Key " + key + " does not exist in queries hashmap (DatabaseManager)");

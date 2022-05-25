@@ -59,14 +59,14 @@ public final class FancyNations extends SimplePlugin {
                 Logger.warning("Database is not connected.");
                 Logger.warning("Using file system instead of database.");
             }
-        }
-        else {
+        } else {
             Logger.info("Using file system as indicated in settings.yml.");
         }
 
         // DataManager
         DataManager dataManager = DataManager.getInstance();
-        dataManager.runTaskExpireListener(1);
+        // TODO: new task expire listener
+//        dataManager.runTaskExpireListener(1);
 
         // Dependencies
         dependencies = DependencyManager.getInstance();

@@ -21,6 +21,16 @@ public class TaskProgressProcess extends AbstractProcess<TaskProgress> implement
     }
 
     @Override
+    public boolean exists(int objectiveId, int takenTaskId) {
+        for (TaskProgress progress : this.getAll().values()){
+            if (progress.getObjectiveId() == objectiveId && progress.getTakenTaskId() == takenTaskId){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public TaskProgress get(int objectiveId, int takenTaskId) {
         for (TaskProgress progress : this.getAll().values()){
             if (progress.getObjectiveId() == objectiveId && progress.getTakenTaskId() == takenTaskId){

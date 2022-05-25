@@ -43,7 +43,7 @@ General:
   # How the server's name should look in database.
   # Please use special characters to not let players join with that name.
   Server_Var: '%server%'
-  # If true, every database request will be printed to console.
+  # If true, every database request will be printed to the console.
   SQL_Debug: false
 
 # Default values when town is created
@@ -64,6 +64,7 @@ Tasks:
   Default_Rep_Reward: 0
   Default_Priority: 0
   Default_Time_To_Complete: 43200
+  Default_Task_Life_Time: 86400
   Minimum_Levels_Difference: 8
 
 # Default values when town building is created

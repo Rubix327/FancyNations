@@ -73,6 +73,7 @@ public class Settings extends SimpleSettings {
         public static Integer DEFAULT_REP_REWARD;
         public static Integer DEFAULT_PRIORITY;
         public static Integer DEFAULT_TIME_TO_COMPLETE;
+        public static Integer DEFAULT_TASK_LIFE_TIME;
         public static Integer MINIMUM_LEVELS_DIFFERENCE;
     }
 
@@ -180,6 +181,7 @@ public class Settings extends SimpleSettings {
         Tasks.DEFAULT_REP_REWARD = getInteger("Default_Rep_Reward");
         Tasks.DEFAULT_PRIORITY = getInteger("Default_Priority");
         Tasks.DEFAULT_TIME_TO_COMPLETE = getInteger("Default_Time_To_Complete");
+        Tasks.DEFAULT_TASK_LIFE_TIME = getInteger("Default_Task_Life_Time");
         Tasks.MINIMUM_LEVELS_DIFFERENCE = getInteger("Minimum_Levels_Difference");
 
         pathPrefix("Town_Buildings");

@@ -16,6 +16,7 @@ import org.bukkit.command.CommandSender;
 @AllArgsConstructor
 public class Town extends AbstractDto implements IUniqueNamable {
 
+    @Getter
     private static ITownManager manager = DataManager.getTownManager();
 
     private final int id;
@@ -38,26 +39,6 @@ public class Town extends AbstractDto implements IUniqueNamable {
 
     public static void add(int nationId, String name){
         manager.add(new Town(nationId, name));
-    }
-
-    public static void remove(int townId){
-        manager.remove(townId);
-    }
-
-    public static boolean exists(int townId){
-        return manager.exists(townId);
-    }
-
-    public static boolean exists(String name){
-        return manager.exists(name);
-    }
-
-    public static Town get(int id){
-        return manager.get(id);
-    }
-
-    public static Town get(String name){
-        return manager.get(name);
     }
 
     public static Town find(int townId, CommandSender sender, String messageKey){

@@ -43,8 +43,8 @@ public class TownWorkerDao extends AbstractDao<TownWorker> implements ITownWorke
 
         query = query
                 .replace("@Table", table)
-                .replace("@PlayerID", String.valueOf(worker.getPlayerId()))
-                .replace("@TownID", String.valueOf(worker.getTownId()))
+                .replace("@PlayerId", String.valueOf(worker.getPlayerId()))
+                .replace("@TownId", String.valueOf(worker.getTownId()))
                 .replace("@Profession", String.valueOf(worker.getProfessionId()))
                 .replace("@DisplayName", String.valueOf(worker.getDisplayName()))
                 .replace("@Salary", String.valueOf(worker.getSalary()));
@@ -76,7 +76,7 @@ public class TownWorkerDao extends AbstractDao<TownWorker> implements ITownWorke
         String query = getQuery("town_workers_is_worker");
         query = query
                 .replace("@Table", table)
-                .replace("@PlayerID", String.valueOf(playerId));
+                .replace("@PlayerId", String.valueOf(playerId));
         return executeBool(query);
     }
 
@@ -89,8 +89,8 @@ public class TownWorkerDao extends AbstractDao<TownWorker> implements ITownWorke
         String query = getQuery("town_workers_is_worker_in_town");
         query = query
                 .replace("@Table", table)
-                .replace("@PlayerID", String.valueOf(playerId))
-                .replace("@TownID", String.valueOf(townId));
+                .replace("@PlayerId", String.valueOf(playerId))
+                .replace("@TownId", String.valueOf(townId));
         return executeBool(query);
     }
 }

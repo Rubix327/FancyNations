@@ -32,16 +32,27 @@ public class TaskProgressDao extends AbstractDao<TaskProgress> implements ITaskP
         return new TaskProgress(id, objectiveId, takenTaskId, progress);
     }
 
+    public boolean exists(int objectiveId, int takenTaskId){
+        String query = getQuery("task_progress_exists");
+
+        query = query
+                .replace("@Table", this.table)
+                .replace("@ObjectiveId", String.valueOf(objectiveId))
+                .replace("@TakenTaskId", String.valueOf(takenTaskId));
+
+        return executeBool(query);
+    }
+
     @Override
     public void add(TaskProgress progress) {
         String query = getQuery("task_progresses_add");
 
         query = query
                 .replace("@Table", table)
-                .replace("@Objective", String.valueOf(progress.getObjectiveId()))
+                .replace("@ObjectiveId", String.valueOf(progress.getObjectiveId()))
                 .replace("@Progress", String.valueOf(progress.getProgress()));
 
-        super.executeVoid(query);
+        executeVoid(query);
     }
 
     public TaskProgress get(int objectiveId, int takenTaskId){
@@ -49,10 +60,10 @@ public class TaskProgressDao extends AbstractDao<TaskProgress> implements ITaskP
 
         query = query
                 .replace("@Table", this.table)
-                .replace("@Objective", String.valueOf(objectiveId))
-                .replace("@TakenTask", String.valueOf(takenTaskId));
+                .replace("@ObjectiveId", String.valueOf(objectiveId))
+                .replace("@TakenTaskId", String.valueOf(takenTaskId));
 
-        return this.executeObject(query);
+        return executeObject(query);
     }
 
     public HashMap<Integer, TaskProgress> getAllByTakenTask(int takenTaskId){
@@ -60,9 +71,9 @@ public class TaskProgressDao extends AbstractDao<TaskProgress> implements ITaskP
 
         query = query
                 .replace("@Table", this.table)
-                .replace("@TakenTask", String.valueOf(takenTaskId));
+                .replace("@TakenTaskId", String.valueOf(takenTaskId));
 
-        return this.executeAll(query);
+        return executeAll(query);
     }
 
 }

@@ -7,7 +7,7 @@ import org.bukkit.Bukkit;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DependencyManager {
 
-    public static DependencyManager instance;
+    private static DependencyManager instance;
 
     public final boolean IS_VAULT_LOADED = isPluginLoaded("Vault");
     public boolean IS_MYTHICLIB_LOADED = isPluginLoaded("MythicLib");

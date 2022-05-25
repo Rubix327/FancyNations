@@ -14,14 +14,33 @@ error_not_enough_permissions: 'У Вас недостаточно прав.'
 
 error_task_not_exist: 'Задания с таким ID не существует. \nНапишите /fn task list для просмотра всех заданий.'
 error_task_not_available: 'Это задание больше недоступно.'
-error_level_not_suitable: 'Ваш уровень не подходит для этого задания. \nВаш уровень: @playerLevel. Требуемый уровень: @taskMinLevel - @taskMaxLevel'
+error_task_level_not_suitable: 'Ваш уровень не подходит для этого задания.'
 error_task_already_taken: 'Вы уже взяли это задание.'
 error_task_time_to_complete_expired: 'Время на выполнение задания истекло.'
 error_task_objective_not_completed: 'Вы не выполнили все цели задания.'
 error_task_not_taken: 'Вы не брали это задание.'
+error_task_conditions_not_kept: '@error_prefix Вы должны выполнить все условия прежде чем взять задание.'
 
 error_town_not_exist: 'Такого города не существует.'
 
 error_player_not_exist: 'Этого игрока никогда не было на сервере.'
 
 error_task_type_not_exist: 'Такого типа задания не существует. \nДоступные типы:'
+
+# Other
+# Server label is how a task creator name will look like if the task was created by the server (or an admin)
+server_label: 'Нация'
+task_no_description: 'нет'
+task_type_no_objectives: 'нет целей'
+task_type_combined: 'комбинированное'
+task_type_food: 'продовольствие'
+task_type_resource: 'ресурсы'
+task_type_crafting: 'крафтинг'
+task_type_mob_kill: 'истребление'
+task_any_level_label: 'МАКС'
+profession_mayor: 'Мэр'
+profession_helper: 'Помощник'
+time_days_symbol: 'дн'
+time_hours_symbol: 'ч'
+time_minutes_symbol: 'мин'
+time_seconds_symbol: 'сек'

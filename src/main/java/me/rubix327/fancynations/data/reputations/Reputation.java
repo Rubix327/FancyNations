@@ -13,13 +13,16 @@ import me.rubix327.fancynations.data.towns.Town;
 @AllArgsConstructor
 public class Reputation extends AbstractDto {
 
+    @Getter
+    private static IReputationManager manager = DataManager.getReputationsManager();
+
     private final int id;
     private final int playerId;
     private final int townId;
     private int amount;
 
-    public Reputation(int id, int playerId, int townId) {
-        this.id = id;
+    public Reputation(int playerId, int townId) {
+        this.id = manager.getMaxId() + 1;
         this.playerId = playerId;
         this.townId = townId;
         this.amount = 0;
@@ -33,10 +36,12 @@ public class Reputation extends AbstractDto {
      * @param amount on which number increase reputation
      */
     public static void increase(int fnPlayerId, int townId, int amount){
-        int repId = DataManager.getReputationsManager().get(fnPlayerId, townId).getId();
-        Reputation reputation = DataManager.getReputationsManager().get(repId);
+        if (!manager.exists(fnPlayerId, townId)){
+            manager.add(new Reputation(fnPlayerId, townId));
+        }
+        Reputation reputation = manager.get(fnPlayerId, townId);
         DataManager.getReputationsManager().update(
-                repId, "amount", reputation.getAmount() + amount);
+                reputation.getId(), "amount", reputation.getAmount() + amount);
     }
 
     public FNPlayer getFNPlayer(){

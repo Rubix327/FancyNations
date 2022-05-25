@@ -13,14 +13,6 @@ public class TownCommands extends SubCommandInterlayer {
         super(group, sublabel, permLabel);
     }
 
-    /*
-           label  a0       a1          a2         a3
-        fn town create <town_name>
-        fn town set    <town_id>   <variable> <value>
-        fn town remove <town_id>
-        fn town info   <town_id>
-        fn town list
-     */
     @Override
     protected void onCommand() {
 
@@ -57,8 +49,8 @@ public class TownCommands extends SubCommandInterlayer {
             checkArgs(2, "syntax_town_remove");
             int townId = findNumber(1, getMsg("error_id_must_be_number"));
             String name = DataManager.getTownManager().get(townId).getName();
-            if (!Town.exists(townId)) locReturnTell("error_town_not_exist");
-            Town.remove(townId);
+            if (!Town.getManager().exists(townId)) locReturnTell("error_town_not_exist");
+            Town.getManager().remove(townId);
             locReturnTell("success_town_removed", replace("@name", name));
         }
 
@@ -124,7 +116,7 @@ public class TownCommands extends SubCommandInterlayer {
                 tell("Syntax: /fn info <town_name>");
                 return;
             }
-            Town town = Town.get(args[1]);
+            Town town = Town.getManager().get(args[1]);
             tell(town.getName() + " " + town.getBalance());
         }
         else if (args[0].equalsIgnoreCase("list")){

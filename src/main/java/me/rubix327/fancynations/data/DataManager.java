@@ -165,35 +165,47 @@ public class DataManager {
     }
 
     /**
-     Returns all non-static non-final fields from the specified class.
-     @param from class to get fields from (e.g. Task.class)
-     @return List - fields
+     * Get all fields from the specified class.
+     * @param from the class
+     * @return the fields
      */
-    private static Stream<Field> getNonStaticNonFinalFields(Class<?> from) {
-        return Arrays.stream(from.getDeclaredFields())
-                .filter(field -> !Modifier.isStatic(field.getModifiers()))
-                .filter(field -> !Modifier.isFinal(field.getModifiers()));
+    public static List<Field> getFields(Class<?> from){
+        return getFields(from, 0, 0);
     }
 
     /**
-    Returns all non-static non-final field names from the specified class.
+     * Get filtered fields from the specified class.
+     * @param from the class
+     * @param staticMode 0: all, 1: only static, 2: only non-static
+     * @param finalMode 0: all, 1: only final, 2: only non-final
+     * @return the fields
+     */
+    public static List<Field> getFields(Class<?> from, int staticMode, int finalMode){
+        Stream<Field> fields = Arrays.stream(from.getDeclaredFields());
+        if (staticMode == 1) fields = fields.filter(field -> Modifier.isStatic(field.getModifiers()));
+        if (staticMode == 2) fields = fields.filter(field -> !Modifier.isStatic(field.getModifiers()));
+        if (finalMode == 1) fields = fields.filter(field -> Modifier.isFinal(field.getModifiers()));
+        if (finalMode == 2) fields = fields.filter(field -> !Modifier.isFinal(field.getModifiers()));
+        return fields.toList();
+    }
+
+    /**
+    Returns all names from the specified class.
     @param from class to get fields from (e.g. Task.class)
     @return List - field names
      */
-    public static List<String> getClassFields(Class<?> from) {
-        List<String> classFields = new ArrayList<>();
-        getNonStaticNonFinalFields(from).forEach(field -> classFields.add(field.getName()));
-        return classFields;
+    public static List<String> getFieldsNames(Class<?> from, int staticMode, int finalMode) {
+        return getFields(from, staticMode, finalMode).stream().map(Field::getName).toList();
     }
 
     /**
-     Returns all non-static non-final field names of the required type class from the specified class.
+     Returns all field names of the required type class from the specified class.
      @param requiredType required field type class (e.g. int.class, double.class, etc.)
      @return List - field names
      */
-    public static List<String> getClassFieldsByType(Class<?> from, Class<?> requiredType) {
+    public static List<String> getClassFieldsNamesByType(Class<?> from, Class<?> requiredType) {
         List<String> classFields = new ArrayList<>();
-        getNonStaticNonFinalFields(from)
+        getFields(from, 2, 2).stream()
                 .filter(field -> field.getType() == requiredType)
                 .forEach(field -> classFields.add(field.getName()));
         return classFields;
@@ -234,7 +246,7 @@ public class DataManager {
 
     /**
      * This runnable loops through all the TakenTasks and automatically
-     * increments TakeAmount and removes TakenTask from a player when his task expire
+     * increments CompletionsLeft and removes TakenTask from a player when his task expire
      * (i.e. current time > placement time + completion time).
      * @param period the delay between each run in seconds
      */
@@ -271,7 +283,7 @@ public class DataManager {
         Task task = DataManager.getTaskManager().get(takenTask.getTaskId());
 
         // Increment take amount
-        DataManager.getTaskManager().update(task.getId(), "takeAmount", task.getTakeAmount() + 1);
+        DataManager.getTaskManager().update(task.getId(), "completionsLeft", task.getCompletionsLeft() + 1);
         // Remove all task progresses depending on this taken task
         DataManager.getTaskProgressManager().getAllByTakenTask(takenTask.getId()).values()
                 .forEach(progress -> DataManager.getTaskProgressManager().remove(progress.getId()));

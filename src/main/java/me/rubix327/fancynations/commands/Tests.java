@@ -1,13 +1,19 @@
 package me.rubix327.fancynations.commands;
 
+import me.rubix327.fancynations.Settings;
+import me.rubix327.fancynations.data.DataManager;
+import me.rubix327.fancynations.data.tasks.Task;
 import me.rubix327.fancynations.util.ItemUtils;
 import me.rubix327.fancynations.util.Replacer;
 import me.rubix327.fancynations.util.Utils;
 import org.bukkit.inventory.ItemStack;
 import org.mineacademy.fo.command.SimpleCommandGroup;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class Tests extends SubCommandInterlayer {
 
@@ -132,6 +138,42 @@ public class Tests extends SubCommandInterlayer {
         }
         if (isArg(0, "getMsg")){
             getMsg(testKey);
+        }
+
+        if (isArg(0, "time")){ // 1970-01-10 10:03:09.7
+            Timestamp time1 = new Timestamp(
+                    LocalDateTime.now().getNano() + TimeUnit.SECONDS.toMillis(Settings.Tasks.DEFAULT_TASK_LIFE_TIME));
+            tell(time1.toString());
+
+            tell(new Timestamp(LocalDateTime.now().getSecond() * 1000).toString());
+
+            tell(Timestamp.valueOf(LocalDateTime.now()).toString());
+
+            tell(LocalDateTime.now().toString());
+        }
+
+        if (isArg(0, "taskTime")){
+            Task task = DataManager.getTaskManager().get(1);
+
+            int timeToComplete = (args.length == 2 ? findNumber(1, "Not a number") : 2592000);
+
+            Timestamp placement = task.getPlacementDateTime();
+            Timestamp timeToRemove = Timestamp.valueOf(placement.toLocalDateTime().plusSeconds(timeToComplete));
+            Timestamp currentTime = Timestamp.valueOf(LocalDateTime.now());
+
+            tell("Placement datetime: " + placement);
+            tell("Time to complete: " + timeToComplete);
+            tell("Termination datetime: " + timeToRemove);
+            tell("Checking: " + timeToRemove + " < " + currentTime);
+
+            tell("Comparing: " + timeToRemove.compareTo(currentTime));
+
+            if (timeToRemove.compareTo(currentTime) > 0){
+                tell("Задание пока что не просрочено.");
+            }
+            else {
+                tell("Задание уже просрочено!");
+            }
         }
 
     }

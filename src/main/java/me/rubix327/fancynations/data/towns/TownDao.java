@@ -73,7 +73,7 @@ public class TownDao extends AbstractDao<Town> implements ITownManager {
             return names;
         }
         else if (profession.equalsIgnoreCase(PredefinedProfession.Mayor.toString())){
-            return Collections.singletonList(Town.get(worker.getTownId()).getName());
+            return Collections.singletonList(Town.getManager().get(worker.getTownId()).getName());
         }
         return new ArrayList<>();
     }

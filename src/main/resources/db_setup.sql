@@ -45,27 +45,30 @@ CREATE TABLE IF NOT EXISTS Towns (
 CREATE TABLE IF NOT EXISTS Tasks (
     Id INT NOT NULL AUTO_INCREMENT,
     Town INT NOT NULL,
-    Player INT NOT NULL,
     Name VARCHAR(100) NOT NULL,
+    CreatorType VARCHAR(50) NOT NULL,
+    Creator INT NOT NULL,
     Description VARCHAR(255) NOT NULL,
-    TakeAmount INT NOT NULL,
+    CompletionsLeft INT NOT NULL,
     MinLevel INT NOT NULL,
     MaxLevel INT NOT NULL,
     MoneyReward DECIMAL NOT NULL,
     ExpReward DECIMAL NOT NULL,
     RepReward INT NOT NULL,
-    PlacementDatetime DATETIME NOT NULL,
-    TimeToComplete INT,
+    PlacementDateTime DATETIME NOT NULL,
+    TerminationDateTime DATETIME NOT NULL,
+    TimeToComplete INT NOT NULL,
     Priority INT NOT NULL,
     PRIMARY KEY (Id),
     FOREIGN KEY (Town) REFERENCES Towns (Id),
-    FOREIGN KEY (Player) REFERENCES Players (Id)
+    FOREIGN KEY (Creator) REFERENCES Players (Id)
 );
 
 CREATE TABLE IF NOT EXISTS TakenTasks (
     Id INT NOT NULL AUTO_INCREMENT,
     Player INT NOT NULL,
     Task INT NOT NULL,
+    TakingDateTime DATETIME NOT NULL,
     PRIMARY KEY (Id),
     FOREIGN KEY (Player) REFERENCES Players (Id),
     FOREIGN KEY (Task) REFERENCES Tasks (Id)
