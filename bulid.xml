@@ -1,8 +1,8 @@
 <?xml version="1.0" ?>
 <project name="FancyNations" default="Build">
 
-    <property name="foundation.version" value="5.12.7"/>
-    <property name="plugin.version" value="1.0.2"/>
+    <property name="foundation.version" value="5.13.1.1"/>
+    <property name="plugin.version" value="1.0.4"/>
 
     <target name="init">
         <buildnumber/>
@@ -31,7 +31,7 @@
         <buildnumber/>
         <jar jarfile="${serverPath}\plugins\${ant.project.name}-${plugin.version}-b${build.number}.jar" basedir="./target/classes/" includes="**/*">
 
-            <zipgroupfileset dir="${user.home}/.m2/repository/com/github/kangarko/Foundation/${foundation.version}/" includes="**/*${foundation.version}.jar" />
+            <zipgroupfileset dir="${user.home}/.m2/repository/com/github/Rubix327/Foundation/${foundation.version}/" includes="**/*${foundation.version}.jar" />
 
         </jar>
     </target>
