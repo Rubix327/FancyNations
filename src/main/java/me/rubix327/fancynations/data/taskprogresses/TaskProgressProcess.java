@@ -21,9 +21,19 @@ public class TaskProgressProcess extends AbstractProcess<TaskProgress> implement
     }
 
     @Override
+    public boolean exists(int objectiveId, int takenTaskId) {
+        for (TaskProgress progress : this.getAll().values()){
+            if (progress.getObjectiveId() == objectiveId && progress.getTakenTaskId() == takenTaskId){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public TaskProgress get(int objectiveId, int takenTaskId) {
         for (TaskProgress progress : this.getAll().values()){
-            if (progress.getObjectiveId() == objectiveId && progress.getTakenTask() == takenTaskId){
+            if (progress.getObjectiveId() == objectiveId && progress.getTakenTaskId() == takenTaskId){
                 return progress;
             }
         }
@@ -34,7 +44,7 @@ public class TaskProgressProcess extends AbstractProcess<TaskProgress> implement
     public HashMap<Integer, TaskProgress> getAllByTakenTask(int takenTaskId) {
         HashMap<Integer, TaskProgress> progresses = new HashMap<>();
         for (Map.Entry<Integer, TaskProgress> entry : this.getAll().entrySet()){
-            if (entry.getValue().getTakenTask() == takenTaskId){
+            if (entry.getValue().getTakenTaskId() == takenTaskId){
                 progresses.put(entry.getKey(), entry.getValue());
             }
         }

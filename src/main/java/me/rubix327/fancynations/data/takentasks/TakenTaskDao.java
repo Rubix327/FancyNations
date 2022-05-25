@@ -4,6 +4,7 @@ import me.rubix327.fancynations.data.AbstractDao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 public class TakenTaskDao extends AbstractDao<TakenTask> implements ITakenTaskManager {
 
@@ -26,8 +27,9 @@ public class TakenTaskDao extends AbstractDao<TakenTask> implements ITakenTaskMa
         int id = resultSet.getInt("Id");
         int playerId = resultSet.getInt("Player");
         int taskId = resultSet.getInt("Task");
+        Timestamp takingDatetime = resultSet.getTimestamp("TakingDateTime");
 
-        return new TakenTask(id, playerId, taskId);
+        return new TakenTask(id, playerId, taskId, takingDatetime);
     }
 
     public boolean exists(int playerId, int taskId) {
@@ -35,10 +37,10 @@ public class TakenTaskDao extends AbstractDao<TakenTask> implements ITakenTaskMa
 
         query = query
                 .replace("@Table", table)
-                .replace("@PlayerID", String.valueOf(playerId))
-                .replace("@TaskID", String.valueOf(taskId));
+                .replace("@PlayerId", String.valueOf(playerId))
+                .replace("@TaskId", String.valueOf(taskId));
 
-        return super.executeBool(query);
+        return executeBool(query);
     }
 
     public void add(TakenTask takenTask) {
@@ -47,9 +49,10 @@ public class TakenTaskDao extends AbstractDao<TakenTask> implements ITakenTaskMa
         query = query
                 .replace("@Table", table)
                 .replace("@Player", String.valueOf(takenTask.getPlayerId()))
-                .replace("@Task", String.valueOf(takenTask.getTaskId()));
+                .replace("@Task", String.valueOf(takenTask.getTaskId()))
+                .replace("@TakingDateTime", takenTask.getTakingDatetime().toString());
 
-        super.executeVoid(query);
+        executeVoid(query);
     }
 
     @Override
@@ -58,10 +61,20 @@ public class TakenTaskDao extends AbstractDao<TakenTask> implements ITakenTaskMa
 
         query = query
                 .replace("@Table", this.table)
-                .replace("@Player", String.valueOf(playerId))
-                .replace("@Task", String.valueOf(taskId));
+                .replace("@PlayerId", String.valueOf(playerId))
+                .replace("@TaskId", String.valueOf(taskId));
 
-        return this.executeObject(query);
+        return executeObject(query);
+    }
+
+    public int getCountFor(int taskId){
+        String query = getQuery("taken_tasks_get_count");
+
+        query = query
+                .replace("@Table", table)
+                .replace("@TaskId", String.valueOf(taskId));
+
+        return executeInteger(query);
     }
 
 }

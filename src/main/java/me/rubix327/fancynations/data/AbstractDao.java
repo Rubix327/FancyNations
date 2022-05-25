@@ -31,7 +31,7 @@ public abstract class AbstractDao<T extends AbstractDto> extends AbstractDataHan
 
         query = query
                 .replace("@Table", this.table)
-                .replace("@ID", String.valueOf(id));
+                .replace("@Id", String.valueOf(id));
 
         return this.executeBool(query);
     }
@@ -61,7 +61,7 @@ public abstract class AbstractDao<T extends AbstractDto> extends AbstractDataHan
         String query = getQuery("general_get_id");
         query = query
                 .replace("@Table", this.table)
-                .replace("@ID", String.valueOf(id));
+                .replace("@Id", String.valueOf(id));
 
         return executeObject(query);
     }
@@ -93,7 +93,7 @@ public abstract class AbstractDao<T extends AbstractDto> extends AbstractDataHan
         query = query.replace("@Table", this.table)
                 .replace("@Var", variable)
                 .replace("@Value", String.valueOf(newValue))
-                .replace("@ID", String.valueOf(id));
+                .replace("@Id", String.valueOf(id));
 
         this.executeVoid(query);
     }
@@ -107,7 +107,7 @@ public abstract class AbstractDao<T extends AbstractDto> extends AbstractDataHan
 
         query = query
                 .replace("@Table", this.table)
-                .replace("@ID", String.valueOf(id));
+                .replace("@Id", String.valueOf(id));
 
         this.executeVoid(query);
     }
@@ -255,6 +255,22 @@ public abstract class AbstractDao<T extends AbstractDto> extends AbstractDataHan
                 dtos.put(resultSet.getInt("ID"), loadObject(resultSet));
             }
             return dtos;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        throw new NullPointerException("Something went wrong.");
+    }
+
+    public int executeInteger(String query){
+        try{
+            PreparedStatement ps = FancyNations.getInstance().getDatabase().getConnection().
+                    prepareStatement(query);
+            Logger.logSqlQuery(query);
+            ResultSet resultSet = ps.executeQuery();
+
+            if (resultSet.next()){
+                return resultSet.getInt("COUNT(*)");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

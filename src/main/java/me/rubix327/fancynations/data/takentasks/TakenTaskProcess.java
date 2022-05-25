@@ -39,4 +39,9 @@ public class TakenTaskProcess extends AbstractProcess<TakenTask> implements ITak
     public HashMap<Integer, TakenTask> getAll(boolean log) {
         return super.getAll();
     }
+
+    @Override
+    public int getCountFor(int taskId) {
+        return getAll().values().stream().filter(e -> e.getTaskId() == taskId).toList().size();
+    }
 }

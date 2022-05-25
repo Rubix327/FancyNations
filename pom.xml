@@ -6,12 +6,12 @@
 
     <groupId>me.rubix327</groupId>
     <artifactId>fancynations</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
 
     <name>FancyNations</name>
 
     <properties>
-        <foundation.version>5.12.7</foundation.version>
+        <foundation.version>5.13.1</foundation.version>
         <java.version>16</java.version>
         <plugin.version>1.16.5-R0.1-SNAPSHOT</plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -131,6 +131,14 @@
             <version>1.3</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/libs/MythicLib-1.3.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>net.Indyuce</groupId>
+            <artifactId>mmoitems</artifactId>
+            <version>6.7.2</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/MMOItems-6.7.2.jar</systemPath>
         </dependency>
     </dependencies>
 

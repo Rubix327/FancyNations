@@ -7,7 +7,9 @@ import me.rubix327.fancynations.commands.TestCommands;
 import me.rubix327.fancynations.data.DataManager;
 import me.rubix327.fancynations.data.DatabaseManager;
 import me.rubix327.fancynations.data.fnplayers.FNPlayer;
-import me.rubix327.fancynations.data.workertypes.WorkerType;
+import me.rubix327.fancynations.data.objectives.ObjectiveInfo;
+import me.rubix327.fancynations.data.professions.Profession;
+import me.rubix327.fancynations.data.tasks.TaskType;
 import me.rubix327.fancynations.events.PlayerListener;
 import me.rubix327.fancynations.util.DependencyManager;
 import me.rubix327.fancynations.util.Logger;
@@ -43,6 +45,7 @@ public final class FancyNations extends SimplePlugin {
         // Localization
         Localization localization = Localization.getInstance();
         localization.init(Arrays.asList("en", "ru"));
+        Localization.resetPrefixes();
 
         // Database
         if (Settings.General.DATA_MANAGEMENT_TYPE.equalsIgnoreCase("database")){
@@ -56,14 +59,14 @@ public final class FancyNations extends SimplePlugin {
                 Logger.warning("Database is not connected.");
                 Logger.warning("Using file system instead of database.");
             }
-        }
-        else {
+        } else {
             Logger.info("Using file system as indicated in settings.yml.");
         }
 
         // DataManager
         DataManager dataManager = DataManager.getInstance();
-        dataManager.runTaskExpireListener(1);
+        // TODO: new task expire listener
+//        dataManager.runTaskExpireListener(1);
 
         // Dependencies
         dependencies = DependencyManager.getInstance();
@@ -108,11 +111,10 @@ public final class FancyNations extends SimplePlugin {
     }
 
     private void addDefaultEntries(){
-        DataManager.getFNPlayerManager().addIgnore(new FNPlayer(1, Settings.General.SERVER_VAR));
-        DataManager.getWorkerTypeManager().addIgnore(new WorkerType(1, "Mayor"));
-        DataManager.getWorkerTypeManager().addIgnore(new WorkerType(2, "Helper"));
-        DataManager.getWorkerTypeManager().addIgnore(new WorkerType(3, "Judge"));
-        DataManager.getWorkerTypeManager().addIgnore(new WorkerType(4, "Other"));
+        FNPlayer.init();
+        ObjectiveInfo.init();
+        TaskType.init();
+        Profession.init();
     }
 
     @Override

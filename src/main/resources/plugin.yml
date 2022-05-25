@@ -3,4 +3,4 @@ version: '${project.version}'
 main: me.rubix327.fancynations.FancyNations
 api-version: 1.16
 authors: [ Rubix327, Foldner ]
-softdepend: [ MMOCore, MythicLib ]
+softdepend: [ MMOCore, MythicLib, MMOItems ]

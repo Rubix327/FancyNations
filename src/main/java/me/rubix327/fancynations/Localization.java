@@ -3,12 +3,15 @@ package me.rubix327.fancynations;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import me.rubix327.fancynations.util.Logger;
+import me.rubix327.fancynations.util.Replacer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.mineacademy.fo.Common;
+import org.mineacademy.fo.Messenger;
+import org.mineacademy.fo.exception.CommandException;
 
 import java.io.File;
 import java.io.IOException;
@@ -126,6 +129,7 @@ public class Localization {
      * If the key has not been found in english localization then it will drop an error message.</p>
      * <b>Suitable when you want to use specific language.</b>
      * @param key The name of the configuration message.
+     * @param locale The locale you need to use (e.g. "en" or "ru").
      * @return The message.
      */
     public String get(String key, String locale){
@@ -195,6 +199,63 @@ public class Localization {
      */
     public String replacePlaceholders(List<String> messages){
         return replacePlaceholders(String.join("\n", messages));
+    }
+
+    /**
+     * Removes Foundation prefixes.
+     */
+    public static void resetPrefixes(){
+        Messenger.setErrorPrefix("");
+        Messenger.setWarnPrefix("");
+        Messenger.setSuccessPrefix("");
+        Messenger.setInfoPrefix("");
+        Messenger.setAnnouncePrefix("");
+        Messenger.setQuestionPrefix("");
+    }
+
+    public final Replacer replace(String target, Object replacement){
+        return new Replacer(target, String.valueOf(replacement));
+    }
+
+    /**
+     * Tells localized message to the sender.
+     * @param key The key from messages_x.yml
+     */
+    public final void locTell(String key, CommandSender sender){
+        Common.tell(sender, get(key, sender));
+    }
+
+    /**
+     * Tells localized message to the sender replacing all the placeholders defined in r.
+     * You can use <b>replace()</b> method to define placeholders and their replacements.
+     * @param key The key from messages_x.yml
+     * @param r Replaces
+     */
+    public final void locTell(String key, CommandSender sender, Replacer... r){
+        String msg = get(key, sender);
+        Common.tell(sender, Replacer.replaceAll(msg, r));
+    }
+
+    /**
+     * Tells localized message to the sender and aborts the command.
+     * Basically, it is just locTell + returnTell in one method.
+     * @param key The key from messages_x.yml
+     */
+    public final void locReturnTell(String key, CommandSender sender){
+        locTell(key, sender);
+        throw new CommandException();
+    }
+
+    /**
+     * Tells localized message to the sender replacing all the placeholders defined in r
+     * and then aborts the command.
+     * <p>You can use <b>replace()</b> method to define placeholders and their replacements.</p>
+     * @param key The key from messages_x.yml
+     * @param r Replaces
+     */
+    public final void locReturnTell(String key, CommandSender sender, Replacer... r){
+        locTell(key, sender, r);
+        throw new CommandException();
     }
 
 }

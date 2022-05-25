@@ -1,10 +1,16 @@
 CREATE DATABASE IF NOT EXISTS @db;
 USE @db;
 
-CREATE TABLE IF NOT EXISTS WorkerTypes (
+CREATE TABLE IF NOT EXISTS Professions (
     Id INT NOT NULL AUTO_INCREMENT,
     Name VARCHAR(50) NOT NULL,
-    DisplayName VARCHAR(50) NOT NULL,
+    Salary DECIMAL NOT NULL,
+    StationsTaxBonus DECIMAL NOT NULL,
+    AuctionTaxBonus DECIMAL NOT NULL,
+    TasksTaxBonus DECIMAL NOT NULL,
+    PermissionOpenBank BIT NOT NULL,
+    PermissionDeposit BIT NOT NULL,
+    PermissionWithdraw BIT NOT NULL,
     PRIMARY KEY (Id),
     UNIQUE(Name)
 );
@@ -39,27 +45,30 @@ CREATE TABLE IF NOT EXISTS Towns (
 CREATE TABLE IF NOT EXISTS Tasks (
     Id INT NOT NULL AUTO_INCREMENT,
     Town INT NOT NULL,
-    Player INT NOT NULL,
     Name VARCHAR(100) NOT NULL,
+    CreatorType VARCHAR(50) NOT NULL,
+    Creator INT NOT NULL,
     Description VARCHAR(255) NOT NULL,
-    TakeAmount INT NOT NULL,
+    CompletionsLeft INT NOT NULL,
     MinLevel INT NOT NULL,
     MaxLevel INT NOT NULL,
     MoneyReward DECIMAL NOT NULL,
     ExpReward DECIMAL NOT NULL,
     RepReward INT NOT NULL,
-    PlacementDatetime DATETIME NOT NULL,
-    TimeToComplete INT,
+    PlacementDateTime DATETIME NOT NULL,
+    TerminationDateTime DATETIME NOT NULL,
+    TimeToComplete INT NOT NULL,
     Priority INT NOT NULL,
     PRIMARY KEY (Id),
     FOREIGN KEY (Town) REFERENCES Towns (Id),
-    FOREIGN KEY (Player) REFERENCES Players (Id)
+    FOREIGN KEY (Creator) REFERENCES Players (Id)
 );
 
 CREATE TABLE IF NOT EXISTS TakenTasks (
     Id INT NOT NULL AUTO_INCREMENT,
     Player INT NOT NULL,
     Task INT NOT NULL,
+    TakingDateTime DATETIME NOT NULL,
     PRIMARY KEY (Id),
     FOREIGN KEY (Player) REFERENCES Players (Id),
     FOREIGN KEY (Task) REFERENCES Tasks (Id)
@@ -69,13 +78,14 @@ CREATE TABLE IF NOT EXISTS TownWorkers (
     Id INT NOT NULL AUTO_INCREMENT,
     Player INT NOT NULL,
     Town INT NOT NULL,
-    WorkerType INT NOT NULL,
+    Profession INT NOT NULL,
     DisplayName VARCHAR(50) NOT NULL,
     Salary DECIMAL NOT NULL,
     PRIMARY KEY (Id),
     FOREIGN KEY (Player) REFERENCES Players (Id),
     FOREIGN KEY (Town) REFERENCES Towns (Id),
-    FOREIGN KEY (WorkerType) REFERENCES WorkerTypes (Id)
+    FOREIGN KEY (Profession) REFERENCES Professions (Id),
+    UNIQUE(Player)
 );
 
 CREATE TABLE IF NOT EXISTS TownResources (

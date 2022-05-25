@@ -6,24 +6,24 @@ import org.mineacademy.fo.exception.CommandException;
 
 public class Logger {
 
-    public static void info(String s){
+    public static void info(Object s){
         Common.log(Settings.LOG_PREFIX + s);
     }
 
-    public static void warning(String s){
+    public static void warning(Object s){
         Common.warning("&e" + Settings.LOG_PREFIX + s);
     }
 
-    public static void error(String s){
+    public static void error(Object s){
         Common.error(new CommandException(), "&6" + Settings.LOG_PREFIX + s);
     }
 
-    public static void error(Throwable t, String s){
+    public static void error(Throwable t, Object s){
         Common.error(t, "&6" + Settings.LOG_PREFIX + s);
     }
 
     public static void logSqlQuery(String query){
-        if (Settings.General.SQL_DEBUG) info(Settings.LOG_PREFIX + "SQL Debug: " + query);
+        if (Settings.General.SQL_DEBUG) info("SQL Debug: " + query);
     }
 
     /**

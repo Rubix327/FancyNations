@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import me.rubix327.fancynations.data.DataManager;
 import me.rubix327.fancynations.data.AbstractDto;
+import me.rubix327.fancynations.data.fnplayers.FNPlayer;
+import me.rubix327.fancynations.data.towns.Town;
 import org.bukkit.Location;
 
 @Getter @Setter(AccessLevel.PACKAGE)
@@ -22,5 +24,13 @@ public class TownHouse extends AbstractDto {
         this.townId = townId;
         this.ownerId = ownerId;
         this.location = location;
+    }
+
+    public Town getTown(){
+        return DataManager.getTownManager().get(townId);
+    }
+
+    public FNPlayer getFNPlayer(){
+        return DataManager.getFNPlayerManager().get(ownerId);
     }
 }

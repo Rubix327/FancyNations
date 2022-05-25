@@ -26,6 +26,9 @@ public class DebugCommands extends SubCommandInterlayer{
         else if (args[0].equalsIgnoreCase("dbclear")){
             tell("&aThe database has been cleared.");
         }
+        else if (args[0].equalsIgnoreCase("logdb")){
+            tell(DatabaseManager.getInstance().extractQuery("db_test.sql"));
+        }
         else if (args[0].equalsIgnoreCase("msg")){
             if (args.length < 2) {
                 tell("&cSyntax: /test msg <key> [sender]");
