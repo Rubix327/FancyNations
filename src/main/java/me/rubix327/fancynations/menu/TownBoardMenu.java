@@ -4,10 +4,12 @@ import me.rubix327.fancynations.data.DataManager;
 import me.rubix327.fancynations.data.tasks.Task;
 import me.rubix327.fancynations.data.tasks.TaskType;
 import me.rubix327.fancynations.data.towns.Town;
+import me.rubix327.fancynations.util.Utils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
+import org.mineacademy.fo.menu.AdvancedMenu;
 import org.mineacademy.fo.menu.Menu;
 import org.mineacademy.fo.menu.button.Button;
 import org.mineacademy.fo.menu.button.ButtonMenu;
@@ -19,10 +21,14 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
-public class TownBoardMenu extends MenuInterlayer {
+public class TownBoardMenu extends AdvancedMenu {
 
     private final HashMap<Integer, ItemStack> itemSlots = new HashMap<>();
     private final ButtonMenu allTasks;
+
+    public TownBoardMenu(Player player) {
+        this(player, 1);
+    }
 
     public TownBoardMenu(Player player, int townId) {
         super(player);
@@ -95,7 +101,7 @@ public class TownBoardMenu extends MenuInterlayer {
         } else if (slot == 49) {
             return allTasks.getItem();
         } else {
-            return MenuUtil.getWrapperItem();
+            return getWrapperItem();
         }
 
     }
@@ -117,7 +123,7 @@ public class TownBoardMenu extends MenuInterlayer {
         return ItemCreator.of(
                 MenuUtil.Tasks.getItemMaterial(task.getType()).toString(),
                 MenuUtil.Tasks.getName(task),
-                (isPlayerAdmin ?
+                (Utils.isPlayerAdmin(getPlayer()) ?
                         MenuUtil.Tasks.getAdminLore(task, getPlayer()) :
                         MenuUtil.Tasks.getPlayerLore(task, getPlayer()))
         ).glow(MenuUtil.Tasks.isTaken(task, getPlayer())).build().make();

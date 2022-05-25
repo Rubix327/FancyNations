@@ -3,6 +3,7 @@ package me.rubix327.fancynations.util;
 import com.google.common.base.CaseFormat;
 import me.rubix327.fancynations.Localization;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -68,6 +69,10 @@ public class Utils {
         if (timeSeconds != 0) msg += timeSeconds + msgs.get("time_seconds_symbol", sender);
 
         return msg;
+    }
+
+    public static boolean isPlayerAdmin(Player player) {
+        return player.hasPermission("fancynations.admin");
     }
 
 }

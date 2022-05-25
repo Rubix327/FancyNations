@@ -1,13 +1,16 @@
 package me.rubix327.fancynations.menu;
 
+import me.rubix327.fancynations.Localization;
 import me.rubix327.fancynations.data.DataManager;
 import me.rubix327.fancynations.data.tasks.Task;
 import me.rubix327.fancynations.data.tasks.TaskType;
 import me.rubix327.fancynations.data.towns.Town;
-import me.rubix327.fancynations.util.Logger;
+import me.rubix327.fancynations.util.Utils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
+import org.mineacademy.fo.SoundUtil;
+import org.mineacademy.fo.menu.AdvancedMenuPagged;
 import org.mineacademy.fo.menu.Menu;
 import org.mineacademy.fo.menu.button.Button;
 import org.mineacademy.fo.menu.model.ItemCreator;
@@ -18,8 +21,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class TasksListMenu extends MenuPaginated<Task> {
+public class TasksListMenu extends AdvancedMenuPagged<Task> {
 
+    private final Localization msgs = Localization.getInstance();
     private boolean filterNotAvailable = false;
     private short sortingMode = 0;
     private int townId = 0;
@@ -33,7 +37,6 @@ public class TasksListMenu extends MenuPaginated<Task> {
         addButton(48, getFilterNotAvailableButton());
         addButton(49, getSortingButton());
         addButton(50, getCompleteAllButton());
-        enableDebug();
         init();
     }
 
@@ -47,7 +50,6 @@ public class TasksListMenu extends MenuPaginated<Task> {
         addButton(48, getFilterNotAvailableButton());
         addButton(49, getSortingButton());
         addButton(50, getCompleteAllButton());
-        enableDebug();
         init();
     }
 
@@ -55,9 +57,9 @@ public class TasksListMenu extends MenuPaginated<Task> {
         return new Button() {
             @Override
             public void onClickedInMenu(Player player, Menu menu, ClickType click) {
-                MenuUtil.Play.POP(player);
+                SoundUtil.Play.POP(player);
                 filterNotAvailable = !filterNotAvailable;
-                updateMenu();
+                refreshMenu();
             }
 
             @Override
@@ -79,8 +81,8 @@ public class TasksListMenu extends MenuPaginated<Task> {
                 } else {
                     sortingMode += 1;
                 }
-                MenuUtil.Play.POP(player);
-                updateMenu();
+                SoundUtil.Play.POP(player);
+                refreshMenu();
             }
 
             @Override
@@ -108,13 +110,13 @@ public class TasksListMenu extends MenuPaginated<Task> {
                         task.complete(getPlayer());
                         msgs.locTell("success_all_tasks_finished", player);
                         finished += 1;
-                        MenuUtil.Play.LEVEL_UP(player);
-                        updateMenu();
+                        SoundUtil.Play.LEVEL_UP(player);
+                        refreshMenu();
                     }
                 }
                 if (finished == 0) {
                     msgs.locTell("info_no_tasks_to_complete", player);
-                    MenuUtil.Play.NO(player);
+                    SoundUtil.Play.NO(player);
                 }
             }
 
@@ -145,11 +147,10 @@ public class TasksListMenu extends MenuPaginated<Task> {
             tasks = tasks.stream().filter(task -> task.getTownId() == this.townId).toList();
         }
 
-        if (isDebugEnabled()) Logger.info("Sorted elements: " + tasks.stream().map(Task::getId).toList());
         if (filterNotAvailable) {
             tasks = tasks.stream().filter(t -> MenuUtil.Tasks.isAllConditionsKept(t, getPlayer())).toList();
         }
-        if (!isPlayerAdmin) {
+        if (!Utils.isPlayerAdmin(getPlayer())) {
             tasks = tasks.stream().filter(t -> t.getType() != TaskType.No).toList();
             tasks = tasks.stream().filter(task -> task.getCompletionsLeft() != 0).toList();
             tasks = tasks.stream().filter(task -> !MenuUtil.Tasks.isTimeExpired(task, getPlayer())).toList();
@@ -165,33 +166,33 @@ public class TasksListMenu extends MenuPaginated<Task> {
             if (MenuUtil.Tasks.isTaken(task, player)) {
                 // Cannot be completed
                 if (!task.isAllObjectivesReadyToComplete(player)) {
-                    MenuUtil.Play.NO(player);
+                    SoundUtil.Play.NO(player);
                     msgs.locTell("error_task_objective_not_completed", getPlayer());
                     return;
                 }
                 if (MenuUtil.Tasks.isTimeExpired(task, player)) {
-                    MenuUtil.Play.NO(player);
+                    SoundUtil.Play.NO(player);
                     msgs.locTell("error_task_time_to_complete_expired", getPlayer());
-                    updateMenu();
+                    refreshMenu();
                     return;
                 }
                 // Task completion
-                MenuUtil.Play.LEVEL_UP(player);
+                SoundUtil.Play.LEVEL_UP(player);
                 task.complete(player);
                 msgs.locTell("success_task_finished", getPlayer(), msgs.replace("@id", task.getId()));
             } else {
                 if (!MenuUtil.Tasks.isAllConditionsKept(task, player)) {
-                    MenuUtil.Play.NO(player);
+                    SoundUtil.Play.NO(player);
                     msgs.locTell("error_task_conditions_not_kept", getPlayer());
                     return;
                 }
                 if (!MenuUtil.Tasks.isRequirementsSet(task)) {
-                    MenuUtil.Play.NO(player);
+                    SoundUtil.Play.NO(player);
                     msgs.locTell("error_task_requirements_not_set", getPlayer());
                     return;
                 }
                 // Task taking
-                MenuUtil.Play.ORB(player);
+                SoundUtil.Play.ORB(player);
                 task.take(player);
                 msgs.locTell("success_task_started", getPlayer(), msgs.replace("@id", task.getId()));
             }
@@ -199,7 +200,7 @@ public class TasksListMenu extends MenuPaginated<Task> {
         } else if (clickType == ClickType.MIDDLE) {
             // Cannot cancel because not taken
             if (!MenuUtil.Tasks.isTaken(task, player)) {
-                MenuUtil.Play.NO(player);
+                SoundUtil.Play.NO(player);
                 msgs.locTell("error_task_cannot_cancel", getPlayer());
                 return;
             }
@@ -208,7 +209,7 @@ public class TasksListMenu extends MenuPaginated<Task> {
             CompSound.NOTE_PLING.play(player, 1F, 0.2F);
             msgs.locTell("success_task_cancelled", getPlayer(), msgs.replace("@id", task.getId()));
         }
-        this.updateMenu();
+        this.refreshMenu();
     }
 
     @Override
@@ -216,7 +217,7 @@ public class TasksListMenu extends MenuPaginated<Task> {
         return ItemCreator.of(
                 MenuUtil.Tasks.getItemMaterial(task.getType()).toString(),
                 MenuUtil.Tasks.getName(task),
-                (isPlayerAdmin ?
+                (Utils.isPlayerAdmin(getPlayer()) ?
                         MenuUtil.Tasks.getAdminLore(task, getPlayer()) :
                         MenuUtil.Tasks.getPlayerLore(task, getPlayer()))
         ).glow(MenuUtil.Tasks.isTaken(task, getPlayer())).build().make();

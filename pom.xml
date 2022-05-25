@@ -11,7 +11,7 @@
     <name>FancyNations</name>
 
     <properties>
-        <foundation.version>5.13.1</foundation.version>
+        <foundation.version>5.13.1.1</foundation.version>
         <java.version>16</java.version>
         <plugin.version>1.16.5-R0.1-SNAPSHOT</plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -40,33 +40,6 @@
                         <goals>
                             <goal>shade</goal>
                         </goals>
-
-                        <configuration>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <finalName>${project.name}-${project.version}</finalName>
-                            <artifactSet>
-                                <includes>
-                                    <include>org.mineacademy:Game*</include>
-                                    <include>com.github.kangarko:Foundation*</include>
-                                </includes>
-                                <excludes>
-                                    <exclude>org.mineacademy:GameAPI*</exclude>
-                                </excludes>
-                            </artifactSet>
-                            <relocations>
-                                <relocation>
-                                    <pattern>org.mineacademy</pattern>
-                                    <shadedPattern>${project.groupId}.${project.artifactId}.lib</shadedPattern>
-                                    <excludes>
-                                        <exclude>org.mineacademy.${project.artifactId}.*</exclude>
-                                        <exclude>org.mineacademy.gameapi.*</exclude>
-                                        <exclude>org.mineacademy.boss.*</exclude>
-                                        <exclude>org.mineacademy.worldeditbridge.*</exclude>
-                                    </excludes>
-                                </relocation>
-                            </relocations>
-                        </configuration>
-
                     </execution>
                 </executions>
             </plugin>
@@ -89,10 +62,6 @@
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
-        <repository>
-            <id>sonatype</id>
-            <url>https://oss.sonatype.org/content/groups/public/</url>
-        </repository>
     </repositories>
 
     <dependencies>
@@ -105,7 +74,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.kangarko</groupId>
+            <groupId>com.github.Rubix327</groupId>
             <artifactId>Foundation</artifactId>
             <version>${foundation.version}</version>
             <scope>compile</scope>
