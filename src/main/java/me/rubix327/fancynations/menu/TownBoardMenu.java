@@ -5,14 +5,11 @@ import me.rubix327.fancynations.data.tasks.Task;
 import me.rubix327.fancynations.data.tasks.TaskType;
 import me.rubix327.fancynations.data.towns.Town;
 import me.rubix327.fancynations.util.Utils;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.mineacademy.fo.menu.AdvancedMenu;
-import org.mineacademy.fo.menu.Menu;
 import org.mineacademy.fo.menu.button.Button;
-import org.mineacademy.fo.menu.button.ButtonMenu;
 import org.mineacademy.fo.menu.model.ItemCreator;
 import org.mineacademy.fo.remain.CompMaterial;
 
@@ -23,16 +20,16 @@ import java.util.List;
 
 public class TownBoardMenu extends AdvancedMenu {
 
-    private final HashMap<Integer, ItemStack> itemSlots = new HashMap<>();
-    private final ButtonMenu allTasks;
+    private final HashMap<Integer, Button> itemSlots = new HashMap<>();
+    private final int townId;
 
     public TownBoardMenu(Player player) {
         this(player, 1);
     }
 
-    public TownBoardMenu(Player player, int townId) {
-        super(player);
-        setTitle("&aДоска заданий " + Town.getManager().get(townId).getName());
+    @Override
+    protected void setup() {
+        setTitle("Доска заданий " + Town.getManager().get(townId).getName());
         setSize(9 * 6);
         setSlotNumbersVisible();
 
@@ -60,17 +57,18 @@ public class TownBoardMenu extends AdvancedMenu {
         setSlots(createButtons(craftingTasks, 3), 28, 29, 30);
         setSlots(createButtons(mobKillTasks, 3), 32, 33, 34);
 
-        allTasks = new ButtonMenu(new TasksListMenu(getPlayer(), townId), CompMaterial.ENCHANTED_BOOK, "&7Все задания города");
+        addButton(49, getMenuButton(new TasksListMenu(getPlayer(), this.townId), ItemCreator.of(CompMaterial.ENCHANTED_BOOK, "&7Все задания города").make()));
     }
 
-    private Material getMaterial(TaskType type) {
-        return MenuUtil.Tasks.getItemMaterial(type);
+    public TownBoardMenu(Player player, int townId) {
+        super(player);
+        this.townId = townId;
     }
 
     private void setSlots(List<Button> list, int first, int second, int third) {
-        itemSlots.put(first, list.get(0).getItem());
-        itemSlots.put(second, list.get(1).getItem());
-        itemSlots.put(third, list.get(2).getItem());
+        addButton(first, list.get(0));
+        addButton(second, list.get(1));
+        addButton(third, list.get(2));
     }
 
     @SuppressWarnings("SameParameterValue")
@@ -80,7 +78,10 @@ public class TownBoardMenu extends AdvancedMenu {
             int finalI = i;
             buttons.add(new Button() {
                 @Override
-                public void onClickedInMenu(Player player, Menu menu, ClickType click) {
+                public void onClickedInMenu(Player player, AdvancedMenu menu, ClickType click) {
+                    if (this.getItem().getItemMeta().getDisplayName().contains("Задание еще не готово")) {
+                        return;
+                    }
                     tell("123");
                 }
 
@@ -96,10 +97,10 @@ public class TownBoardMenu extends AdvancedMenu {
     @Override
     public ItemStack getItemAt(int slot) {
 
-        if (itemSlots.containsKey(slot)) {
-            return itemSlots.get(slot);
+        if (getButtons().containsKey(slot)) {
+            return getButtons().get(slot).getItem();
         } else if (slot == 49) {
-            return allTasks.getItem();
+            return getButtons().get(49).getItem();
         } else {
             return getWrapperItem();
         }
@@ -116,16 +117,16 @@ public class TownBoardMenu extends AdvancedMenu {
     private ItemStack makeItem(List<Task> list, int number) {
         String defaultId = MainPanelMenu.getItemMaterials().get(TaskType.No).toString();
         if (list.size() < number) {
-            return ItemCreator.of(CompMaterial.fromString(defaultId), "&7Задание еще не готово... ").build().make();
+            return ItemCreator.of(CompMaterial.fromString(defaultId), "&7Задание еще не готово... ").make();
         }
         Task task = list.get(number - 1);
 
-        return ItemCreator.of(
-                MenuUtil.Tasks.getItemMaterial(task.getType()).toString(),
-                MenuUtil.Tasks.getName(task),
-                (Utils.isPlayerAdmin(getPlayer()) ?
+        return ItemCreator.of(MenuUtil.Tasks.getItemMaterial(task.getType()))
+                .name(MenuUtil.Tasks.getName(task))
+                .lore(Utils.isPlayerAdmin(getPlayer()) ?
                         MenuUtil.Tasks.getAdminLore(task, getPlayer()) :
                         MenuUtil.Tasks.getPlayerLore(task, getPlayer()))
-        ).glow(MenuUtil.Tasks.isTaken(task, getPlayer())).build().make();
+                .hideTags(true)
+                .glow(MenuUtil.Tasks.isTaken(task, getPlayer())).make();
     }
 }

@@ -20,7 +20,7 @@ public class GuiCommand extends SubCommandInterlayer{
         }
 
         // /fn gui tasksBoard <town_name>
-        if (isArg(0, "tasksBoard")){
+        if (isArg(0, "tasksBoard")) {
             checkArgs(2, "Please enter the town name.");
             int townId = Town.find(args[1], sender, "error_town_not_exist").getId();
             new TownBoardMenu(getPlayer(), townId).display();

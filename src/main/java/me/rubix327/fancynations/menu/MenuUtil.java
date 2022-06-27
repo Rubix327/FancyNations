@@ -10,8 +10,8 @@ import me.rubix327.fancynations.data.tasks.TaskType;
 import me.rubix327.fancynations.util.DependencyManager;
 import me.rubix327.fancynations.util.ItemUtils;
 import me.rubix327.fancynations.util.Utils;
+import me.rubix327.itemslangapi.Lang;
 import net.Indyuce.mmocore.api.player.PlayerData;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.mineacademy.fo.remain.CompMaterial;
 
@@ -23,13 +23,13 @@ public final class MenuUtil {
 
     final static class Tasks {
 
-        private static final HashMap<TaskType, Material> itemMaterials = new HashMap<>() {{
-            put(TaskType.Food, CompMaterial.PORKCHOP.toMaterial());
-            put(TaskType.Resource, CompMaterial.GRANITE.toMaterial());
-            put(TaskType.Crafting, CompMaterial.CHAINMAIL_CHESTPLATE.toMaterial());
-            put(TaskType.MobKill, CompMaterial.SKELETON_SKULL.toMaterial());
-            put(TaskType.No, CompMaterial.PAPER.toMaterial());
-            put(TaskType.Combined, CompMaterial.BLAZE_POWDER.toMaterial());
+        private static final HashMap<TaskType, CompMaterial> itemMaterials = new HashMap<>() {{
+            put(TaskType.Food, CompMaterial.PORKCHOP);
+            put(TaskType.Resource, CompMaterial.GRANITE);
+            put(TaskType.Crafting, CompMaterial.CHAINMAIL_CHESTPLATE);
+            put(TaskType.MobKill, CompMaterial.SKELETON_SKULL);
+            put(TaskType.No, CompMaterial.PAPER);
+            put(TaskType.Combined, CompMaterial.BLAZE_POWDER);
         }};
 
         static String getName(Task task) {
@@ -68,6 +68,7 @@ public final class MenuUtil {
         static List<String> getAdminLore(Task task, Player player) {
             List<String> lore = getPlayerLore(task, player);
             lore.add("");
+            lore.add("&8ID: " + task.getId());
             lore.add("&8Город: " + task.getTown().getName());
             lore.add("&8Всего взято: " + task.getCount());
             lore.add("&8Приоритет: " + task.getPriority());
@@ -83,14 +84,15 @@ public final class MenuUtil {
             }
             for (Objective objective : Objective.getAllFor(task.getId()).values()) {
                 s.add((objective.isReadyToComplete(player) ? Utils.YES : Utils.NO)
-                        + getObjectiveName(objective) + " x" + objective.getAmount() + "\n");
+                        + getObjectiveName(objective, Lang.valueOf(player.getLocale().toUpperCase()))
+                        + " x" + objective.getAmount() + "\n");
             }
             return s;
         }
 
-        private static String getObjectiveName(Objective objective) {
-            if (objective.getGroup().equalsIgnoreCase(TaskGroup.Gathering.toString())) {
-                return ItemUtils.getItemName(objective.getTarget());
+        private static String getObjectiveName(Objective objective, Lang lang) {
+            if (objective.getGroup().equals(TaskGroup.Gathering)) {
+                return ItemUtils.getItemName(objective.getTarget(), lang);
             }
             return "Моб1";
         }
@@ -163,7 +165,7 @@ public final class MenuUtil {
         }
 
         private static int getPlayerLevel(Player player) {
-            return (DependencyManager.getInstance().IS_MMOCORE_LOADED ?
+            return (DependencyManager.MMO_CORE.isLoaded() ?
                     PlayerData.get(player.getUniqueId()).getLevel() : player.getLevel());
         }
 
@@ -171,7 +173,7 @@ public final class MenuUtil {
             return false; // TODO
         }
 
-        static Material getItemMaterial(TaskType type) {
+        static CompMaterial getItemMaterial(TaskType type) {
             return itemMaterials.get(type);
         }
 

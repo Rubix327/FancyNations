@@ -1,6 +1,5 @@
 package me.rubix327.fancynations.commands;
 
-import org.bukkit.command.CommandSender;
 import org.mineacademy.fo.command.SimpleCommandGroup;
 import org.mineacademy.fo.model.SimpleComponent;
 
@@ -8,6 +7,11 @@ import java.util.Collections;
 import java.util.List;
 
 public class MainCommandGroup extends SimpleCommandGroup {
+
+    public MainCommandGroup() {
+        super("fancynations|fn");
+    }
+
     @Override
     protected void registerSubcommands() {
 
@@ -22,7 +26,7 @@ public class MainCommandGroup extends SimpleCommandGroup {
     }
 
     @Override
-    protected List<SimpleComponent> getNoParamsHeader(CommandSender sender) {
+    protected List<SimpleComponent> getNoParamsHeader() {
         String msg = "Type /fn gui to open the gui";
         return Collections.singletonList(SimpleComponent.of(msg));
     }

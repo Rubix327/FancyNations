@@ -24,14 +24,15 @@ public class MainPanelMenu extends AdvancedMenu {
 
     public MainPanelMenu(Player player) {
         super(player);
+    }
+
+    @Override
+    protected void setup() {
         setTitle("Главное меню");
         setSize(9 * 6);
 
-        addButton(10, getMenuButton(ItemCreator.of(CompMaterial.BOOK, "&7Задания").build().make(), TasksListMenu.class));
-        addButton(12, getMenuButton(ItemCreator.of(CompMaterial.BIRCH_FENCE, "&7Города").build().make(), TownsMenu.class));
-        addButton(14, getMenuButton(ItemCreator.of(CompMaterial.ITEM_FRAME, "&7Доска заданий города").build().make(), TownBoardMenu.class));
-
-        init();
+        addButton(10, getMenuButton(TasksListMenu.class, ItemCreator.of(CompMaterial.BOOK, "&7Задания").make()));
+        addButton(12, getMenuButton(TownsMenu.class, ItemCreator.of(CompMaterial.BIRCH_FENCE, "&7Города").make()));
+        addButton(14, getMenuButton(TownBoardMenu.class, ItemCreator.of(CompMaterial.ITEM_FRAME, "&7Доска заданий города").make()));
     }
-
 }

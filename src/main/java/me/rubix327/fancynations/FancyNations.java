@@ -13,14 +13,14 @@ import me.rubix327.fancynations.data.tasks.TaskType;
 import me.rubix327.fancynations.events.PlayerListener;
 import me.rubix327.fancynations.util.DependencyManager;
 import me.rubix327.fancynations.util.Logger;
+import me.rubix327.itemslangapi.ItemsLangAPI;
+import me.rubix327.itemslangapi.Lang;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.mineacademy.fo.Common;
 import org.mineacademy.fo.plugin.SimplePlugin;
-import org.mineacademy.fo.settings.YamlStaticConfig;
 
 import java.util.Arrays;
-import java.util.List;
 
 @NoArgsConstructor
 public final class FancyNations extends SimplePlugin {
@@ -31,21 +31,20 @@ public final class FancyNations extends SimplePlugin {
     private Economy economy = null;
     @Getter
     private DatabaseManager database;
-    private DependencyManager dependencies;
 
     @Override
-    protected void onPluginPreStart() {
+    protected void onPluginLoad() {
         instance = this;
+        Common.setLogPrefix(null);
     }
 
     @Override
     protected void onPluginStart() {
-        Common.setLogPrefix("");
-
         // Localization
         Localization localization = Localization.getInstance();
-        localization.init(Arrays.asList("en", "ru"));
+        localization.init(Arrays.asList(Lang.EN_US.toString(), Lang.RU_RU.toString()));
         Localization.resetPrefixes();
+        ItemsLangAPI.getApi().load(Lang.EN_US, Lang.RU_RU);
 
         // Database
         if (Settings.General.DATA_MANAGEMENT_TYPE.equalsIgnoreCase("database")){
@@ -68,26 +67,23 @@ public final class FancyNations extends SimplePlugin {
         // TODO: new task expire listener
 //        dataManager.runTaskExpireListener(1);
 
-        // Dependencies
-        dependencies = DependencyManager.getInstance();
-
         // Commands and events
         registerCommand(new TestCommands());
-        registerCommands("fancynations|fn", new MainCommandGroup());
+        registerCommands(new MainCommandGroup());
         registerEvents(new PlayerListener());
 
         // Economy
-        if (!setupEconomy() ) {
+        if (!setupEconomy()) {
             Logger.warning("Disabled due to no Vault dependency found!");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
 
         // Hooking into Mythic.io plugins
-        if (dependencies.IS_MYTHICLIB_LOADED) Logger.info("Hooked into MythicLib.");
-        if (dependencies.IS_MMOITEMS_LOADED) Logger.info("Hooked into MMOItems.");
-        if (dependencies.IS_MMOCORE_LOADED) Logger.info("Hooked into MMOCore.");
-        if (dependencies.IS_MYTHICMOBS_LOADED) Logger.info("Hooked into MythicMobs.");
+        if (DependencyManager.MYTHIC_LIB.isLoaded()) Logger.info("Hooked into MythicLib.");
+        if (DependencyManager.MMO_ITEMS.isLoaded()) Logger.info("Hooked into MMOItems.");
+        if (DependencyManager.MMO_CORE.isLoaded()) Logger.info("Hooked into MMOCore.");
+        if (DependencyManager.MYTHIC_MOBS.isLoaded()) Logger.info("Hooked into MythicMobs.");
 
         // Filling with default entries for the first time
         addDefaultEntries();
@@ -103,22 +99,18 @@ public final class FancyNations extends SimplePlugin {
     }
 
     private boolean setupEconomy() {
-        if (!dependencies.IS_VAULT_LOADED) return false;
+        if (!DependencyManager.VAULT.isLoaded()) return false;
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) return false;
         economy = rsp.getProvider();
         return true;
     }
 
-    private void addDefaultEntries(){
+    private void addDefaultEntries() {
         FNPlayer.init();
         ObjectiveInfo.init();
         TaskType.init();
         Profession.init();
     }
-
-    @Override
-    public List<Class<? extends YamlStaticConfig>> getSettings() {
-        return List.of(Settings.class);
-    }
+    
 }

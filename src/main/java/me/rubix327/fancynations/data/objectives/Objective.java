@@ -58,17 +58,18 @@ public abstract class Objective extends AbstractDto {
         return manager.getAllFor(taskId);
     }
 
-    public static void setTaskId(int objectiveId, int taskId){
+    public static void setTaskId(int objectiveId, int taskId) {
         manager.update(objectiveId, "task", taskId);
     }
 
-    public Task getTask(){
+    public Task getTask() {
         return DataManager.getTaskManager().get(taskId);
     }
 
-    public String getGroup(){
-        return ObjectiveInfo.getObjectiveInfo().get(TaskType.valueOf(typeName)).getGroup().toString();
+    public TaskGroup getGroup() {
+        return ObjectiveInfo.getObjectiveInfo().get(TaskType.valueOf(typeName)).getGroup();
     }
+
     public abstract boolean isReadyToComplete(Player player);
 
     public abstract void complete(Player player, CreatorType creatorType);
