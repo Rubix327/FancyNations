@@ -2,6 +2,8 @@ package me.rubix327.fancynations.util;
 
 import io.lumine.mythic.lib.api.item.NBTItem;
 import me.rubix327.fancynations.Settings;
+import me.rubix327.itemslangapi.ItemsLangAPI;
+import me.rubix327.itemslangapi.Lang;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.Type;
 import org.bukkit.inventory.ItemStack;
@@ -39,7 +41,7 @@ public class ItemUtils {
      * @return false if the item is vanilla, or MythicLib or MMOItems is not installed.
      */
     public static boolean isFromMmoItems(ItemStack item) {
-        if (DependencyManager.getInstance().IS_MYTHICLIB_LOADED && DependencyManager.getInstance().IS_MMOITEMS_LOADED) {
+        if (DependencyManager.MYTHIC_LIB.isLoaded() && DependencyManager.MMO_ITEMS.isLoaded()) {
             NBTItem nbtItem = NBTItem.get(item);
             return nbtItem.hasType();
         }
@@ -56,7 +58,7 @@ public class ItemUtils {
      * @throws NullPointerException if MythicLib or MMOItems is not installed.
      */
     public static String getMmoItemId(ItemStack item) {
-        if (DependencyManager.getInstance().IS_MYTHICLIB_LOADED && DependencyManager.getInstance().IS_MMOITEMS_LOADED) {
+        if (DependencyManager.MYTHIC_LIB.isLoaded() && DependencyManager.MMO_ITEMS.isLoaded()) {
             return NBTItem.get(item).getString("MMOITEMS_ITEM_ID");
         }
         throw new NullPointerException("No MythicLib or MMOItems dependency found.");
@@ -86,14 +88,14 @@ public class ItemUtils {
                 return item;
             }
         }
-        return ItemCreator.of(CompMaterial.fromString(target)).build().make();
+        return ItemCreator.of(CompMaterial.fromString(target)).make();
     }
 
-    public static String getItemName(String target) {
+    public static String getItemName(String target, Lang lang) {
         if (isFromMmoItems(target)) {
             return getMmoItemDisplayName(getItemFromTarget(target));
         } else {
-            return ItemCreator.of(CompMaterial.fromString(target)).build().make().getI18NDisplayName();
+            return ItemsLangAPI.getApi().translate(ItemCreator.of(CompMaterial.fromString(target)).make(), lang);
         }
     }
 

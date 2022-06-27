@@ -6,12 +6,15 @@ import me.rubix327.fancynations.data.tasks.Task;
 import me.rubix327.fancynations.data.tasks.TaskType;
 import me.rubix327.fancynations.data.towns.Town;
 import me.rubix327.fancynations.util.Utils;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
+import org.mineacademy.fo.Common;
 import org.mineacademy.fo.SoundUtil;
+import org.mineacademy.fo.menu.AdvancedMenu;
 import org.mineacademy.fo.menu.AdvancedMenuPagged;
-import org.mineacademy.fo.menu.Menu;
+import org.mineacademy.fo.menu.LockedSlotsFigure;
 import org.mineacademy.fo.menu.button.Button;
 import org.mineacademy.fo.menu.model.ItemCreator;
 import org.mineacademy.fo.remain.CompMaterial;
@@ -25,38 +28,48 @@ public class TasksListMenu extends AdvancedMenuPagged<Task> {
 
     private final Localization msgs = Localization.getInstance();
     private boolean filterNotAvailable = false;
-    private short sortingMode = 0;
+    private SortingMode sortingMode = SortingMode.ID;
     private int townId = 0;
+
+    enum SortingMode {
+        ID,
+        REWARDS,
+        PRIORITY;
+
+        private static final SortingMode[] modes = values();
+
+        public SortingMode getNext() {
+            return modes[(this.ordinal() + 1) % modes.length];
+        }
+
+    }
 
     public TasksListMenu(Player player) {
         super(player);
+        setTitle("&lСписок всех заданий");
+    }
 
+    @Override
+    protected void setup() {
+        Common.setTellPrefix(null);
         setTitle("&lСписок всех заданий");
         setSize(9 * 6);
-        setLockedSlots("9x6_rows");
+        setLockedSlots(LockedSlotsFigure.ROWS_9X6);
         addButton(48, getFilterNotAvailableButton());
         addButton(49, getSortingButton());
         addButton(50, getCompleteAllButton());
-        init();
     }
 
     public TasksListMenu(Player player, int townId) {
         super(player);
         this.townId = townId;
-
         setTitle("&lСписок заданий " + Town.getManager().get(townId).getName());
-        setSize(9 * 6);
-        setLockedSlots("9x6_rows");
-        addButton(48, getFilterNotAvailableButton());
-        addButton(49, getSortingButton());
-        addButton(50, getCompleteAllButton());
-        init();
     }
 
     private Button getFilterNotAvailableButton() {
         return new Button() {
             @Override
-            public void onClickedInMenu(Player player, Menu menu, ClickType click) {
+            public void onClickedInMenu(Player player, AdvancedMenu menu, ClickType click) {
                 SoundUtil.Play.POP(player);
                 filterNotAvailable = !filterNotAvailable;
                 refreshMenu();
@@ -66,8 +79,8 @@ public class TasksListMenu extends AdvancedMenuPagged<Task> {
             public ItemStack getItem() {
                 String name = "&7» Фильтр";
                 return (filterNotAvailable ?
-                        ItemCreator.of(CompMaterial.GREEN_BANNER, name, "", "&aНажмите, чтобы показать задания", "&aс неподходящими условиями").build().make() :
-                        ItemCreator.of(CompMaterial.RED_BANNER, name, "", "&cНажмите, чтобы убрать задания", "&cс неподходящими условиями").build().make());
+                        ItemCreator.of(CompMaterial.GREEN_BANNER, name, "", "&aНажмите, чтобы показать задания", "&aс неподходящими условиями").make() :
+                        ItemCreator.of(CompMaterial.RED_BANNER, name, "", "&cНажмите, чтобы убрать задания", "&cс неподходящими условиями").make());
             }
         };
     }
@@ -75,12 +88,13 @@ public class TasksListMenu extends AdvancedMenuPagged<Task> {
     private Button getSortingButton() {
         return new Button() {
             @Override
-            public void onClickedInMenu(Player player, Menu menu, ClickType click) {
-                if (sortingMode >= 2) {
-                    sortingMode = 0;
-                } else {
-                    sortingMode += 1;
-                }
+            public void onClickedInMenu(Player player, AdvancedMenu menu, ClickType click) {
+//                if (sortingMode >= 2) {
+//                    sortingMode = 0;
+//                } else {
+//                    sortingMode += 1;
+//                }
+                sortingMode = sortingMode.getNext();
                 SoundUtil.Play.POP(player);
                 refreshMenu();
             }
@@ -88,13 +102,32 @@ public class TasksListMenu extends AdvancedMenuPagged<Task> {
             @Override
             public ItemStack getItem() {
                 String name = "&7» Сортировка";
-                String lore = "&8Режим:";
-                if (sortingMode == 1)
-                    return ItemCreator.of(CompMaterial.GREEN_BANNER, name, "", lore + "&2 порядковый номер").build().make();
-                if (sortingMode == 2)
-                    return ItemCreator.of(CompMaterial.PURPLE_BANNER, name, "", lore + "&d лучшие награды").build().make();
-                else
-                    return ItemCreator.of(CompMaterial.CYAN_BANNER, name, "", lore + "&b высший приоритет").build().make();
+                if (sortingMode == SortingMode.ID) {
+                    return ItemCreator.of(CompMaterial.GREEN_BANNER)
+                            .name(name)
+                            .lore("",
+                                    "&7▶ &2дата создания",
+                                    "&8▶ лучшие награды",
+                                    "&8▶ высший приоритет"
+                            ).make();
+                } else if (sortingMode == SortingMode.REWARDS) {
+                    return ItemCreator.of(CompMaterial.PURPLE_BANNER)
+                            .name(name)
+                            .lore("",
+                                    "&8▶ порядковый номер",
+                                    "&7▶ &dлучшие награды",
+                                    "&8▶ высший приоритет"
+                            ).make();
+                } else if (sortingMode == SortingMode.PRIORITY) {
+                    return ItemCreator.of(CompMaterial.CYAN_BANNER)
+                            .name(name)
+                            .lore("",
+                                    "&8▶ порядковый номер",
+                                    "&8▶ лучшие награды",
+                                    "&7▶ &bвысший приоритет"
+                            ).make();
+                }
+                return new ItemStack(Material.AIR);
             }
         };
     }
@@ -102,7 +135,7 @@ public class TasksListMenu extends AdvancedMenuPagged<Task> {
     private Button getCompleteAllButton() {
         return new Button() {
             @Override
-            public void onClickedInMenu(Player player, Menu menu, ClickType click) {
+            public void onClickedInMenu(Player player, AdvancedMenu menu, ClickType click) {
                 short finished = 0;
                 for (Task task : getElements()) {
                     if (MenuUtil.Tasks.isTaken(task, player) && task.isAllObjectivesReadyToComplete(player)
@@ -122,7 +155,7 @@ public class TasksListMenu extends AdvancedMenuPagged<Task> {
 
             @Override
             public ItemStack getItem() {
-                return ItemCreator.of(CompMaterial.LIME_BANNER, "&a» Сдать все задания").build().make();
+                return ItemCreator.of(CompMaterial.LIME_BANNER, "&a» Сдать все задания").make();
             }
         };
     }
@@ -131,13 +164,13 @@ public class TasksListMenu extends AdvancedMenuPagged<Task> {
     protected List<Task> getElements() {
         List<Task> tasks = new ArrayList<>(DataManager.getTaskManager().getAll().values());
 
-        if (sortingMode == 0) {
+        if (sortingMode == SortingMode.PRIORITY) {
             tasks.sort((o1, o2) -> (o1.getPriority() < o2.getPriority() ? 1 : o1.getPriority() != o2.getPriority() ? -1 :
                     o1.getCompletionsLeft() < o2.getCompletionsLeft() ? -1 :
                             o1.getCompletionsLeft() != o2.getCompletionsLeft() ? 1 : 0));
-        } else if (sortingMode == 1) {
+        } else if (sortingMode == SortingMode.ID) {
             tasks.sort(Comparator.comparingInt(Task::getId));
-        } else if (sortingMode == 2) {
+        } else if (sortingMode == SortingMode.REWARDS) {
             tasks.sort((o1, o2) -> o1.getMoneyReward() < o2.getMoneyReward() ? 1 : o1.getMoneyReward() != o2.getMoneyReward() ? -1 :
                     o1.getExpReward() < o2.getExpReward() ? 1 : o1.getExpReward() != o2.getExpReward() ? -1 :
                             o1.getRepReward() < o2.getRepReward() ? 1 : o1.getRepReward() != o2.getRepReward() ? -1 : 0);
@@ -162,6 +195,7 @@ public class TasksListMenu extends AdvancedMenuPagged<Task> {
     protected void onElementClick(Player player, Task task, int slot, ClickType clickType) {
 
         tell(clickType.toString());
+        tell(Common.getTellPrefix());
         if (clickType == ClickType.LEFT) {
             if (MenuUtil.Tasks.isTaken(task, player)) {
                 // Cannot be completed
@@ -215,12 +249,13 @@ public class TasksListMenu extends AdvancedMenuPagged<Task> {
     @Override
     protected ItemStack convertToItemStack(Task task) {
         return ItemCreator.of(
-                MenuUtil.Tasks.getItemMaterial(task.getType()).toString(),
-                MenuUtil.Tasks.getName(task),
-                (Utils.isPlayerAdmin(getPlayer()) ?
+                        MenuUtil.Tasks.getItemMaterial(task.getType()))
+                .name(MenuUtil.Tasks.getName(task))
+                .lore((Utils.isPlayerAdmin(getPlayer()) ?
                         MenuUtil.Tasks.getAdminLore(task, getPlayer()) :
                         MenuUtil.Tasks.getPlayerLore(task, getPlayer()))
-        ).glow(MenuUtil.Tasks.isTaken(task, getPlayer())).build().make();
+                ).hideTags(true)
+                .glow(MenuUtil.Tasks.isTaken(task, getPlayer())).make();
     }
 
 }

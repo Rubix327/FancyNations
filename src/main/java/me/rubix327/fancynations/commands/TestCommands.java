@@ -12,7 +12,7 @@ import org.mineacademy.fo.remain.CompMaterial;
 public class TestCommands extends SimpleCommand {
     public TestCommands() {
         super("test");
-        addTellPrefix(false);
+        setTellPrefix("");
     }
 
     // test add <task_id> <item> <amount>
@@ -47,7 +47,7 @@ public class TestCommands extends SimpleCommand {
                     "&a✔ Большое зелье маны х3", "&c✖ Магическая эссенция х2", "",
                     "&8Условия:", "&a✔ Уровень: 1-15", "&a✔ Время на выполнение: 12ч", "",
                     "&8Награды:", "&a- Монеты х300", "&a- Опыт х150", "&a- Репутация х5", "",
-                    "&eНажмите, чтобы взять задание").build().make());
+                    "&eНажмите, чтобы взять задание").make());
         }
         else if (args[0].equalsIgnoreCase("progress")){
             getPlayer().getInventory().addItem(ItemCreator.of(CompMaterial.REDSTONE,
@@ -58,7 +58,7 @@ public class TestCommands extends SimpleCommand {
                     "",
                     "&8Объект: &7FancyNations",
                     "&8Автор: &7Rubix327",
-                    "&8Дата: &710.05.2022 01:38 МСК").build().make());
+                    "&8Дата: &710.05.2022 01:38 МСК").make());
         }
         else if (args[0].equalsIgnoreCase("progress_en")){
             getPlayer().getInventory().addItem(ItemCreator.of(CompMaterial.REDSTONE,
@@ -69,7 +69,7 @@ public class TestCommands extends SimpleCommand {
                     "",
                     "&8Object: &7FancyNations",
                     "&8Author: &7Rubix327",
-                    "&8Date: &710.05.2022 01:38 GMT+3").build().make());
+                    "&8Date: &710.05.2022 01:38 GMT+3").make());
         }
         else if (args[0].equalsIgnoreCase("loc")){
             tell(getPlayer().getLocation().toString());

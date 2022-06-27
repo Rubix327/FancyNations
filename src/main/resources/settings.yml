@@ -5,7 +5,7 @@ Version: 1
 # Some locales are available from the box, but for others you should create them yourself.
 # For example, if you set this to 'uk' but messages_uk.yml does not exist in messages/ folder
 # then english will be used until you create this file with your custom messages.
-Locale: en
+Locale: en_us
 
 Messages:
   # Should we prepend all messages with plugin prefix set on prefix_plugin?
@@ -82,7 +82,7 @@ Rewards:
   Town_Resource_Share: 50
   Town_Mobs_Share: 100
 
-# Default and maximum professions bonuses (in %).
+# Default salaries and maximum professions bonuses (in %).
 # Mayor or admin can change bonuses in-game within 0 and these values.
 # Available: 0-100 (0 = no bonus)
 Professions:

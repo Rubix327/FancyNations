@@ -37,7 +37,6 @@ public class Task extends AbstractDto {
     @Getter
     private static ITaskManager manager = DataManager.getTaskManager();
     private static Localization msgs = Localization.getInstance();
-    private static DependencyManager dependencies = DependencyManager.getInstance();
 
     @Getter
     private final int id;
@@ -203,7 +202,7 @@ public class Task extends AbstractDto {
         Reputation.increase(fnPlayer.getId(), getTownId(), getRepReward());
 
         // Give MMO experience reward
-        if (dependencies.IS_MMOCORE_LOADED){
+        if (DependencyManager.MMO_CORE.isLoaded()) {
             PlayerData.get(player.getUniqueId())
                     .giveExperience(getExpReward(), EXPSource.QUEST, player.getLocation(), false);
         }

@@ -6,7 +6,6 @@ import me.rubix327.fancynations.Localization;
 import me.rubix327.fancynations.data.DataManager;
 import me.rubix327.fancynations.data.fnplayers.FNPlayer;
 import me.rubix327.fancynations.data.townworkers.TownWorker;
-import me.rubix327.fancynations.util.DependencyManager;
 import me.rubix327.fancynations.util.PlayerUtils;
 import me.rubix327.fancynations.util.Replacer;
 import net.milkbowl.vault.economy.Economy;
@@ -17,14 +16,13 @@ import org.mineacademy.fo.command.SimpleSubCommand;
 
 public abstract class SubCommandInterlayer extends SimpleSubCommand {
 
-    DependencyManager dependencies = DependencyManager.getInstance();
     Economy economy = FancyNations.getInstance().getEconomy();
     Localization msgs = Localization.getInstance();
     String permLabel;
 
     protected SubCommandInterlayer(SimpleCommandGroup group, String subLabel, String permLabel){
         super(group, subLabel);
-        addTellPrefix(false);
+        setTellPrefix(null);
         setPermission(null);
         this.permLabel = permLabel;
     }

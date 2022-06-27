@@ -46,7 +46,7 @@ public class Localization {
      */
     private void saveFiles(List<String> files){
         for (String fileName : files){
-            fileName = "messages_" + fileName + ".yml";
+            fileName = fileName.toLowerCase() + ".yml";
             File serverFile = new File(this.plugin.getDataFolder() + "/messages", fileName);
             if (!serverFile.exists()){
                 Logger.info("Localization " + fileName + " does not exist. " + "Copying one from plugin's jar...");
@@ -74,9 +74,8 @@ public class Localization {
             }
 
             if (file.isDirectory()) continue;
-            if (!file.getName().startsWith("messages_")) continue;
             if (!file.getName().endsWith(".yml")) continue;
-            langTag = file.getName().replace("messages_", "").replace(".yml", "");
+            langTag = file.getName().replace(".yml", "");
             Logger.info("Found '" + langTag + "' localization. Loading all keys from the file...");
 
             for (String key : config.getKeys(true)) {
@@ -102,24 +101,25 @@ public class Localization {
      * If sender is a player then he's locale will be used.
      * If sender is anyone else then server's default locale will be used.</p>
      * <b>Suitable when command sender is unknown.</b>
-     * @param key The name of the configuration message.
+     *
+     * @param key    The name of the configuration message.
      * @param sender Command sender
      * @return The message.
      */
-    public String get(String key, CommandSender sender){
-        if (sender instanceof Player && Settings.Messages.USE_PLAYER_BASED_LOCALES){
-            String playerLang = ((Player) sender).locale().getLanguage();
+    public String get(String key, CommandSender sender) {
+        if (sender instanceof Player && Settings.Messages.USE_PLAYER_BASED_LOCALES) {
+            String playerLang = ((Player) sender).getLocale();
             // If player's locale exists then turn it on
-            if (messagesMap.containsKey(playerLang)){
+            if (messagesMap.containsKey(playerLang)) {
                 return get(key, playerLang);
             }
         }
         // If server's locale exists then turn it on
-        if (messagesMap.containsKey(Settings.LOCALE_PREFIX)){
+        if (messagesMap.containsKey(Settings.LOCALE_PREFIX)) {
             return get(key, Settings.LOCALE_PREFIX);
         }
         // If neither player's nor server's locale exists then turn on english
-        return get(key, "en");
+        return get(key, "en_us");
     }
 
     /**
@@ -128,8 +128,9 @@ public class Localization {
      * If server's default key does not exist then english will be used.
      * If the key has not been found in english localization then it will drop an error message.</p>
      * <b>Suitable when you want to use specific language.</b>
-     * @param key The name of the configuration message.
-     * @param locale The locale you need to use (e.g. "en" or "ru").
+     *
+     * @param key    The name of the configuration message.
+     * @param locale The locale you need to use (e.g. "en_us" or "ru_ru").
      * @return The message.
      */
     public String get(String key, String locale){
@@ -140,17 +141,17 @@ public class Localization {
 
         while (msg == null) {
             if (attempts == 1) {
-                invalidFiles.add("(PLAYER LOCALE) messages_" + locale + ".yml");
+                invalidFiles.add("(PLAYER LOCALE) " + locale + ".yml");
                 msg = messagesMap.get(Settings.LOCALE_PREFIX).get(key);
                 attempts += 1;
             }
             else if (attempts == 2) {
-                invalidFiles.add("(SERVER DEFAULT) messages_" + Settings.LOCALE_PREFIX + ".yml");
+                invalidFiles.add("(SERVER DEFAULT) " + Settings.LOCALE_PREFIX + ".yml");
                 msg = messagesMap.get("en").get(key);
                 attempts += 1;
             }
             else if (attempts >= 3) {
-                invalidFiles.add("(ENG) messages_en.yml");
+                invalidFiles.add("(ENG) en_us.yml");
                 msg = "@warn_prefix &cMessage not found in any of the messages files (key: " + key + ")." +
                         " Please contact an administrator.";
             }
@@ -219,7 +220,8 @@ public class Localization {
 
     /**
      * Tells localized message to the sender.
-     * @param key The key from messages_x.yml
+     *
+     * @param key The key from messages/x.yml
      */
     public final void locTell(String key, CommandSender sender){
         Common.tell(sender, get(key, sender));
@@ -228,8 +230,9 @@ public class Localization {
     /**
      * Tells localized message to the sender replacing all the placeholders defined in r.
      * You can use <b>replace()</b> method to define placeholders and their replacements.
-     * @param key The key from messages_x.yml
-     * @param r Replaces
+     *
+     * @param key The key from messages/x.yml
+     * @param r   Replaces
      */
     public final void locTell(String key, CommandSender sender, Replacer... r){
         String msg = get(key, sender);
@@ -239,7 +242,8 @@ public class Localization {
     /**
      * Tells localized message to the sender and aborts the command.
      * Basically, it is just locTell + returnTell in one method.
-     * @param key The key from messages_x.yml
+     *
+     * @param key The key from messages/x.yml
      */
     public final void locReturnTell(String key, CommandSender sender){
         locTell(key, sender);
@@ -250,8 +254,9 @@ public class Localization {
      * Tells localized message to the sender replacing all the placeholders defined in r
      * and then aborts the command.
      * <p>You can use <b>replace()</b> method to define placeholders and their replacements.</p>
-     * @param key The key from messages_x.yml
-     * @param r Replaces
+     *
+     * @param key The key from messages/x.yml
+     * @param r   Replaces
      */
     public final void locReturnTell(String key, CommandSender sender, Replacer... r){
         locTell(key, sender, r);

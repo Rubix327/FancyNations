@@ -13,6 +13,7 @@ import me.rubix327.fancynations.data.tasks.CreatorType;
 import me.rubix327.fancynations.data.tasks.Task;
 import me.rubix327.fancynations.data.townresources.TownResource;
 import me.rubix327.fancynations.data.towns.Town;
+import me.rubix327.fancynations.util.DependencyManager;
 import me.rubix327.fancynations.util.Utils;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.experience.EXPSource;
@@ -100,17 +101,16 @@ public class TaskCommands extends SubCommandInterlayer {
             checkPermission("setvalue." + variable);
 
             // Task does not exist
-            if (!DataManager.getTaskManager().exists(taskId)){
+            if (!DataManager.getTaskManager().exists(taskId)) {
                 locReturnTell("error_task_not_exist");
             }
 
             // Validations
-            if (shouldBeDoubles.contains(variable.toLowerCase())){
+            if (shouldBeDoubles.contains(variable.toLowerCase())) {
                 if (!Utils.isStringDouble(args[3])) {
                     locReturnTell("error_value_must_be_double");
                 }
-            }
-            else if (shouldBeIntegers.contains(variable.toLowerCase())){
+            } else if (shouldBeIntegers.contains(variable.toLowerCase())) {
                 if (!Utils.isStringInt(args[3])) {
                     locReturnTell("error_value_must_be_integer");
                 }
@@ -273,7 +273,7 @@ public class TaskCommands extends SubCommandInterlayer {
             Task task = DataManager.getTaskManager().get(taskId);
 
             // Player's MMO level is not suitable for this task
-            if (dependencies.IS_MMOCORE_LOADED) {
+            if (DependencyManager.MMO_CORE.isLoaded()) {
                 PlayerData playerData = PlayerData.get(getPlayer().getUniqueId());
                 if (playerData.getLevel() < task.getMinLevel() || playerData.getLevel() > task.getMaxLevel()) {
                     msgs.locTell("error_task_level_not_suitable", getPlayer());
@@ -332,7 +332,7 @@ public class TaskCommands extends SubCommandInterlayer {
             Reputation.increase(fnPlayer.getId(), task.getTownId(), task.getRepReward());
 
             // Give MMO experience reward
-            if (dependencies.IS_MMOCORE_LOADED){
+            if (DependencyManager.MMO_CORE.isLoaded()) {
                 PlayerData.get(getPlayer().getUniqueId())
                         .giveExperience(task.getExpReward(), EXPSource.QUEST, getPlayer().getLocation(), false);
             }
