@@ -9,22 +9,10 @@
         <buildnumber/>
     </target>
 
-    <!-- Путь к тестовому серверу для Windows -->
     <condition property="serverPath" value="your_path">
-        <os family="windows" />
+        <os family="windows"/>
     </condition>
 
-    <!-- Путь к тестовому серверу для Linux -->
-    <condition property="serverPath" value="your_path">
-        <os family="unix" />
-    </condition>
-
-    <!-- Путь к тестовому серверу для macOS -->
-    <condition property="serverPath" value="your_path">
-        <os family="mac" />
-    </condition>
-
-    <!-- Компилируем плагин -->
     <target name="Build">
         <delete>
             <fileset dir="${serverPath}\plugins\" includes="${ant.project.name}*"/>
