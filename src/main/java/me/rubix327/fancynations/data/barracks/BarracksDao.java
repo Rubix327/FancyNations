@@ -1,7 +1,7 @@
 package me.rubix327.fancynations.data.barracks;
 
 import me.rubix327.fancynations.data.AbstractDao;
-import me.rubix327.fancynations.data.DataManager;
+import me.rubix327.fancynations.util.Utils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,7 +30,7 @@ public class BarracksDao extends AbstractDao<Barracks> implements IBarracksManag
         String location = resultSet.getString("Location");
         int level = resultSet.getInt("Level");
 
-        return new Barracks(id, townId, name, DataManager.deserializeLocation(location), level);
+        return new Barracks(id, townId, name, Utils.deserializeLocation(location), level);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class BarracksDao extends AbstractDao<Barracks> implements IBarracksManag
                 .replace("@Table", table)
                 .replace("@TownId", String.valueOf(barracks.getTownId()))
                 .replace("@Name", String.valueOf(barracks.getName()))
-                .replace("@Location", DataManager.serializeLocation(barracks.getLocation()))
+                .replace("@Location", Utils.serializeLocation(barracks.getLocation()))
                 .replace("@Level", String.valueOf(barracks.getLevel()));
 
         super.executeVoid(query);

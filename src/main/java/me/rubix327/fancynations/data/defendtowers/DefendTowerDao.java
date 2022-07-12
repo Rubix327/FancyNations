@@ -1,7 +1,7 @@
 package me.rubix327.fancynations.data.defendtowers;
 
 import me.rubix327.fancynations.data.AbstractDao;
-import me.rubix327.fancynations.data.DataManager;
+import me.rubix327.fancynations.util.Utils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -33,7 +33,7 @@ public class DefendTowerDao extends AbstractDao<DefendTower> implements IDefendT
         int amount = resultSet.getInt("Amount");
 
         return new DefendTower(
-                id, townId, name, DataManager.deserializeLocation(location), level, loadedResource, amount);
+                id, townId, name, Utils.deserializeLocation(location), level, loadedResource, amount);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class DefendTowerDao extends AbstractDao<DefendTower> implements IDefendT
                 .replace("@Table", table)
                 .replace("@TownId", String.valueOf(tower.getTownId()))
                 .replace("@Name", String.valueOf(tower.getName()))
-                .replace("@Location", DataManager.serializeLocation(tower.getLocation()))
+                .replace("@Location", Utils.serializeLocation(tower.getLocation()))
                 .replace("@Level", String.valueOf(tower.getLevel()))
                 .replace("@LoadedResource", String.valueOf(tower.getLoadedResource()))
                 .replace("@Amount", String.valueOf(tower.getAmount()));

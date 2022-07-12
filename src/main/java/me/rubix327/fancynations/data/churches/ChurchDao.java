@@ -1,7 +1,7 @@
 package me.rubix327.fancynations.data.churches;
 
 import me.rubix327.fancynations.data.AbstractDao;
-import me.rubix327.fancynations.data.DataManager;
+import me.rubix327.fancynations.util.Utils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,7 +30,7 @@ public class ChurchDao extends AbstractDao<Church> implements IChurchManager {
         String location = resultSet.getString("Location");
         int level = resultSet.getInt("Level");
 
-        return new Church(id, townId, name, DataManager.deserializeLocation(location), level);
+        return new Church(id, townId, name, Utils.deserializeLocation(location), level);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class ChurchDao extends AbstractDao<Church> implements IChurchManager {
                 .replace("@Table", table)
                 .replace("@TownId", String.valueOf(church.getTownId()))
                 .replace("@Name", String.valueOf(church.getName()))
-                .replace("@Location", DataManager.serializeLocation(church.getLocation()))
+                .replace("@Location", Utils.serializeLocation(church.getLocation()))
                 .replace("@Level", String.valueOf(church.getLevel()));
 
         super.executeVoid(query);

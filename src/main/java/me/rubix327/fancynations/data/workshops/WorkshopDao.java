@@ -1,7 +1,7 @@
 package me.rubix327.fancynations.data.workshops;
 
 import me.rubix327.fancynations.data.AbstractDao;
-import me.rubix327.fancynations.data.DataManager;
+import me.rubix327.fancynations.util.Utils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,7 +30,7 @@ public class WorkshopDao extends AbstractDao<Workshop> implements IWorkshopManag
         String location = resultSet.getString("Location");
         int level = resultSet.getInt("Level");
 
-        return new Workshop(id, townId, name, DataManager.deserializeLocation(location), level);
+        return new Workshop(id, townId, name, Utils.deserializeLocation(location), level);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class WorkshopDao extends AbstractDao<Workshop> implements IWorkshopManag
                 .replace("@Table", table)
                 .replace("@TownId", String.valueOf(workshop.getTownId()))
                 .replace("@Name", String.valueOf(workshop.getName()))
-                .replace("@Location", DataManager.serializeLocation(workshop.getLocation()))
+                .replace("@Location", Utils.serializeLocation(workshop.getLocation()))
                 .replace("@Level", String.valueOf(workshop.getLevel()));
 
         super.executeVoid(query);
