@@ -24,7 +24,7 @@ public class FNPlayer extends AbstractDto implements IUniqueNamable {
     private final String name;
 
     public FNPlayer(String name) {
-        this.id = manager.getMaxId() + 1;
+        this.id = manager.getNextId();
         this.name = name;
     }
 

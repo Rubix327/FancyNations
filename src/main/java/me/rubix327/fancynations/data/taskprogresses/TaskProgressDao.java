@@ -50,6 +50,7 @@ public class TaskProgressDao extends AbstractDao<TaskProgress> implements ITaskP
         query = query
                 .replace("@Table", table)
                 .replace("@ObjectiveId", String.valueOf(progress.getObjectiveId()))
+                .replace("@TakenTaskId", String.valueOf(progress.getTakenTaskId()))
                 .replace("@Progress", String.valueOf(progress.getProgress()));
 
         executeVoid(query);

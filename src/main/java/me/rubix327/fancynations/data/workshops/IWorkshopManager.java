@@ -10,6 +10,7 @@ public interface IWorkshopManager {
     void update(int workshopId, String variable, Object newValue);
     void remove(int workshopId);
     HashMap<Integer, Workshop> getAll();
-    int getMaxId();
+
+    int getNextId();
 
 }

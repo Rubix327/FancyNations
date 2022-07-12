@@ -11,12 +11,10 @@ import me.rubix327.fancynations.data.AbstractDto;
 import me.rubix327.fancynations.data.DataManager;
 import me.rubix327.fancynations.data.fnplayers.FNPlayer;
 import me.rubix327.fancynations.data.objectives.Objective;
-import me.rubix327.fancynations.data.objectives.ObjectiveInfo;
 import me.rubix327.fancynations.data.objectives.ObjectivesDao;
 import me.rubix327.fancynations.data.reputations.Reputation;
 import me.rubix327.fancynations.data.takentasks.TakenTask;
 import me.rubix327.fancynations.data.taskprogresses.TaskProgress;
-import me.rubix327.fancynations.data.townresources.TownResource;
 import me.rubix327.fancynations.data.towns.Town;
 import me.rubix327.fancynations.util.DependencyManager;
 import net.Indyuce.mmocore.api.player.PlayerData;
@@ -57,7 +55,7 @@ public class Task extends AbstractDto {
     private int timeToComplete;
 
     public Task(int townId, String name, int creatorId, String creatorTypeName){
-        this.id = manager.getMaxId() + 1;
+        this.id = manager.getNextId();
         this.townId = townId;
         this.name = name;
         this.creatorId = creatorId;
@@ -107,13 +105,13 @@ public class Task extends AbstractDto {
      * Get the type of this task, e.g. "Crafting" or "MobKill".
      */
     public TaskType getType(){
-        Map<String, String> objTypes = new HashMap<>();
+        Map<TaskType, TaskType> objTypes = new HashMap<>();
         DataManager.getObjectivesManager().getAllFor(this.getId()).values()
-                .forEach(obj -> objTypes.put(obj.getTypeName(), obj.getTypeName()));
+                .forEach(obj -> objTypes.put(obj.getType(), obj.getType()));
 
         if (objTypes.isEmpty()) return TaskType.No;
         else if (objTypes.size() == 1) {
-            return TaskType.valueOf(objTypes.entrySet().iterator().next().getKey());
+            return objTypes.entrySet().iterator().next().getKey();
         }
         else return TaskType.Combined;
     }
@@ -122,7 +120,7 @@ public class Task extends AbstractDto {
      * Get localized type name of this task, e.g. "Крафтинг" or "Истребление".
      */
     public String getLocalizedTypeName(CommandSender sender){
-        return TaskType.getLocalizedName(getType().toString(), sender);
+        return getType().getLocalizedName(sender);
     }
 
     /**
@@ -156,18 +154,22 @@ public class Task extends AbstractDto {
         return CreatorType.valueOf(creatorTypeName);
     }
 
-    public FNPlayer getCreator(){
+    public FNPlayer getCreator() {
         return DataManager.getFNPlayerManager().get(creatorId);
+    }
+
+    public HashMap<Integer, Objective> getObjectives() {
+        return Objective.getManager().getAllFor(this.getId());
     }
 
     /**
      * Check if all the objectives are completed by specified player.
      */
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public boolean isAllObjectivesReadyToComplete(Player player){
+    public boolean isAllObjectivesReadyToComplete(Player player) {
 
         ObjectivesDao objDao = (ObjectivesDao) DataManager.getObjectivesManager();
-        for (Map.Entry<Integer, Objective> entry : objDao.getAllFor(getId()).entrySet()){
+        for (Map.Entry<Integer, Objective> entry : objDao.getAllFor(getId()).entrySet()) {
             Objective objective = entry.getValue();
             if (!objective.isReadyToComplete(player)) return false;
         }
@@ -205,14 +207,16 @@ public class Task extends AbstractDto {
         if (DependencyManager.MMO_CORE.isLoaded()) {
             PlayerData.get(player.getUniqueId())
                     .giveExperience(getExpReward(), EXPSource.QUEST, player.getLocation(), false);
+        } else {
+            player.giveExp((int) getExpReward());
         }
 
         // Send a certain share of resources or mobs to a town
-        for (Objective objective : DataManager.getObjectivesManager().getAllFor(getId()).values()){
-            int amount = (int)Math.ceil(objective.getAmount() * ObjectiveInfo.get(objective.getTypeName()).getShare() / 100.0);
-            TownResource townResource = new TownResource(getTownId(), objective.getTarget(), amount);
-            DataManager.getTownResourceManager().add(townResource);
-        }
+//        for (Objective objective : DataManager.getObjectivesManager().getAllFor(getId()).values()) {
+//            int amount = (int) Math.ceil(objective.getAmount() * objective.getType().getTownShare() / 100.0);
+//            TownResource resource = TownResource.getOrCreate(townId, objective.getTarget());
+//            resource.addResources(amount);
+//    }
     }
 
     public void cancel(Player player){

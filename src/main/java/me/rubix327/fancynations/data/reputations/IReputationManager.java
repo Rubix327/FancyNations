@@ -13,6 +13,7 @@ public interface IReputationManager {
     void update(int reputationId, String variable, Object newValue);
     void remove(int reputationId);
     HashMap<Integer, Reputation> getAll();
-    int getMaxId();
+
+    int getNextId();
 
 }

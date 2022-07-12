@@ -26,7 +26,7 @@ public class TownWorker extends AbstractDto {
     private double salary;
 
     public TownWorker(int townId, int playerId, int professionId) {
-        this.id = manager.getMaxId() + 1;
+        this.id = manager.getNextId();
         this.townId = townId;
         this.playerId = playerId;
         this.professionId = professionId;

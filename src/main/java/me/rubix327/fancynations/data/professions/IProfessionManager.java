@@ -19,6 +19,7 @@ public interface IProfessionManager {
     Profession get(String professionName);
     HashMap<Integer, Profession> getAll();
     List<String> getNames();
-    int getMaxId();
+
+    int getNextId();
 
 }

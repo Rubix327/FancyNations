@@ -28,7 +28,7 @@ public class Town extends AbstractDto implements IUniqueNamable {
     private double tasksTax;
 
     public Town(int nationId, String name){
-        this.id = DataManager.getTownManager().getMaxId() + 1;
+        this.id = DataManager.getTownManager().getNextId();
         this.nationId = nationId;
         this.name = name;
         this.balance = Settings.Towns.DEFAULT_BALANCE;

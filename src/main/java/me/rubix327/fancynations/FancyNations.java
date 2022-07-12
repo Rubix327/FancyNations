@@ -7,9 +7,7 @@ import me.rubix327.fancynations.commands.TestCommands;
 import me.rubix327.fancynations.data.DataManager;
 import me.rubix327.fancynations.data.DatabaseManager;
 import me.rubix327.fancynations.data.fnplayers.FNPlayer;
-import me.rubix327.fancynations.data.objectives.ObjectiveInfo;
 import me.rubix327.fancynations.data.professions.Profession;
-import me.rubix327.fancynations.data.tasks.TaskType;
 import me.rubix327.fancynations.events.PlayerListener;
 import me.rubix327.fancynations.util.DependencyManager;
 import me.rubix327.fancynations.util.Logger;
@@ -32,14 +30,7 @@ public final class FancyNations extends SimplePlugin {
     @Getter
     private DatabaseManager database;
 
-    @Override
-    protected void onPluginLoad() {
-        instance = this;
-        Common.setLogPrefix(null);
-    }
-
-    @Override
-    protected void onPluginStart() {
+    public void init() {
         // Localization
         Localization localization = Localization.getInstance();
         localization.init(Arrays.asList(Lang.EN_US.toString(), Lang.RU_RU.toString()));
@@ -47,14 +38,13 @@ public final class FancyNations extends SimplePlugin {
         ItemsLangAPI.getApi().load(Lang.EN_US, Lang.RU_RU);
 
         // Database
-        if (Settings.General.DATA_MANAGEMENT_TYPE.equalsIgnoreCase("database")){
+        if (Settings.General.DATA_MANAGEMENT_TYPE.equalsIgnoreCase("database")) {
             this.database = DatabaseManager.getInstance();
             database.connect("db_setup.sql");
             if (database.isConnected()) {
                 Logger.info("Database is connected.");
                 database.loadQueries("db_queries.sql");
-            }
-            else{
+            } else {
                 Logger.warning("Database is not connected.");
                 Logger.warning("Using file system instead of database.");
             }
@@ -90,6 +80,17 @@ public final class FancyNations extends SimplePlugin {
     }
 
     @Override
+    protected void onPluginLoad() {
+        instance = this;
+        Common.setLogPrefix(null);
+    }
+
+    @Override
+    protected void onPluginStart() {
+        init();
+    }
+
+    @Override
     protected void onPluginStop() {
         instance = null;
 
@@ -108,8 +109,6 @@ public final class FancyNations extends SimplePlugin {
 
     private void addDefaultEntries() {
         FNPlayer.init();
-        ObjectiveInfo.init();
-        TaskType.init();
         Profession.init();
     }
     

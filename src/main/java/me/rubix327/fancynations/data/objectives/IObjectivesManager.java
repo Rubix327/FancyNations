@@ -16,6 +16,6 @@ public interface IObjectivesManager {
      * @return HashMap - {ID: Objective} / may be empty if objectives not found for this player!
      */
     HashMap<Integer, Objective> getAllFor(int taskId);
-    int getMaxId();
+    int getNextId();
 
 }

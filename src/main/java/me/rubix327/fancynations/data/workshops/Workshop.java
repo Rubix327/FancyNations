@@ -21,7 +21,7 @@ public class Workshop extends AbstractDto {
     private int level;
 
     public Workshop(int id, int townId, String name, Location location) {
-        this.id = DataManager.getWorkshopManager().getMaxId() + 1;
+        this.id = DataManager.getWorkshopManager().getNextId();
         this.townId = townId;
         this.name = name;
         this.location = location;

@@ -1,5 +1,8 @@
 package me.rubix327.fancynations.menu;
 
+import io.lumine.mythic.api.MythicProvider;
+import io.lumine.mythic.api.mobs.MythicMob;
+import me.rubix327.fancynations.Settings;
 import me.rubix327.fancynations.data.fnplayers.FNPlayer;
 import me.rubix327.fancynations.data.objectives.Objective;
 import me.rubix327.fancynations.data.takentasks.TakenTask;
@@ -10,9 +13,11 @@ import me.rubix327.fancynations.data.tasks.TaskType;
 import me.rubix327.fancynations.util.DependencyManager;
 import me.rubix327.fancynations.util.ItemUtils;
 import me.rubix327.fancynations.util.Utils;
+import me.rubix327.itemslangapi.ItemsLangAPI;
 import me.rubix327.itemslangapi.Lang;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import org.bukkit.entity.Player;
+import org.mineacademy.fo.Common;
 import org.mineacademy.fo.remain.CompMaterial;
 
 import java.sql.Timestamp;
@@ -22,15 +27,6 @@ import java.util.*;
 public final class MenuUtil {
 
     final static class Tasks {
-
-        private static final HashMap<TaskType, CompMaterial> itemMaterials = new HashMap<>() {{
-            put(TaskType.Food, CompMaterial.PORKCHOP);
-            put(TaskType.Resource, CompMaterial.GRANITE);
-            put(TaskType.Crafting, CompMaterial.CHAINMAIL_CHESTPLATE);
-            put(TaskType.MobKill, CompMaterial.SKELETON_SKULL);
-            put(TaskType.No, CompMaterial.PAPER);
-            put(TaskType.Combined, CompMaterial.BLAZE_POWDER);
-        }};
 
         static String getName(Task task) {
             return "&f" + task.getName();
@@ -85,7 +81,8 @@ public final class MenuUtil {
             for (Objective objective : Objective.getAllFor(task.getId()).values()) {
                 s.add((objective.isReadyToComplete(player) ? Utils.YES : Utils.NO)
                         + getObjectiveName(objective, Lang.valueOf(player.getLocale().toUpperCase()))
-                        + " x" + objective.getAmount() + "\n");
+                        + " x" + objective.getAmount() + " " + "&8(" + objective.getCurrentAmount(player) + "/"
+                        + objective.getAmount() + ")" + "\n");
             }
             return s;
         }
@@ -93,8 +90,18 @@ public final class MenuUtil {
         private static String getObjectiveName(Objective objective, Lang lang) {
             if (objective.getGroup().equals(TaskGroup.Gathering)) {
                 return ItemUtils.getItemName(objective.getTarget(), lang);
+            } else if (objective.getGroup().equals(TaskGroup.Mobs)) {
+                if (objective.getTarget().startsWith(Settings.General.MYTHICMOBS_PREFIX)) {
+                    Optional<MythicMob> mob = MythicProvider.get().getMobManager().getMythicMob(objective.getTarget()
+                            .replace(Settings.General.MYTHICMOBS_PREFIX, ""));
+                    if (mob.isPresent()) {
+                        return Common.stripColors(mob.get().getDisplayName().get());
+                    }
+                } else {
+                    return ItemsLangAPI.getApi().translateExact("entity.minecraft." + objective.getTarget().toLowerCase(), lang);
+                }
             }
-            return "Моб1";
+            return "Неизвестная цель";
         }
 
         private static List<String> getConditions(Task task, Player player) {
@@ -120,7 +127,10 @@ public final class MenuUtil {
         }
 
         private static String getCompletions(Task task) {
-            return Utils.YES + "Осталось выполнений: " + task.getCompletionsLeft();
+            int left = task.getCompletionsLeft();
+            String s = (left <= 0 ? "&c" + Utils.NO : "&a" + Utils.YES);
+            s += "Осталось выполнений: " + left;
+            return s;
         }
 
         private static List<String> getRewards(Task task) {
@@ -174,7 +184,7 @@ public final class MenuUtil {
         }
 
         static CompMaterial getItemMaterial(TaskType type) {
-            return itemMaterials.get(type);
+            return type.getMaterial();
         }
 
         static boolean isTaken(Task task, Player player) {

@@ -10,6 +10,7 @@ public interface ITownHouseManager {
     void update(int houseId, String variable, Object newValue);
     void remove(int houseId);
     HashMap<Integer, TownHouse> getAll();
-    int getMaxId();
+
+    int getNextId();
 
 }

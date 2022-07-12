@@ -10,6 +10,7 @@ public interface IFarmManager {
     void update(int farmId, String variable, Object newValue);
     void remove(int farmId);
     HashMap<Integer, Farm> getAll();
-    int getMaxId();
+
+    int getNextId();
 
 }

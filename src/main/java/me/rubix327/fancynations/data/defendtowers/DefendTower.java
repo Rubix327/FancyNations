@@ -4,9 +4,9 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import me.rubix327.fancynations.data.DataManager;
-import me.rubix327.fancynations.data.AbstractDto;
 import me.rubix327.fancynations.Settings;
+import me.rubix327.fancynations.data.AbstractDto;
+import me.rubix327.fancynations.data.DataManager;
 import me.rubix327.fancynations.data.towns.Town;
 import org.bukkit.Location;
 
@@ -23,7 +23,7 @@ public class DefendTower extends AbstractDto {
     private int amount;
 
     public DefendTower(int townId, String name, Location location) {
-        this.id = DataManager.getDefendTowerManager().getMaxId() + 1;
+        this.id = DataManager.getDefendTowerManager().getNextId();
         this.townId = townId;
         this.name = name;
         this.location = location;

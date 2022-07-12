@@ -37,11 +37,33 @@ public class TownResourceDao extends AbstractDao<TownResource> implements ITownR
 
         query = query
                 .replace("@Table", table)
-                .replace("@Town", String.valueOf(resource.getTownId()))
-                .replace("@Name", String.valueOf(resource.getName()))
+                .replace("@TownId", String.valueOf(resource.getTownId()))
+                .replace("@ResourceName", String.valueOf(resource.getName()))
                 .replace("@Amount", String.valueOf(resource.getAmount()));
 
         super.executeVoid(query);
+    }
+
+    public boolean exists(int townId, String resourceName) {
+        String query = getQuery("town_resources_exists");
+
+        query = query
+                .replace("@Table", this.table)
+                .replace("@TownId", String.valueOf(townId))
+                .replace("@ResourceName", resourceName);
+
+        return executeBool(query);
+    }
+
+    public TownResource get(int townId, String resourceName) {
+        String query = getQuery("town_resources_get");
+
+        query = query
+                .replace("@Table", this.table)
+                .replace("@TownId", String.valueOf(townId))
+                .replace("@ResourceName", resourceName);
+
+        return executeObject(query);
     }
 
 }

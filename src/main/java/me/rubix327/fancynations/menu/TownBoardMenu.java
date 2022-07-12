@@ -12,23 +12,23 @@ import org.mineacademy.fo.menu.AdvancedMenu;
 import org.mineacademy.fo.menu.button.Button;
 import org.mineacademy.fo.menu.model.ItemCreator;
 import org.mineacademy.fo.remain.CompMaterial;
+import org.mineacademy.fo.remain.CompMetadata;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 
 public class TownBoardMenu extends AdvancedMenu {
 
-    private final HashMap<Integer, Button> itemSlots = new HashMap<>();
     private final int townId;
 
     public TownBoardMenu(Player player) {
-        this(player, 1);
+        this(player, 0);
     }
 
     @Override
     protected void setup() {
+        if (townId == 0) return;
         setTitle("Доска заданий " + Town.getManager().get(townId).getName());
         setSize(9 * 6);
         setSlotNumbersVisible();
@@ -79,7 +79,7 @@ public class TownBoardMenu extends AdvancedMenu {
             buttons.add(new Button() {
                 @Override
                 public void onClickedInMenu(Player player, AdvancedMenu menu, ClickType click) {
-                    if (this.getItem().getItemMeta().getDisplayName().contains("Задание еще не готово")) {
+                    if (CompMetadata.hasMetadata(this.getItem(), "task_not_ready")){
                         return;
                     }
                     tell("123");
@@ -115,9 +115,11 @@ public class TownBoardMenu extends AdvancedMenu {
      * @return ready ItemStack
      */
     private ItemStack makeItem(List<Task> list, int number) {
-        String defaultId = MainPanelMenu.getItemMaterials().get(TaskType.No).toString();
         if (list.size() < number) {
-            return ItemCreator.of(CompMaterial.fromString(defaultId), "&7Задание еще не готово... ").make();
+            return ItemCreator.of(TaskType.No.getMaterial())
+                    .name("&7Задание еще не готово... ")
+                    .tag("task_not_ready", "true")
+                    .make();
         }
         Task task = list.get(number - 1);
 

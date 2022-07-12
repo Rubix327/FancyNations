@@ -4,9 +4,9 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import me.rubix327.fancynations.data.DataManager;
-import me.rubix327.fancynations.data.AbstractDto;
 import me.rubix327.fancynations.Settings;
+import me.rubix327.fancynations.data.AbstractDto;
+import me.rubix327.fancynations.data.DataManager;
 import me.rubix327.fancynations.data.towns.Town;
 import org.bukkit.Location;
 
@@ -21,7 +21,7 @@ public class Church extends AbstractDto {
     private int level;
 
     public Church(int townId, String name, Location location) {
-        this.id = DataManager.getChurchManager().getMaxId() + 1;
+        this.id = DataManager.getChurchManager().getNextId();
         this.townId = townId;
         this.name = name;
         this.location = location;

@@ -13,7 +13,9 @@ public interface INationManager {
     void update(int nationId, String variable, Object newValue);
     void remove(int nationId);
     HashMap<Integer, Nation> getAll();
-    int getMaxId();
+
+    int getNextId();
+
     List<String> getNames();
 
 }

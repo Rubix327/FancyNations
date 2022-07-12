@@ -1,5 +1,6 @@
 package me.rubix327.fancynations.data.objectives;
 
+import github.scarsz.discordsrv.dependencies.jda.annotations.ForRemoval;
 import lombok.Getter;
 import me.rubix327.fancynations.Settings;
 import me.rubix327.fancynations.data.tasks.TaskGroup;
@@ -9,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 
 @Getter
+@Deprecated
+@ForRemoval
 public class ObjectiveInfo {
 
     @Getter
@@ -25,15 +28,15 @@ public class ObjectiveInfo {
         this.localeNode = localeNode;
     }
 
-    public static void init(){
+    public static void init() {
         if (initiated) return;
-        ObjectiveInfo.add(TaskType.Food, new ObjectiveInfo(
+        add(TaskType.Food, new ObjectiveInfo(
                 TaskGroup.Gathering, Settings.Rewards.TOWN_RESOURCE_SHARE, "task_type_food"));
-        ObjectiveInfo.add(TaskType.Resource, new ObjectiveInfo(
+        add(TaskType.Resource, new ObjectiveInfo(
                 TaskGroup.Gathering, Settings.Rewards.TOWN_RESOURCE_SHARE, "task_type_resource"));
-        ObjectiveInfo.add(TaskType.Crafting, new ObjectiveInfo(
+        add(TaskType.Crafting, new ObjectiveInfo(
                 TaskGroup.Gathering, Settings.Rewards.TOWN_RESOURCE_SHARE, "task_type_crafting"));
-        ObjectiveInfo.add(TaskType.MobKill, new ObjectiveInfo(
+        add(TaskType.MobKill, new ObjectiveInfo(
                 TaskGroup.Mobs, Settings.Rewards.TOWN_MOBS_SHARE, "task_type_mob_kill"));
         initiated = true;
     }
@@ -60,12 +63,6 @@ public class ObjectiveInfo {
      */
     public static String getFormattedString(){
         return String.join(", ", getStringList());
-    }
-
-    public static HashMap<TaskType, String> getLocales(){
-        HashMap<TaskType, String> locales = new HashMap<>();
-        ObjectiveInfo.getObjectiveInfo().forEach((key, value) -> locales.put(key, value.getLocaleNode()));
-        return locales;
     }
 
     public static List<String> getObjectiveTypes(){

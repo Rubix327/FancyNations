@@ -17,5 +17,6 @@ public interface ITownWorkerManager {
     boolean isWorker(int playerId, int townId);
     boolean isMayor(int playerId, int townId);
     HashMap<Integer, TownWorker> getAll();
-    int getMaxId();
+
+    int getNextId();
 }

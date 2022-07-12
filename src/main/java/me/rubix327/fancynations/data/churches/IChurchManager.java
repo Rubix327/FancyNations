@@ -10,6 +10,7 @@ public interface IChurchManager {
     void update(int churchId, String variable, Object newValue);
     void remove(int churchId);
     HashMap<Integer, Church> getAll();
-    int getMaxId();
+
+    int getNextId();
 
 }

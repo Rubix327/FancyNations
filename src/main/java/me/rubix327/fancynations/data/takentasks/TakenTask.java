@@ -13,6 +13,8 @@ import org.mineacademy.fo.exception.CommandException;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter @Setter(AccessLevel.PACKAGE)
 @AllArgsConstructor
@@ -27,31 +29,36 @@ public class TakenTask extends AbstractDto {
     private final Timestamp takingDatetime;
 
     public TakenTask(int playerId, int taskId) {
-        this.id = DataManager.getTakenTaskManager().getMaxId() + 1;
+        this.id = DataManager.getTakenTaskManager().getNextId();
         this.playerId = playerId;
         this.taskId = taskId;
         this.takingDatetime = Timestamp.valueOf(LocalDateTime.now());
     }
 
-    public static void add(Player player, int taskId){
+    public static void add(Player player, int taskId) {
         manager.add(new TakenTask(FNPlayer.get(player.getName()).getId(), taskId));
     }
 
-    public static void remove(Player player, int taskId){
-        TakenTask.getManager().remove(TakenTask.getManager().get(FNPlayer.get(player.getName()).getId(), taskId).getId());
+    public static void remove(Player player, int taskId) {
+        manager.remove(TakenTask.getManager().get(FNPlayer.get(player.getName()).getId(), taskId).getId());
     }
 
-    public static TakenTask find(Player player, int taskId){
-        if (!TakenTask.getManager().exists(FNPlayer.get(player.getName()).getId(), taskId)) throw new CommandException();
-        return DataManager.getTakenTaskManager().get(FNPlayer.get(player.getName()).getId(), taskId);
+    public static TakenTask find(Player player, int taskId) {
+        if (!TakenTask.getManager().exists(FNPlayer.get(player.getName()).getId(), taskId))
+            throw new CommandException();
+        return manager.get(FNPlayer.get(player.getName()).getId(), taskId);
     }
 
-    public FNPlayer getFNPlayer(){
-        return DataManager.getFNPlayerManager().get(playerId);
+    public FNPlayer getFNPlayer() {
+        return FNPlayer.get(this.playerId);
     }
 
-    public Task getTask(){
-        return DataManager.getTaskManager().get(taskId);
+    public Task getTask() {
+        return Task.getManager().get(this.getTaskId());
+    }
+
+    public static List<TakenTask> getAllFor(Player player) {
+        return manager.getAll().values().stream().filter(e -> e.getFNPlayer().getName().equalsIgnoreCase(player.getName())).collect(Collectors.toList());
     }
 
 }

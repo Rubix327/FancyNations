@@ -25,8 +25,8 @@ public class TownHouseDao extends AbstractDao<TownHouse> implements ITownHouseMa
     protected TownHouse loadObject(ResultSet resultSet) throws SQLException {
 
         int id = resultSet.getInt("Id");
-        int townId = resultSet.getInt("Town");
-        int ownerId = resultSet.getInt("Owner");
+        int townId = resultSet.getInt("TownId");
+        int ownerId = resultSet.getInt("OwnerId");
         String location = resultSet.getString("Location");
 
         return new TownHouse(id, townId, ownerId, DataManager.deserializeLocation(location));
@@ -39,8 +39,8 @@ public class TownHouseDao extends AbstractDao<TownHouse> implements ITownHouseMa
 
         query = query
                 .replace("@Table", table)
-                .replace("@Town", String.valueOf(house.getTownId()))
-                .replace("@Owner", String.valueOf(house.getOwnerId()))
+                .replace("@TownId", String.valueOf(house.getTownId()))
+                .replace("@OwnerId", String.valueOf(house.getOwnerId()))
                 .replace("@Location", DataManager.serializeLocation(house.getLocation()));
 
         super.executeVoid(query);

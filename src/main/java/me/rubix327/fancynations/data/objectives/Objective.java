@@ -22,35 +22,35 @@ public abstract class Objective extends AbstractDto {
     private static IObjectivesManager manager = DataManager.getObjectivesManager();
 
     private final int id;
-    private final String typeName;
+    private final TaskType type;
     private final String target;
     private final int amount;
     private final int taskId;
 
-    public Objective(String typeName, String target, int amount, int taskId) {
-        this.id = DataManager.getObjectivesManager().getMaxId() + 1;
-        this.typeName = typeName;
+    public Objective(TaskType type, String target, int amount, int taskId) {
+        this.id = DataManager.getObjectivesManager().getNextId();
+        this.type = type;
         this.target = target;
         this.amount = amount;
         this.taskId = taskId;
     }
 
-    public static boolean exists(int objectiveId){
+    public static boolean exists(int objectiveId) {
         return manager.exists(objectiveId);
     }
 
-    public static void add(String type, String target, int amount, int taskId){
-        if (ObjectiveInfo.get(type).getGroup() == TaskGroup.Gathering){
+    public static void add(String typeName, String target, int amount, int taskId) {
+        TaskType type = TaskType.getOrNull(typeName);
+        if (TaskGroup.Gathering == type.getGroup()) {
             GatheringObjective obj = new GatheringObjective(type, target, amount, taskId);
             manager.add(obj);
-        }
-        else if (ObjectiveInfo.get(type).getGroup() == TaskGroup.Mobs){
+        } else if (TaskGroup.Mobs == type.getGroup()) {
             MobKillObjective obj = new MobKillObjective(type, target, amount, taskId);
             manager.add(obj);
         }
     }
 
-    public static void remove(int id){
+    public static void remove(int id) {
         manager.remove(id);
     }
 
@@ -67,8 +67,10 @@ public abstract class Objective extends AbstractDto {
     }
 
     public TaskGroup getGroup() {
-        return ObjectiveInfo.getObjectiveInfo().get(TaskType.valueOf(typeName)).getGroup();
+        return type.getGroup();
     }
+
+    public abstract int getCurrentAmount(Player player);
 
     public abstract boolean isReadyToComplete(Player player);
 
