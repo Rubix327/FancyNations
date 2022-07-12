@@ -22,6 +22,7 @@ public class MainCommandGroup extends SimpleCommandGroup {
         registerSubcommand(new ObjectiveCommands(this, "objective|obj", "fancynations.objective"));
         registerSubcommand(new Tests(this, "test", "fancynations.test"));
         registerSubcommand(new GuiCommand(this, "gui", "fancynations.gui"));
+        registerSubcommand(new ReloadCommand(this, "reload", "fancynations.reload"));
 
     }
 

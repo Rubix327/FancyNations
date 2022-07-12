@@ -2,6 +2,7 @@ package me.rubix327.fancynations.commands;
 
 import me.rubix327.fancynations.FancyNations;
 import me.rubix327.fancynations.Localization;
+import me.rubix327.fancynations.Settings;
 import me.rubix327.fancynations.data.DatabaseManager;
 import me.rubix327.fancynations.util.ItemUtils;
 import org.bukkit.inventory.ItemStack;
@@ -19,49 +20,46 @@ public class DebugCommands extends SubCommandInterlayer{
 
     @Override
     protected void onCommand() {
-        if (args[0].equalsIgnoreCase("dbfill")){
+        if (args[0].equalsIgnoreCase("dbfill")) {
             DatabaseManager.getInstance().extractAndExecuteQuery("db_test.sql");
             tell("&aTest database has been successfully loaded!");
-        }
-        else if (args[0].equalsIgnoreCase("dbclear")){
+        } else if (args[0].equalsIgnoreCase("dbclear")) {
             tell("&aThe database has been cleared.");
-        }
-        else if (args[0].equalsIgnoreCase("logdb")){
+        } else if (args[0].equalsIgnoreCase("logdb")) {
             tell(DatabaseManager.getInstance().extractQuery("db_test.sql"));
-        }
-        else if (args[0].equalsIgnoreCase("msg")){
+        } else if (args[0].equalsIgnoreCase("msg")) {
             if (args.length < 2) {
                 tell("&cSyntax: /test msg <key> [sender]");
             }
             tell(Localization.getInstance().get(args[1], sender));
-        }
-        else if (args[0].equalsIgnoreCase("mi")){
+        } else if (args[0].equalsIgnoreCase("mi")) {
             ItemStack item = getPlayer().getInventory().getItemInMainHand();
             tell(ItemUtils.extractItemId(item));
-        }
-        else if (args[0].equalsIgnoreCase("queries")){
-            if (!FancyNations.getInstance().getDatabase().isConnected()){
+        } else if (args[0].equalsIgnoreCase("queries")) {
+            if (!FancyNations.getInstance().getDatabase().isConnected()) {
                 tell("Database is not connected.");
                 return;
             }
-            for (Map.Entry<String, String> s : DatabaseManager.getInstance().getQueries().entrySet()){
+            for (Map.Entry<String, String> s : DatabaseManager.getInstance().getQueries().entrySet()) {
                 tell("Query: " + s.getKey() + " // " + s.getValue());
             }
-        }
-        else if (args[0].equalsIgnoreCase("getQuery")){
+        } else if (args[0].equalsIgnoreCase("getQuery")) {
             String q = DatabaseManager.getInstance().getQuery(args[1]);
             if (q == null) {
                 tell("null");
                 return;
             }
             tell(q);
+        } else if (args[0].equalsIgnoreCase("sql")) {
+            Settings.General.SQL_DEBUG = !Settings.General.SQL_DEBUG;
+            tell("SQL Debug is now " + Settings.General.SQL_DEBUG);
         }
     }
 
     @Override
     protected List<String> tabComplete() {
         if (args.length == 1){
-            return Arrays.asList("dbfill", "dbclear", "msg", "mi");
+            return Arrays.asList("dbfill", "dbclear", "msg", "mi", "sql");
         }
         if (args.length == 2 && args[1].equalsIgnoreCase("msg")){
             return List.of("<key>");

@@ -14,6 +14,7 @@
         <foundation.version>6.0.1.7</foundation.version>
         <java.version>16</java.version>
         <plugin.version>1.16.5-R0.1-SNAPSHOT</plugin.version>
+        <libraries.path>com.github.Rubix327</libraries.path>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -42,6 +43,25 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <createDependencyReducedPom>false</createDependencyReducedPom>
+                    <artifactSet>
+                        <includes>
+                            <include>${libraries.path}:Foundation*</include>
+                            <include>${libraries.path}:ItemsLangAPI*</include>
+                        </includes>
+                    </artifactSet>
+                    <relocations>
+                        <relocation>
+                            <pattern>org.mineacademy.fo</pattern>
+                            <shadedPattern>${project.groupId}.${project.artifactId}.libs.foundation</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>me.rubix327.itemslangapi</pattern>
+                            <shadedPattern>${project.groupId}.${project.artifactId}.libs.itemslangapi</shadedPattern>
+                        </relocation>
+                    </relocations>
+                </configuration>
             </plugin>
         </plugins>
 
@@ -74,7 +94,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.Rubix327</groupId>
+            <groupId>${libraries.path}</groupId>
             <artifactId>Foundation</artifactId>
             <version>${foundation.version}</version>
             <scope>compile</scope>
@@ -83,7 +103,13 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.28</version>
+            <version>8.0.29</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>6.1.1.Final</version>
         </dependency>
 
         <dependency>
@@ -95,25 +121,33 @@
         <dependency>
             <groupId>net.Indyuce</groupId>
             <artifactId>mmocore</artifactId>
-            <version>1.9.1</version>
+            <version>1.9.2</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/libs/MMOCore-1.9.1.jar</systemPath>
+            <systemPath>${project.basedir}/libs/MMOCore-1.9.2.jar</systemPath>
         </dependency>
 
         <dependency>
             <groupId>io.lumine.mythic</groupId>
             <artifactId>lib</artifactId>
-            <version>1.3</version>
+            <version>1.3.2</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/libs/MythicLib-1.3.jar</systemPath>
+            <systemPath>${project.basedir}/libs/MythicLib-1.3.2.jar</systemPath>
         </dependency>
 
         <dependency>
             <groupId>net.Indyuce</groupId>
             <artifactId>mmoitems</artifactId>
-            <version>6.7.2</version>
+            <version>6.7.3</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/libs/MMOItems-6.7.2.jar</systemPath>
+            <systemPath>${project.basedir}/libs/MMOItems-6.7.3.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>io.lumine.mythic</groupId>
+            <artifactId>bukkit</artifactId>
+            <version>5.0.4-f1007ca3</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/MythicMobs-5.0.4.jar</systemPath>
         </dependency>
     </dependencies>
 

@@ -5,7 +5,6 @@ import me.rubix327.fancynations.Settings;
 import me.rubix327.fancynations.data.DataManager;
 import me.rubix327.fancynations.data.fnplayers.FNPlayer;
 import me.rubix327.fancynations.data.objectives.Objective;
-import me.rubix327.fancynations.data.objectives.ObjectiveInfo;
 import me.rubix327.fancynations.data.reputations.Reputation;
 import me.rubix327.fancynations.data.takentasks.TakenTask;
 import me.rubix327.fancynations.data.taskprogresses.TaskProgress;
@@ -340,7 +339,7 @@ public class TaskCommands extends SubCommandInterlayer {
             // Send a certain share of resources or mobs to a town
             for (Objective objective : DataManager.getObjectivesManager().getAllFor(task.getId()).values()){
                 TownResource townResource = new TownResource(task.getTownId(), objective.getTarget(),
-                        objective.getAmount() / 100 * ObjectiveInfo.get(objective.getTypeName()).getShare());
+                        objective.getAmount() * objective.getType().getTownShare() / 100);
                 DataManager.getTownResourceManager().add(townResource);
             }
 

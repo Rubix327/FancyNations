@@ -2,8 +2,8 @@ package me.rubix327.fancynations.commands;
 
 import lombok.SneakyThrows;
 import me.rubix327.fancynations.data.DataManager;
-import me.rubix327.fancynations.data.objectives.ObjectiveInfo;
 import me.rubix327.fancynations.data.tasks.Task;
+import me.rubix327.fancynations.data.tasks.TaskType;
 import org.bukkit.Location;
 import org.mineacademy.fo.command.SimpleCommand;
 import org.mineacademy.fo.menu.model.ItemCreator;
@@ -78,7 +78,7 @@ public class TestCommands extends SimpleCommand {
             tell(loc.getBlockX() + " " + loc.getBlockY() + " " + loc.getZ());
         }
         else if (args[0].equalsIgnoreCase("objtypes")){
-            tell(ObjectiveInfo.getFormattedString());
+            tell(TaskType.getObjectiveTypesStrings());
         }
 
     }

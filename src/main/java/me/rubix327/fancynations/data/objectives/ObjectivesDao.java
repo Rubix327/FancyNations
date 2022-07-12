@@ -2,6 +2,7 @@ package me.rubix327.fancynations.data.objectives;
 
 import me.rubix327.fancynations.data.AbstractDao;
 import me.rubix327.fancynations.data.tasks.TaskGroup;
+import me.rubix327.fancynations.data.tasks.TaskType;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,18 +24,18 @@ public class ObjectivesDao extends AbstractDao<Objective> implements IObjectives
     }
 
     @Override
-    protected Objective loadObject(ResultSet resultSet) throws SQLException{
+    protected Objective loadObject(ResultSet resultSet) throws SQLException {
         int id = resultSet.getInt("Id");
-        String typeId = resultSet.getString("Type");
+        String typeName = resultSet.getString("Type");
         String target = resultSet.getString("Target");
         int amount = resultSet.getInt("Amount");
         int taskId = resultSet.getInt("Task");
 
-        if (ObjectiveInfo.get(typeId).getGroup() == TaskGroup.Gathering){
-            return new GatheringObjective(id, typeId, target, amount, taskId);
-        }
-        else if (ObjectiveInfo.get(typeId).getGroup() == TaskGroup.Mobs) {
-            return new MobKillObjective(id, typeId, target, amount, taskId);
+        TaskType type = TaskType.getOrNull(typeName);
+        if (TaskGroup.Gathering == type.getGroup()) {
+            return new GatheringObjective(id, type, target, amount, taskId);
+        } else if (TaskGroup.Mobs == type.getGroup()) {
+            return new MobKillObjective(id, type, target, amount, taskId);
         }
         throw new NullPointerException("This objective type group does not exist.");
     }
@@ -44,7 +45,7 @@ public class ObjectivesDao extends AbstractDao<Objective> implements IObjectives
 
         query = query
                 .replace("@Table", table)
-                .replace("@Type", String.valueOf(objective.getTypeName()))
+                .replace("@Type", objective.getType().toString())
                 .replace("@Target", objective.getTarget())
                 .replace("@Amount", String.valueOf(objective.getAmount()))
                 .replace("@Task", String.valueOf(objective.getTaskId()));

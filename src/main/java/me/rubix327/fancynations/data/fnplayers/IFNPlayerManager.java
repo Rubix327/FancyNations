@@ -20,7 +20,9 @@ public interface IFNPlayerManager{
     void update(int playerId, String variable, Object newValue);
     void remove(int playerId);
     HashMap<Integer, FNPlayer> getAll();
-    int getMaxId();
+
+    int getNextId();
+
     List<String> getNames();
 
 }
