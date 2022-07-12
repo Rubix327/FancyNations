@@ -21,7 +21,7 @@ public class Barracks extends AbstractDto {
     private int level;
 
     public Barracks(int townId, String name, Location location) {
-        this.id = DataManager.getBarracksManager().getMaxId() + 1;
+        this.id = DataManager.getBarracksManager().getNextId();
         this.townId = townId;
         this.name = name;
         this.location = location;

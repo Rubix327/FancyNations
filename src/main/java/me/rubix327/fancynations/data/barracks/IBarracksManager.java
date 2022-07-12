@@ -10,6 +10,7 @@ public interface IBarracksManager {
     void update(int barracksId, String variable, Object newValue);
     void remove(int barracksId);
     HashMap<Integer, Barracks> getAll();
-    int getMaxId();
+
+    int getNextId();
 
 }

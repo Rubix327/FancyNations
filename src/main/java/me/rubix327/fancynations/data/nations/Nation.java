@@ -16,7 +16,7 @@ public class Nation extends AbstractDto implements IUniqueNamable {
     private String name;
 
     public Nation(String name) {
-        this.id = DataManager.getNationManager().getMaxId() + 1;
+        this.id = DataManager.getNationManager().getNextId();
         this.name = name;
     }
 }

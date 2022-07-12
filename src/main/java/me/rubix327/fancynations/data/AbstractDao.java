@@ -129,21 +129,23 @@ public abstract class AbstractDao<T extends AbstractDto> extends AbstractDataHan
     }
 
     /**
-     Get the maximum id of all records.
-     @return maxId
+     * Get id that the next entry in the table would have.
+     *
+     * @return the next id
      */
-    public int getMaxId() throws NullPointerException{
-        try{
-            String query = getQuery("general_get_max_id");
+
+    public int getNextId() throws NullPointerException {
+        try {
+            String query = getQuery("general_get_next_id");
             query = query.replace("@Table", this.table);
             PreparedStatement ps = FancyNations.getInstance().getDatabase().getConnection().
                     prepareStatement(query);
             Logger.logSqlQuery(query);
             ResultSet resultSet = ps.executeQuery();
-            if (resultSet.next()){
+            if (resultSet.next()) {
                 return resultSet.getInt(1);
             }
-            return 0;
+            return 1;
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -151,11 +153,12 @@ public abstract class AbstractDao<T extends AbstractDto> extends AbstractDataHan
     }
 
     /**
-     Get list of names in specified table.
-     @return The list of names
+     * Get list of names in specified table.
+     *
+     * @return The list of names
      */
-    public List<String> getNames() throws NullPointerException{
-        try{
+    public List<String> getNames() throws NullPointerException {
+        try {
             String query = getQuery("general_get_names");
             query = query.replace("@Table", this.table);
             PreparedStatement ps = FancyNations.getInstance().getDatabase().getConnection().
@@ -163,7 +166,7 @@ public abstract class AbstractDao<T extends AbstractDto> extends AbstractDataHan
             Logger.logSqlQuery(query);
             ResultSet resultSet = ps.executeQuery();
             List<String> list = new ArrayList<>();
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 list.add(resultSet.getString("Name"));
             }
             return list;

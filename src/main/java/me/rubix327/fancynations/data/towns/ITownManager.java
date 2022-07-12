@@ -17,7 +17,9 @@ public interface ITownManager {
     void remove(int townId);
     HashMap<Integer, Town> getAll();
     List<String> getTownsFor(CommandSender sender);
-    int getMaxId();
+
+    int getNextId();
+
     List<String> getNames();
 
 }

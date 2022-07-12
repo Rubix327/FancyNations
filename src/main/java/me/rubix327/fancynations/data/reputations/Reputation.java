@@ -22,7 +22,7 @@ public class Reputation extends AbstractDto {
     private int amount;
 
     public Reputation(int playerId, int townId) {
-        this.id = manager.getMaxId() + 1;
+        this.id = manager.getNextId();
         this.playerId = playerId;
         this.townId = townId;
         this.amount = 0;

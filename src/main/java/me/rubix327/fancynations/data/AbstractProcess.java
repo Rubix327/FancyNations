@@ -54,16 +54,15 @@ public abstract class AbstractProcess<T extends AbstractDto> extends AbstractDat
         return dtos;
     }
 
-    @Override
-    public int getMaxId() {
-        if (dtos.isEmpty()) return 0;
-        return Collections.max(dtos.keySet());
+    public int getNextId() {
+        if (dtos.isEmpty()) return 1;
+        return Collections.max(dtos.keySet()) + 1;
     }
 
     public boolean exists(String name) throws NullPointerException {
-        for (T dto : dtos.values()){
+        for (T dto : dtos.values()) {
             if (dto instanceof IUniqueNamable) {
-                if (((IUniqueNamable)dto).getName().equalsIgnoreCase(name)) return true;
+                if (((IUniqueNamable) dto).getName().equalsIgnoreCase(name)) return true;
             }
         }
         return false;

@@ -14,6 +14,7 @@ public interface ITakenTaskManager {
     HashMap<Integer, TakenTask> getAll();
     HashMap<Integer, TakenTask> getAll(boolean log);
     int getCountFor(int taskId);
-    int getMaxId();
+
+    int getNextId();
 
 }

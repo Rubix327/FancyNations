@@ -43,7 +43,7 @@ public class Profession extends AbstractDto implements IUniqueNamable {
     }
 
     public Profession(String name) {
-        this.id = DataManager.getProfessionManager().getMaxId();
+        this.id = DataManager.getProfessionManager().getNextId();
         this.name = name;
         this.salary = Settings.Professions.Other.SALARY;
         this.stationsTaxBonus = Settings.Professions.Other.STATIONS_TAX_BONUS;

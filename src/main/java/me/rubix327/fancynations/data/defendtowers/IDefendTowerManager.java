@@ -10,6 +10,7 @@ public interface IDefendTowerManager {
     void update(int towerId, String variable, Object newValue);
     void remove(int towerId);
     HashMap<Integer, DefendTower> getAll();
-    int getMaxId();
+
+    int getNextId();
 
 }
