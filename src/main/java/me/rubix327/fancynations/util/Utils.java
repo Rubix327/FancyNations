@@ -2,9 +2,13 @@ package me.rubix327.fancynations.util;
 
 import com.google.common.base.CaseFormat;
 import me.rubix327.fancynations.Localization;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -73,6 +77,39 @@ public class Utils {
 
     public static boolean isPlayerAdmin(Player player) {
         return player.hasPermission("fancynations.admin");
+    }
+
+    /**
+     Converts location from Location instance to String.
+     @param loc Location instance
+     @return Location String
+     */
+    public static String serializeLocation(Location loc){
+        String world = loc.getWorld().getName();
+        String x = String.valueOf(loc.getX());
+        String y = String.valueOf(loc.getY());
+        String z = String.valueOf(loc.getZ());
+        String pitch = String.valueOf(loc.getPitch());
+        String yaw = String.valueOf(loc.getYaw());
+
+        return String.join(",", world, x, y, z, pitch, yaw);
+    }
+
+    /**
+     Converts location from String to Location instance.
+     @param loc String that contains location
+     @return Location instance
+     */
+    public static Location deserializeLocation(String loc){
+        List<String> locStr = Arrays.asList(loc.split(","));
+        World world = Bukkit.getWorld(locStr.get(0));
+        double x = Double.parseDouble(locStr.get(1));
+        double y = Double.parseDouble(locStr.get(2));
+        double z = Double.parseDouble(locStr.get(3));
+        float pitch = Float.parseFloat(locStr.get(4));
+        float yaw = Float.parseFloat(locStr.get(5));
+
+        return new Location(world, x, y, z, pitch, yaw);
     }
 
 }

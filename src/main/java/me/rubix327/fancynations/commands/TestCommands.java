@@ -4,6 +4,7 @@ import lombok.SneakyThrows;
 import me.rubix327.fancynations.data.DataManager;
 import me.rubix327.fancynations.data.tasks.Task;
 import me.rubix327.fancynations.data.tasks.TaskType;
+import me.rubix327.fancynations.util.Utils;
 import org.bukkit.Location;
 import org.mineacademy.fo.command.SimpleCommand;
 import org.mineacademy.fo.menu.model.ItemCreator;
@@ -73,8 +74,8 @@ public class TestCommands extends SimpleCommand {
         }
         else if (args[0].equalsIgnoreCase("loc")){
             tell(getPlayer().getLocation().toString());
-            tell(DataManager.serializeLocation(getPlayer().getLocation()));
-            Location loc = DataManager.deserializeLocation(DataManager.serializeLocation(getPlayer().getLocation()));
+            tell(Utils.serializeLocation(getPlayer().getLocation()));
+            Location loc = Utils.deserializeLocation(Utils.serializeLocation(getPlayer().getLocation()));
             tell(loc.getBlockX() + " " + loc.getBlockY() + " " + loc.getZ());
         }
         else if (args[0].equalsIgnoreCase("objtypes")){

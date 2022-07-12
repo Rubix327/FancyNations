@@ -1,7 +1,7 @@
 package me.rubix327.fancynations.data.farms;
 
 import me.rubix327.fancynations.data.AbstractDao;
-import me.rubix327.fancynations.data.DataManager;
+import me.rubix327.fancynations.util.Utils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -32,7 +32,7 @@ public class FarmDao extends AbstractDao<Farm> implements IFarmManager {
         String loadedResource = resultSet.getString("LoadedResource");
         int amount = resultSet.getInt("Amount");
 
-        return new Farm(id, townId, name, DataManager.deserializeLocation(location), level, loadedResource, amount);
+        return new Farm(id, townId, name, Utils.deserializeLocation(location), level, loadedResource, amount);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class FarmDao extends AbstractDao<Farm> implements IFarmManager {
                 .replace("@Table", table)
                 .replace("@TownId", String.valueOf(farm.getTownId()))
                 .replace("@Name", String.valueOf(farm.getName()))
-                .replace("@Location", DataManager.serializeLocation(farm.getLocation()))
+                .replace("@Location", Utils.serializeLocation(farm.getLocation()))
                 .replace("@Level", String.valueOf(farm.getLevel()))
                 .replace("@LoadedResource", String.valueOf(farm.getLoadedResource()))
                 .replace("@Amount", String.valueOf(farm.getAmount()));
